@@ -1,0 +1,15 @@
+{
+  "name": "Gateway",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Christian Goldapp",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
