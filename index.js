@@ -1,5 +1,8 @@
-const express = require('express');
-const path = require('path');
+import Authentication from "src/rest/Authentication";
+import Accounts from "src/rest/Accounts";
+
+import express from "express";
+import path from "path";
 
 const app = express();
 
@@ -12,6 +15,9 @@ app.get('/api/getList', (req,res) => {
     res.json(list);
     console.log('Sent list of items');
 });
+
+app.use('/api/auth', Authentication);
+app.use('/api/account', Accounts);
 
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
