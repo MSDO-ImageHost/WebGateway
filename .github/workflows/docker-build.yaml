@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build Docker images
 
 on:
   push:
@@ -7,23 +7,23 @@ on:
     branches: [ main ]
 
 jobs:
-  backend-build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build .
-
   frontend-build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build .
+      run: docker build -f client/Dockerfile client
+
+  backend-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the backend Docker image
+      run: docker build -f Dockerfile .
 
   unified-build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile.unified
+    - name: Build the unified Docker image
+      run: docker build -f Dockerfile.unified .
