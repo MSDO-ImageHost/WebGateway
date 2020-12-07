@@ -1,8 +1,8 @@
 const express = require("express");
 const path = require("path");
 
-const Authentication = require("src/rest/Authentication.js");
-const Accounts = require("src/rest/Accounts.js");
+const Authentication = require("./src/rest/Authentication.js");
+const Accounts = require("./src/rest/Accounts.js");
 
 const app = express();
 
