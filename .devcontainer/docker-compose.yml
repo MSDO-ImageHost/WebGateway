@@ -1,0 +1,93 @@
+version: "3.7"
+
+volumes:
+  rabbitmq-data:
+  posts-db-data:
+  auth-db-data:
+
+services:
+  vscode:
+    image: qmcgaw/nodedevcontainer
+    volumes:
+      - ../:/workspace
+      - ~/.ssh:/home/vscode/.ssh
+      - ~/.ssh:/root/.ssh
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Copenhagen
+      - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
+      - JWT_HMAC_SECRET=secret
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - 3000:3000
+    entrypoint: zsh -c "while sleep 1000; do :; done"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=dev
+      - RABBITMQ_DEFAULT_PASS=dev
+    restart: unless-stopped
+
+
+
+  ## Posts ##
+  posts:
+    image: imagehostmad/posts:latest
+    environment:
+      - TZ=Europe/Copenhagen
+      - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
+      - MONGO_SERVICE_DB=posts-db
+      - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
+      - JWT_HMAC_SECRET=secret
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - posts-db-data:/data/db
+    restart: unless-stopped
+  ## End of Posts ##
+
+
+
+  ## Authentication ##
+  authentication:
+    image: imagehostmad/authentication:latest
+    environment:
+      - AMQP_USER=dev
+      - AMQP_PASS=dev
+      - AMQP_URI=amqp://dev:dev@rabbitmq:5672
+      - MYSQL_PASSWORD=DM8742020
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8
+    command: --init-file /data/application/init.sql
+    volumes:
+      - auth-db-data:/var/lib/mysql
+      - ./service-files/init.sql:/data/application/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=DM8742020
+      - MYSQL_DATABASE=authentication
+    restart: always
+  ## End of Authentication ##
+
+
+
+
+  # Utilities
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    restart: always

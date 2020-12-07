@@ -197,3 +197,7 @@ modules.xml
 # End of https://www.toptal.com/developers/gitignore/api/node,webstorm+iml
 /client/package-lock.json
 /client/.eslintcache
+
+
+
+.vscode
