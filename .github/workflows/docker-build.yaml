@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
+    - name: Build the frontend Docker image
       run: docker build -f client/Dockerfile client
 
   backend-build:
@@ -17,11 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the backend Docker image
-      run: docker build -f Dockerfile .
+      run: docker build -f api/Dockerfile api
 
   unified-build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build the unified Docker image
-      run: docker build -f Dockerfile.unified .
+      run: docker build -f Dockerfile .

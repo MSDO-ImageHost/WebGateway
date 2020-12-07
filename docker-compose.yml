@@ -1,0 +1,110 @@
+version: "3.7"
+
+volumes:
+  rabbitmq-data:
+  posts-db-data:
+  auth-db-data:
+
+
+networks:
+  rabbit-network:
+  auth-network:
+  posts-network:
+
+
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
+    networks:
+      - rabbit-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  ## Gateway ##
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - AMQP_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672/
+      - GATEWAY_QUEUE=gateway-queue
+    networks:
+      - rabbit-network
+    ports:
+      - 5000:5000
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
+  ## End of Gateway ##
+
+
+  ## Posts ##
+  posts:
+    image: imagehostmad/posts:latest
+    environment:
+      - TZ=Europe/Copenhagen
+      - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
+      - MONGO_SERVICE_DB=posts-db
+      - RABBITMQ_CONN_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672/
+      - JWT_HMAC_SECRET=secret
+    networks:
+      - rabbit-network
+      - posts-network
+    depends_on:
+      - rabbitmq
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - posts-db-data:/data/db
+    networks:
+      - posts-network
+    restart: unless-stopped
+  ## End of Posts ##
+
+
+
+  ## Authentication ##
+  authentication:
+    image: imagehostmad/authentication:latest
+    environment:
+      - AMQP_USER=${RABBIT_USER}
+      - AMQP_PASS=${RABBIT_PASS}
+      - AMQP_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672
+      - MYSQL_PASSWORD=${MYSQ_PASSWORD}
+    networks:
+      - rabbit-network
+      - auth-network
+    depends_on:
+      - rabbitmq
+      - mysql
+    restart: unless-stopped
+    
+  mysql:
+    image: mysql:8
+    command: --init-file /data/application/init.sql
+    volumes:
+      - auth-db-data:/var/lib/mysql
+      - ./.compose-service-files/auth-init.sql:/data/application/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQ_PASSWORD}
+      - MYSQL_DATABASE=authentication
+    networks:
+      - auth-network
+    restart: always
+  ## End of Authentication ##
