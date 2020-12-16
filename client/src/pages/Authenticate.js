@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+// Bootstrap
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -12,7 +12,7 @@ class Login extends Component{
     render() {
         return <Container fluid="md">
             <h1>Enter credentials to login</h1>
-            <Form>
+            <Form >
                 {/* Username */}
                 <Form.Group as={Row} controlId="formBasicUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
@@ -30,8 +30,8 @@ class Login extends Component{
                     <Form.Label column sm={2}>Password</Form.Label>
                     <Col sm={10}><Form.Control type="password" placeholder="Password" /></Col>
                 </Form.Group>
-                <Form.Text className="text-muted">No account yet? <Link to="signup">Create one here</Link></Form.Text>
-                <Button variant="primary" type="submit" style={{float: 'right'}}>Login</Button>
+                <Form.Text className="text-muted">Not signed up yet? Don't worry, you can sign up <Link to="signup">here</Link></Form.Text>
+                <Button variant="primary" type="submit" style={{float: 'right'}}>Sign in</Button>
             </Form>
         </Container>
     }
@@ -41,15 +41,10 @@ class Login extends Component{
 
 class Signup extends Component{
 
-    onSubmit(e) {
-        e.preventDefault();
-        console.log(this.props.formAction)
-    }
-
     render() {
         return <Container fluid="md">
             <h1>Please give us your details</h1>
-            <Form>
+            <Form >
                 {/* Username */}
                 <Form.Group as={Row} controlId="formBasicUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
@@ -68,7 +63,7 @@ class Signup extends Component{
                     <Col sm={5}><Form.Control type="password" placeholder="Password" /></Col>
                     <Col sm={5}><Form.Control type="password" placeholder="Type password again" /></Col>
                 </Form.Group>
-                <Button variant="primary" type="submit" style={{float: 'right'}}>Signup</Button>
+                <Button variant="primary" type="submit" style={{float: 'right'}}>Sign up</Button>
             </Form>
         </Container>
     }
