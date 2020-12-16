@@ -302,7 +302,7 @@ paths:
       responses:
         default:
           description: Default response
-  /post/posts:
+  /posts:
     get:
       summary: Gets many posts from a array of post ids.
       description: ''
