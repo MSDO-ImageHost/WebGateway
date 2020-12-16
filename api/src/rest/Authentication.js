@@ -14,5 +14,17 @@ router.post('/', function (req, res) {
     console.log("Logging in as " + user + " with password " + password);
     res.json({user, jwt})
 });
+router.get('/login', function (req, res) {
+    //RequestLoginToken
+});
+router.post('/login', function (req, res) {
+    //RequestAccountCreate
+});
+router.put('/login', function (req, res) {
+    //RequestAccountPasswordUpdate
+});
+router.delete('/login', function (req, res) {
+    //invalidate token
+});
 
 module.exports = router;
