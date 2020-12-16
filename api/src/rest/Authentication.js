@@ -17,9 +17,6 @@ router.post('/', function (req, res) {
 router.get('/login', function (req, res) {
     //RequestLoginToken
 });
-router.post('/login', function (req, res) {
-    //RequestAccountCreate
-});
 router.put('/login', function (req, res) {
     //RequestAccountPasswordUpdate
 });

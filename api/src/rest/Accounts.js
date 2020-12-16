@@ -28,6 +28,9 @@ const data = [{
 router.get('/', function (req, res) {
     res.json(data)
 });
+router.post('/user', function (req, res) {
+    //RequestAccountCreate
+});
 router.get('/user/:id', function (req, res) {
     //RequestAccountData
     res.send(data[req.params.user])
