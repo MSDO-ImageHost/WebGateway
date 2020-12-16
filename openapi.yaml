@@ -1,14 +1,21 @@
+OpenAPI-GUI v3
+ Top
+ Settings
+ Save
+ Undo
+ Follow
+ GitHub
+ 
 openapi: 3.0.0
 servers:
   - url: 'http://petstore.swagger.io/v2'
 info:
   description: >-
-    :dog: :cat: :rabbit: This is a sample server Petstore server.  You can find
-    out more about Swagger at [http://swagger.io](http://swagger.io) or on
-    [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you
-    can use the api key `special-key` to test the authorization filters.
+    This a social media where you can upload images, make post, post comments
+    and more. Also it has the feature of making it possible to upload scripts
+    which can automate the feature a user can use. 
   version: 1.0.0
-  title: Swagger Petstore
+  title: ImageHost
   termsOfService: 'http://swagger.io/terms/'
   contact:
     email: apiteam@swagger.io
@@ -29,16 +36,83 @@ tags:
       description: Find out more about our store
       url: 'http://swagger.io'
 paths:
-  /post: {}
-  /login: {}
-  /script: {}
+  /post:
+    post:
+      summary: Create a post with a image
+      description: ''
+      parameters: []
+      operationId: createPost
+      responses:
+        default:
+          description: Default response
+  /login:
+    get:
+      summary: Gets the login token
+      description: |-
+        Sends the event RequestLoginToken.
+        The reponse should be ReturnAuthenticationToken.
+      parameters: []
+      operationId: getLogin
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Invalidates the login token in the gateway
+      description: It invalidates the jwt such that it can no longer be used to login.
+      parameters: []
+      operationId: deleteLogin
+      responses:
+        default:
+          description: Default response
+    x-temp:
+      summary: Creates a user which can be used to log in
+      description: |-
+        Sends the event RequestAccountCreate.
+        Gets the event ConfirmAccountCreation in reponse.
+      parameters: []
+      operationId: putLogin
+      responses:
+        default:
+          description: Default response
+    put:
+      summary: Updates the password of a user
+      description: |-
+        Can only be done by a user who are logged in.
+        Sends the event RequestAccountPasswordUpdate.
+        Gets the event ConfirmSetPassword in reponse.
+      parameters: []
+      operationId: updatePassword
+      responses:
+        default:
+          description: Default response
+    post:
+      summary: Create a user which can be used to login
+      description: |-
+        Sends the event RequestAccountCreate.
+        Gets the event ConfirmAccountCreation in reponse
+      parameters: []
+      operationId: postLogin
+      responses:
+        default:
+          description: Default response
+  /script:
+    post:
+      summary: Creates a user script with a specified main file.
+      description: ''
+      parameters: []
+      operationId: createScript
+      responses:
+        default:
+          description: Default response
   '/user/{id}':
     get:
       tags:
         - user
       summary: Get user by user name
-      description: ''
-      operationId: getUserByID
+      description: |-
+        Sends the event RequestAccountData.
+        Gets the event ReturnAccountInfo in reponse.
+      operationId: getUserByName
       parameters:
         - name: username
           in: path
@@ -64,7 +138,10 @@ paths:
       tags:
         - user
       summary: Updated user
-      description: This can only be done by the logged in user.
+      description: |-
+        This can only be done by the logged in user.
+        Sends the event UpdateAccount.
+        Gets the event ConfirmAccountUpdate in reponse.
       operationId: updateUser
       parameters:
         - name: username
@@ -89,7 +166,10 @@ paths:
       tags:
         - user
       summary: Delete user
-      description: This can only be done by the logged in user.
+      description: |-
+        This can only be done by the logged in user.
+        Sends the event RequestAccountDelete.
+        Gets the event ConfirmAccountDeletion in reponse. 
       operationId: deleteUser
       parameters:
         - name: username
@@ -103,13 +183,352 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
-  '/post/{id}/comments': {}
-  '/post/{pid}': {}
-  '/post/{pid}/comments': {}
-  '/post/{pid}/comments/{cid}': {}
-  '/post/{pid}/likes/{userid}': {}
+  '/post/{pid}':
+    get:
+      summary: Gets a post with from a post id
+      description: ''
+      parameters: []
+      operationId: getPost
+      responses:
+        default:
+          description: Default response
+    put:
+      summary: Update a post using its id.
+      description: ''
+      parameters: []
+      operationId: updatePost
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Delete a post
+      description: ''
+      parameters: []
+      operationId: deletePost
+      responses:
+        default:
+          description: Default response
+  '/post/{pid}/comments':
+    post:
+      summary: Creates a comment on a post
+      description: |-
+        Sends the event CreateComment.
+        Gets the event ConfirmCommentCreation in reponse.
+      parameters: []
+      operationId: createComment
+      responses:
+        default:
+          description: Default response
+    get:
+      summary: Gets the comments on a post
+      description: |-
+        Sends the event RequestCommentsForPost.
+        Gets the event ReturnCommentsForPost in reponse.
+      parameters: []
+      operationId: getCommentsForPost
+      responses:
+        default:
+          description: Default response
+  '/post/{pid}/likes/{userid}':
+    get:
+      summary: Gets if the user likes the post
+      description: |-
+        Sends the event RequestLikeStatus.
+        Gets the event ReturnLikeStatus in reponse.
+      parameters: []
+      operationId: getLikeStatus
+      responses:
+        default:
+          description: Default response
+    put:
+      summary: Changes the like status for a user on a post
+      description: |-
+        If the user likes the post it unlikes it and vice versa.
+        Sends the event UpdateLike.
+        Gets the event ConfirmLikeUpdate in reponse.
+      parameters: []
+      operationId: updateLikeStatus
+      responses:
+        default:
+          description: Default response
+  /user/admin/ban:
+    x-temp:
+      summary: Update role of a user
+      description: |-
+        Can only be done by a admin user who is logged in.
+        Sends the event UpdateAccountPrivileges.
+        Get the event ConfirmAccountUpdate in response.
+      parameters: []
+      operationId: updateRole
+      responses:
+        default:
+          description: Default response
+    put:
+      summary: Ban a user
+      description: |-
+        Can only be done by a admin user who is logged in.
+        Sends the event RequestBanUser.
+        Gets the event ConfirmBanUser in reponse. 
+      parameters: []
+      operationId: updateBan
+      responses:
+        default:
+          description: Default response
+  /user/admin/flag:
+    put:
+      summary: Flag a user
+      description: |-
+        Can only be done by a admin user who is logged in.
+        Sends the event RequestFlagUser.
+        Gets the event ConfirmFlagUser in reponse.
+      parameters: []
+      operationId: updateFlag
+      responses:
+        default:
+          description: Default response
+    get:
+      summary: Gets all users who have been flagged.
+      description: |-
+        Can only be done by an admin user who is logged in.
+        Sends the event RequestAllFlagged.
+        Get the event ReturnAllFlagged in reponse.
+      parameters: []
+      operationId: getAllFlagged
+      responses:
+        default:
+          description: Default response
+  /user/admin:
+    put:
+      summary: Update role of a user
+      description: |-
+        Can only be done by an admin user.
+        Sends the event UpdateAccountPrivileges.
+        Gets the event ConfirmAccountUpdate in reponse. 
+      parameters: []
+      operationId: updateRole
+      responses:
+        default:
+          description: Default response
+  '/post/{pid}/likes':
+    get:
+      summary: Gets the amount of likes for a post
+      description: |-
+        Sends the event RequestLikesForPost.
+        Gets the event ReturnLikesForPost in reponse.
+      parameters: []
+      operationId: getLikesForPost
+      responses:
+        default:
+          description: Default response
+  /post/posts:
+    get:
+      summary: Gets many posts from a array of post ids.
+      description: ''
+      parameters: []
+      operationId: getPosts
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Delete multiple posts
+      description: ''
+      parameters: []
+      operationId: deleteManyPosts
+      responses:
+        default:
+          description: Default response
+  '/post/{pid}/history':
+    get:
+      summary: Get the post history using a post id.
+      description: ''
+      parameters: []
+      operationId: getHistory
+      responses:
+        default:
+          description: Default response
+  '/user/{id}/posts':
+    get:
+      summary: Gets the posts a user is author of.
+      description: ''
+      parameters: []
+      operationId: getUserPosts
+      responses:
+        default:
+          description: Default response
+  '/post/{pid}/comments/{cid}':
+    put:
+      summary: Update a comment using its id
+      description: |-
+        Sends the event UpdateComment.
+        Gets the event ConfirmCommentUpdate in response.
+      parameters: []
+      operationId: updateComment
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Delete a comment using its id
+      description: |-
+        Sends the event DeleteComment.
+        Gets the event ConfirmCommentDelete in reponse.
+      parameters: []
+      operationId: deleteComment
+      responses:
+        default:
+          description: Default response
+    get:
+      summary: Get a comment using its id
+      description: |-
+        Sends the event RequestComment.
+        Gets the event ReturnComment in response.
+      parameters: []
+      operationId: getComment
+      responses:
+        default:
+          description: Default response
+  /tag:
+    post:
+      summary: Create a tag
+      description: |-
+        Sends the event CreateTag.
+        Gets the event ConfirmTagCreation in response.
+      parameters: []
+      operationId: createTag
+      responses:
+        default:
+          description: Default response
+  '/tag/{tid}':
+    x-temp:
+      summary: ''
+      description: ''
+      parameters: []
+      operationId: ''
+      responses:
+        default:
+          description: Default response
+    put:
+      summary: Update a tag using its id.
+      description: |-
+        Sends the event UpdateTag.
+        Gets the event ConfirmTagUpdate in reponse.
+      parameters: []
+      operationId: updateTag
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Delete a tag using its id
+      description: |-
+        Sends the event DeleteTag.
+        Gets the event ConfirmTagDelete in reponse.
+      parameters: []
+      operationId: deleteTag
+      responses:
+        default:
+          description: Default response
+    get:
+      summary: Gets a tag using the id.
+      description: |-
+        Sends the event RequestTag.
+        Gets the event ReturnTag in reponse.
+      parameters: []
+      operationId: getTag
+      responses:
+        default:
+          description: Default response
+  '/post/{pid}/tags':
+    post:
+      summary: Adds a already created tag to a post
+      description: |-
+        Sends the event AddTagToPost.
+        Gets the event ConfirmAddedTag in reponse.
+      parameters: []
+      operationId: addTagToPost
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Removes a tag from a post.
+      description: |-
+        Sends the event RemoveTagFromPost.
+        Gets the event ConfirmTagRemoval in reponse.
+      parameters: []
+      operationId: removeTagFromPost
+      responses:
+        default:
+          description: Default response
+    get:
+      summary: Gets the tags used on the post.
+      description: |-
+        Sends the event RequestTagsForPost.
+        Gets the event ReturnTagsForPost in reponse.
+      parameters: []
+      operationId: getTags
+      responses:
+        default:
+          description: Default response
+  /image:
+    post:
+      summary: Creates a image
+      description: ''
+      parameters: []
+      operationId: createImage
+      responses:
+        default:
+          description: Default response
+  '/image/{iid}':
+    get:
+      summary: Gets an image using the id
+      description: ''
+      parameters: []
+      operationId: getImage
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Deletes an image using the id
+      description: ''
+      parameters: []
+      operationId: deleteImage
+      responses:
+        default:
+          description: Default response
+  '/script/{sid}':
+    get:
+      summary: Gets the user script using its id.
+      description: ''
+      parameters: []
+      operationId: getScript
+      responses:
+        default:
+          description: Default response
+    put:
+      summary: Updates a user script using its id.
+      description: ''
+      parameters: []
+      operationId: updateScript
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Delete a user script using its id.
+      description: ''
+      parameters: []
+      operationId: deleteScript
+      responses:
+        default:
+          description: Default response
+  '/script/{sid}/run':
+    get:
+      summary: Gets a script to be run using its id.
+      description: ''
+      parameters: []
+      operationId: getScript
+      responses:
+        default:
+          description: Default response
 externalDocs:
-  description: See AsyncAPI example
+  description: ''
   url: 'https://mermade.github.io/shins/asyncapi.html'
 components:
   schemas:
