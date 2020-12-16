@@ -14,10 +14,10 @@ router.put('/post/:pid', function (req, res) {
 router.delete('/post/:pid', function (req, res) {
     //Delete a post
 });
-router.get('/post/posts', function (req, res) {
+router.get('/posts', function (req, res) {
     //Get multiple posts
 });
-router.delete('/post/posts', function (req, res) {
+router.delete('/posts', function (req, res) {
     //Delete multiple posts
 });
 router.get('/post/:pid/history', function (req, res) {
