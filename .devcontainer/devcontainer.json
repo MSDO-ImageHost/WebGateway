@@ -14,7 +14,7 @@
         //"mongo-express",
     ],
     "shutdownAction": "stopCompose",
-    "postCreateCommand": "npm install",
+    //"postCreateCommand": "npm install",
     "workspaceFolder": "/workspace",
     // "overrideCommand": "",
     "extensions": [
