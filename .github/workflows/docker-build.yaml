@@ -5,20 +5,6 @@ on:
     branches: [ master ]
 
 jobs:
-  frontend-build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build the frontend Docker image
-      run: docker build -f client/Dockerfile client
-
-  backend-build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build the backend Docker image
-      run: docker build -f api/Dockerfile api
-
   unified-build:
     runs-on: ubuntu-latest
     steps:
