@@ -15,13 +15,6 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-  - name: pet
-    description: Everything about your Pets
-    externalDocs:
-      description: Find out more
-      url: 'http://swagger.io'
-  - name: store
-    description: Access to Petstore orders
   - name: user
     description: Operations about user
     externalDocs:
@@ -29,6 +22,22 @@ tags:
       url: 'http://swagger.io'
 paths:
   /post:
+    get:
+      summary: Gets many posts from a array of post ids.
+      description: ''
+      parameters: []
+      operationId: getPosts
+      responses:
+        default:
+          description: Default response
+    delete:
+      summary: Delete multiple posts
+      description: ''
+      parameters: []
+      operationId: deleteManyPosts
+      responses:
+        default:
+          description: Default response
     post:
       summary: Create a post with a image
       description: ''
@@ -299,23 +308,6 @@ paths:
         Gets the event ReturnLikesForPost in reponse.
       parameters: []
       operationId: getLikesForPost
-      responses:
-        default:
-          description: Default response
-  /posts:
-    get:
-      summary: Gets many posts from a array of post ids.
-      description: ''
-      parameters: []
-      operationId: getPosts
-      responses:
-        default:
-          description: Default response
-    delete:
-      summary: Delete multiple posts
-      description: ''
-      parameters: []
-      operationId: deleteManyPosts
       responses:
         default:
           description: Default response
