@@ -27,11 +27,10 @@ app.use('/api/post', Posts);
 
 
 app.get('/ping', function(req, res) {
-    console.log("Received ping");
-    amqpClient.sendRPCMessage(amqpChannel, "Ping", 'ping')
+    amqpClient.sendMessage(amqpChannel, '{"message": "Ping"}', 'ping')
         .then(msg => {
             const result = JSON.parse(msg.toString());
-            console.log("Sending " + msg.toString());
+            console.log("Received " + msg.toString());
             res.json(result)
         });
 });
