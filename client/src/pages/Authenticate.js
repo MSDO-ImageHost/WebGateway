@@ -14,19 +14,19 @@ class Login extends Component{
             <h1>Enter credentials to login</h1>
             <Form >
                 {/* Username */}
-                <Form.Group as={Row} controlId="formBasicUsername">
+                <Form.Group as={Row} controlId="signinFormUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
                     <Col sm={10}><Form.Control type="text" placeholder="Enter nickname" /></Col>
                 </Form.Group>
 
                 {/* Email */}
-                <Form.Group as={Row} controlId="formHorizontalEmail">
+                <Form.Group as={Row} controlId="signinFormEmail">
                     <Form.Label column sm={2}>Email</Form.Label>
                     <Col sm={10}><Form.Control type="email" placeholder="Email" /></Col>
                 </Form.Group>
 
                 {/* Password */}
-                <Form.Group as={Row} controlId="formBasicPassword">
+                <Form.Group as={Row} controlId="signinFormPassword">
                     <Form.Label column sm={2}>Password</Form.Label>
                     <Col sm={10}><Form.Control type="password" placeholder="Password" /></Col>
                 </Form.Group>
@@ -39,29 +39,56 @@ class Login extends Component{
 
 
 
-class Signup extends Component{
+class Signup extends Component {
+
+    handleSignup = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries())
+
+        console.log(formDataObj)
+
+        const response = fetch('http://localhost:5000/api/auth/login', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formDataObj)
+        })
+
+        response
+            .then(console.log)
+            .catch(console.log)
+            .finally(console.log)
+    }
 
     render() {
         return <Container fluid="md">
             <h1>Please give us your details</h1>
-            <Form >
+            <Form onSubmit={this.handleSignup}>
                 {/* Username */}
-                <Form.Group as={Row} controlId="formBasicUsername">
+                <Form.Group as={Row} controlId="signupFormUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
-                    <Col sm={10}><Form.Control type="text" placeholder="Enter nickname" /></Col>
+                    <Col sm={10}><Form.Control name="username" type="text" placeholder="Enter nickname" required/></Col>
                 </Form.Group>
 
                 {/* Email */}
-                <Form.Group as={Row} controlId="formHorizontalEmail">
+                <Form.Group as={Row} controlId="signupFormEmail">
                     <Form.Label column sm={2}>Email</Form.Label>
-                    <Col sm={10}><Form.Control type="email" placeholder="Email" /></Col>
+                    <Col sm={10}><Form.Control name="email" type="email" placeholder="Email" required/></Col>
                 </Form.Group>
 
                 {/* Passwords */}
-                <Form.Group as={Row} controlId="formBasicPassword">
+                <Form.Group as={Row}>
                     <Form.Label column sm={2}>Password</Form.Label>
-                    <Col sm={5}><Form.Control type="password" placeholder="Password" /></Col>
-                    <Col sm={5}><Form.Control type="password" placeholder="Type password again" /></Col>
+                        <Col>
+                            <Form.Group controlId="signupFormPassword">
+                                <Form.Control type="password" placeholder="Password" required/>
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="signupFormPasswordConfirm">
+                                <Form.Control name="password" type="password" placeholder="Type password again" required/>
+                            </Form.Group>
+                        </Col>
                 </Form.Group>
                 <Button variant="primary" type="submit" style={{float: 'right'}}>Sign up</Button>
             </Form>

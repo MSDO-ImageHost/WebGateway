@@ -1,10 +1,11 @@
 {
-  "name": "Gateway",
+  "name": "webgateway",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "nodemon": "nodemon index.js"
   },
   "keywords": [],
   "author": "Christian Goldapp",

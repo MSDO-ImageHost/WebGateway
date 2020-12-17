@@ -1,17 +1,18 @@
 const express = require("express");
-
 const router = express.Router();
 
-router.post('/post', function (req, res) {
+
+router.post('', function (req, res) {
     //Creates a post
 });
-router.get('/post/:pid', function (req, res) {
+router.get('/:pid', function (req, res, next) {
     //Get a post using its id
+    next()
 });
-router.put('/post/:pid', function (req, res) {
+router.put('/:pid', function (req, res) {
     //Update a post
 });
-router.delete('/post/:pid', function (req, res) {
+router.delete('/:pid', function (req, res) {
     //Delete a post
 });
 router.get('/posts', function (req, res) {
@@ -20,7 +21,7 @@ router.get('/posts', function (req, res) {
 router.delete('/posts', function (req, res) {
     //Delete multiple posts
 });
-router.get('/post/:pid/history', function (req, res) {
+router.get('/:pid/history', function (req, res) {
     //Get the history of a post
 });
 router.get('/user/:id/posts', function (req, res) {

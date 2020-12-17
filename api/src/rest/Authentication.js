@@ -1,27 +1,40 @@
 const express = require("express");
-
 const router = express.Router();
+
+
+const test_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0MDMyMDAsImlhdCI6MTY2NTQwMzIwMCwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsInJvbGUiOjAsInN1YiI6IjEyIn0.0KKTtjDmMjQ9uRryM5LGGYK5Ko_sDsuCH_PqSIPrD2I";
+
 
 // middleware that is specific to this router
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now());
+    console.log(`${req.method} ${req.baseUrl}${req.path} Triggered`)
     next();
 });
-const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0MDMyMDAsImlhdCI6MTY2NTQwMzIwMCwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsInJvbGUiOjAsInN1YiI6IjEyIn0.0KKTtjDmMjQ9uRryM5LGGYK5Ko_sDsuCH_PqSIPrD2I";
-router.post('/', function (req, res) {
-    const user = req.params.user;
-    const password = req.params.password;
-    console.log("Logging in as " + user + " with password " + password);
-    res.json({user, jwt})
+
+
+// Creates a new user (signup)
+router.post('/login', function (req, res) {
+    console.log("here")
+    res.status(200).redirect('/')
 });
+
+
+// Signs in a existing user
 router.get('/login', function (req, res) {
-    //RequestLoginToken
 });
+
+
+// Updates a users password
 router.put('/login', function (req, res) {
     //RequestAccountPasswordUpdate
 });
+
+
+// Terminates a users login session
 router.delete('/login', function (req, res) {
     //invalidate token
 });
+
 
 module.exports = router;

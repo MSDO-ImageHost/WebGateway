@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+
+// Bootstrap
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Container from "react-bootstrap/esm/Container";
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
+import bsCustomFileInput from 'bs-custom-file-input'
 
 
+
+// Test data
 import { TEST_COMMENTS } from '../api/mocking_data';
 
 
@@ -25,6 +34,35 @@ class PostListingEntry extends Component {
         </Card>
     }
 }
+
+class NewPostPage extends Component {
+    render() {
+        return <Container fluid="md">
+            <h1>Create new post</h1>
+            <Form >
+                {/* Username */}
+                <Form.Group as={Row} controlId="newPostTitle">
+                    <Form.Label column sm={2}>Title</Form.Label>
+                    <Col sm={10}><Form.Control type="text" placeholder="Title of the post" /></Col>
+                </Form.Group>
+
+                {/* Email */}
+                <Form.Group as={Row} controlId="newPostContent">
+                    <Form.Label column sm={2}>Content</Form.Label>
+                    <Col sm={10}><Form.Control as="textarea"  placeholder="Post content" /></Col>
+                </Form.Group>
+
+                {/* Image upload */}
+                <Form.Group as={Row} controlId="newPostImage">
+                    <Form.Label column sm={2}>Image</Form.Label>
+                    <Col sm={10}><Form.File id="custom-file"label="Custom file input"custom /></Col>
+                </Form.Group>
+                <Button variant="primary" type="submit" style={{float: 'right'}}>Create</Button>
+            </Form>
+        </Container>
+    }
+}
+
 
 
 class PostPage extends Component {
@@ -61,7 +99,11 @@ class CommentRow extends Component {
 }
 
 
+
+
+
 export {
     PostPage,
-    PostListingEntry
+    PostListingEntry,
+    NewPostPage
 }
