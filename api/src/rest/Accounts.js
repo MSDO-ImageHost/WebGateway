@@ -1,6 +1,8 @@
 const express = require("express");
-
 const router = express.Router();
+
+const {JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
+
 
 const data = [{
     username: "Max Mustermann",
@@ -28,9 +30,17 @@ const data = [{
 router.get('/', function (req, res) {
     res.json(data)
 });
+
+
+// RequestAccountCreate
 router.post('/', function (req, res) {
-    //RequestAccountCreate
+    // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
+
+    // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
+    const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
+    res.status(201).json({token});
 });
+
 router.get('/:id', function (req, res) {
     //RequestAccountData
     res.send(data[req.params.user])

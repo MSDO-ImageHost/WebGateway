@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
+
+// Auth
+import { withSignIn } from 'react-auth-kit'
 
 // Bootstrap
 import Form from 'react-bootstrap/Form';
@@ -14,10 +17,22 @@ class Login extends Component{
         event.preventDefault();
         const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries())
 
-        fetch('/api/login', {
-            method: 'GET',
+        const jsonRes = fetch('/api/login', {
+            method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formDataObj)
+        }).then(res => res.json())
+
+        jsonRes.then(res => {
+            console.log(res)
+            if (this.props.signIn({token: res.data.token,
+                expiresIn:res.data.expiresIn,
+                tokenType: "Bearer",
+                authState: res.data.authUserState})){
+                // Redirect or do-something
+            } else {
+                //Throw error
+            }
         })
     }
 
@@ -49,8 +64,6 @@ class Login extends Component{
     }
 }
 
-
-
 class Signup extends Component {
 
     postSignupForm(event) {
@@ -61,11 +74,13 @@ class Signup extends Component {
             return alert("Passwords do not match")
         }
 
-        fetch('/api/login', {
+        fetch('/api/user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formDataObj)
-        })
+        }).then(res => res.json()).then(data => console.log(data))
+
+        return <Redirect to={'/'} />
     }
 
     render() {
@@ -114,6 +129,10 @@ class Signup extends Component {
         </Container>
     }
 }
+
+
+
+
 
 
 export { Login, Signup }

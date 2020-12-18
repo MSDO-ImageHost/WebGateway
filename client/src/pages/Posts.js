@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+// Server communication
+import { Get } from 'react-axios'
 
 // Bootstrap
 import Card from 'react-bootstrap/Card'
@@ -9,13 +11,10 @@ import Container from "react-bootstrap/esm/Container";
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Alert from "react-bootstrap/esm/Alert";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 import bsCustomFileInput from 'bs-custom-file-input'
-
-
-
-// Test data
-import { TEST_COMMENTS } from '../api/mocking_data';
 
 
 // Used on the frontpage for posts overview
@@ -67,9 +66,11 @@ class NewPostPage extends Component {
 
 class PostPage extends Component {
     render() {
-        const comments = TEST_COMMENTS.map(comment => {
-            return <CommentRow key={comment.comment_id} data={comment}/>
-        })
+        //const comments = TEST_COMMENTS.map(comment => {
+        //    return <CommentRow key={comment.comment_id} data={comment}/>
+        //})
+
+        const comments = []
         const post = this.props.location.state
         return <Container>
             <Card border="primary" style={{ width: '100%', marginTop: '10px' }}>
@@ -82,7 +83,24 @@ class PostPage extends Component {
                     <Card.Footer>{post.tags}</Card.Footer>
                 </Card.Body>
             </Card>
-            {comments}
+            
+            <Get url="/api/post">
+            {(error, response, isLoading, makeRequest) => {
+                if(error) {
+                    return (<div class="text-center">
+                        <Alert variant='danger'>{error.message}</Alert>
+                        <Button onClick={() => makeRequest({ params: { reload: true } })}>Retry</Button>
+                    </div>)
+                }
+                else if(isLoading) {
+                    return (<Spinner animation="grow" variant="primary" />)
+                }
+                else if(response !== null) {
+                    return (response.data.map(post => <PostListingEntry key={post.post_id} data={post}/>))
+                }
+                return (<div>Default message before request is made.</div>)
+            }}
+            </Get>
         </Container>
     }
 }

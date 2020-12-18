@@ -51,7 +51,8 @@
         "github.vscode-pull-request-github",
         "lunuan.kubernetes-template",
         "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "ipedrazas.kubernetes-snippets"
+        "ipedrazas.kubernetes-snippets",
+        "42crunch.vscode-openapi"
     ],
     "settings": {
         // General settings

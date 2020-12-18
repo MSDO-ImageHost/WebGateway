@@ -16,6 +16,12 @@ router.get('/:pid', function (req, res, next) {
     //Get a post using its id
     res.json(TEST_POSTS[0]);
 });
+
+router.get('/:pid/comments', function (req, res, next) {
+    //Get a post using its id
+    res.json(TEST_COMMENTS[0]);
+});
+
 router.put('/:pid', function (req, res) {
     //Update a post
     res.status(200).send();

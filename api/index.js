@@ -32,6 +32,9 @@ app.use(function timeLog(req, res, next) {
     next();
 });
 
+// Artificial response delay
+//app.use((res, req, next) => {for (let i = 0; i < 2000000000; i++) {}; next()})
+
 
 // Use required API routes
 app.use('/api/login', Authentication);
