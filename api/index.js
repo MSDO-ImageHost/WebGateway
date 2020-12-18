@@ -21,15 +21,14 @@ amqpClient.createClient({ url: amqpURI })
         amqpChannel = ch;
     });
 
+app.use(cookieParser());
+app.use(express.text());
 app.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now());
     console.log(`${req.method} ${req.baseUrl}${req.path}`);
     console.log(req.body);
     next();
 });
-app.use(cookieParser());
-
-app.use(express.json());
 
 // Use required API routes
 app.use('/api/login', Authentication);
