@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const Authentication = require("./src/rest/Authentication.js");
 const Accounts = require("./src/rest/Accounts.js");
 const Posts = require("./src/rest/Posts.js");
+const bodyParser = require('body-parser')
 
 const app = express();
 const amqpURI = process.env.AMQP_URI;
@@ -45,12 +46,12 @@ app.get('/ping', function(req, res) {
 });
 
 // Serve the static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
+//app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+//app.get('*', (req, res) => {
+//    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+//});
 
 const port = process.env.PORT || 5000;
 app.listen(port);
