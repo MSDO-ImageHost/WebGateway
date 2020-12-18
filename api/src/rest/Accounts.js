@@ -28,27 +28,31 @@ const data = [{
 router.get('/', function (req, res) {
     res.json(data)
 });
-router.post('/user', function (req, res) {
+router.post('/', function (req, res) {
     //RequestAccountCreate
 });
-router.get('/user/:id', function (req, res) {
+router.get('/:id', function (req, res) {
     //RequestAccountData
     res.send(data[req.params.user])
 });
-router.put('/user/:id', function (req, res) {
+router.put('/:id', function (req, res) {
     //UpdateAccount
 });
-router.delete('/user/:id', function (req, res) {
+router.delete('/:id', function (req, res) {
     //RequestAccountDelete
 });
-router.put('/user/admin/ban', function (req, res) {
+router.put('/admin/ban', function (req, res) {
     //RequestBanUser
 });
-router.put('/user/admin/flag', function (req, res) {
+router.put('/admin/flag', function (req, res) {
     //RequestFlagUser
 });
-router.get('/user/admin/flag', function (req, res) {
+router.get('/admin/flag', function (req, res) {
     //RequestAllFlagged
+});
+router.get('/:id/posts', function (req, res) {
+    //Get the posts a user have created
+    res.status(200).send();
 });
 
 module.exports = router;
