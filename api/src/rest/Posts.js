@@ -19,7 +19,7 @@ router.get('/:pid', function (req, res, next) {
 
 router.get('/:pid/comments', function (req, res, next) {
     //Get a post using its id
-    res.json(TEST_COMMENTS[0]);
+    res.json(TEST_COMMENTS);
 });
 
 router.put('/:pid', function (req, res) {

@@ -14,7 +14,7 @@ import Col from 'react-bootstrap/Col'
 import Alert from "react-bootstrap/esm/Alert";
 import Spinner from "react-bootstrap/esm/Spinner";
 
-import bsCustomFileInput from 'bs-custom-file-input'
+import '../App.css';
 
 
 // Used on the frontpage for posts overview
@@ -70,7 +70,6 @@ class PostPage extends Component {
         //    return <CommentRow key={comment.comment_id} data={comment}/>
         //})
 
-        const comments = []
         const post = this.props.location.state
         return <Container>
             <Card border="primary" style={{ width: '100%', marginTop: '10px' }}>
@@ -83,20 +82,22 @@ class PostPage extends Component {
                     <Card.Footer>{post.tags}</Card.Footer>
                 </Card.Body>
             </Card>
-            
-            <Get url="/api/post">
+
+            <Get url={`/api/post/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
                 if(error) {
-                    return (<div class="text-center">
+                    return (<div>
                         <Alert variant='danger'>{error.message}</Alert>
                         <Button onClick={() => makeRequest({ params: { reload: true } })}>Retry</Button>
                     </div>)
                 }
                 else if(isLoading) {
-                    return (<Spinner animation="grow" variant="primary" />)
+                    return (<div class="spinner-center">
+                        <Spinner class="spinner-center" animation="grow" variant="primary" />
+                    </div>)
                 }
                 else if(response !== null) {
-                    return (response.data.map(post => <PostListingEntry key={post.post_id} data={post}/>))
+                    return (response.data.map(comment => <CommentRow key={comment.comment_id} data={comment}/>))
                 }
                 return (<div>Default message before request is made.</div>)
             }}

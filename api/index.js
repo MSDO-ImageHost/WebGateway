@@ -33,7 +33,7 @@ app.use(function timeLog(req, res, next) {
 });
 
 // Artificial response delay
-//app.use((res, req, next) => {for (let i = 0; i < 2000000000; i++) {}; next()})
+app.use((res, req, next) => {for (let i = 0; i < 2000000000; i++) {}; next()})
 
 
 // Use required API routes

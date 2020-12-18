@@ -12,6 +12,8 @@ import Button from "react-bootstrap/esm/Button";
 import Alert from "react-bootstrap/esm/Alert";
 import Spinner from "react-bootstrap/esm/Spinner";
 
+import '../App.css';
+
 
 class Frontpage extends Component{
 
@@ -20,13 +22,16 @@ class Frontpage extends Component{
             <Get url="/api/post">
             {(error, response, isLoading, makeRequest) => {
                 if(error) {
-                    return (<div class="text-center">
+                    return (<div>
                         <Alert variant='danger'>{error.message}</Alert>
                         <Button onClick={() => makeRequest({ params: { reload: true } })}>Retry</Button>
                     </div>)
                 }
                 else if(isLoading) {
-                    return (<Spinner animation="grow" variant="primary" />)
+                    return (<div class="spinner-center">
+                            <Spinner class="spinner-center" animation="grow" variant="primary" />
+                        </div>
+                    )
                 }
                 else if(response !== null) {
                     return (response.data.map(post => <PostListingEntry key={post.post_id} data={post}/>))
