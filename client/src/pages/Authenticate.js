@@ -45,20 +45,13 @@ class Signup extends Component {
         event.preventDefault();
         const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries())
 
-        console.log(formDataObj)
-
-        const response = fetch('/api/login', {
+        fetch('/api/login', {
             method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: formDataObj
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formDataObj)
         })
-        console.log(formDataObj)
-
-        response
-            .then(console.log)
-            .catch(console.log)
-            .finally(console.log)
     }
 
     render() {

@@ -9,7 +9,6 @@ const cookieParser = require("cookie-parser");
 const Authentication = require("./src/rest/Authentication.js");
 const Accounts = require("./src/rest/Accounts.js");
 const Posts = require("./src/rest/Posts.js");
-const bodyParser = require('body-parser')
 
 const app = express();
 const amqpURI = process.env.AMQP_URI;
@@ -21,14 +20,18 @@ amqpClient.createClient({ url: amqpURI })
         amqpChannel = ch;
     });
 
+// Middleware parsers
 app.use(cookieParser());
-app.use(express.text());
+app.use(express.json());
+
+
+// Custom middleware
 app.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now());
     console.log(`${req.method} ${req.baseUrl}${req.path}`);
-    console.log(req.body);
     next();
 });
+
 
 // Use required API routes
 app.use('/api/login', Authentication);

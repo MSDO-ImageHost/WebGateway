@@ -8,8 +8,7 @@ const router = express.Router();
 router.post('', function (req, res) {
     // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
     const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
-    console.log(req.body)
-    res.json({token});
+    res.status(201).json({token});
 });
 
 // Updates a users password
