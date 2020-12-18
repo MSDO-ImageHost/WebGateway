@@ -6,6 +6,10 @@ const router = express.Router();
 
 // Creates a JWT for an a existing user (login)
 router.post('', function (req, res) {
+
+    // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
+    // Email and password is validated on frontend
+
     // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
     const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
     res.status(201).json({token});

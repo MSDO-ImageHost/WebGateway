@@ -9,10 +9,22 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 class Login extends Component{
+
+    postLoginForm(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries())
+
+        fetch('/api/login', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formDataObj)
+        })
+    }
+
     render() {
         return <Container fluid="md">
             <h1>Enter credentials to login</h1>
-            <Form >
+            <Form onSubmit={this.postLoginForm}>
                 {/* Username */}
                 <Form.Group as={Row} controlId="signinFormUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
@@ -41,15 +53,17 @@ class Login extends Component{
 
 class Signup extends Component {
 
-    handleSignup = (event) => {
+    postSignupForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries())
 
+        if (formDataObj.password !== formDataObj.password_confirmation) {
+            return alert("Passwords do not match")
+        }
+
         fetch('/api/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formDataObj)
         })
     }
@@ -57,7 +71,7 @@ class Signup extends Component {
     render() {
         return <Container fluid="md">
             <h1>Please give us your details</h1>
-            <Form onSubmit={this.handleSignup}>
+            <Form onSubmit={this.postSignupForm}>
                 {/* Username */}
                 <Form.Group as={Row} controlId="signupFormUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
@@ -75,12 +89,23 @@ class Signup extends Component {
                     <Form.Label column sm={2}>Password</Form.Label>
                         <Col>
                             <Form.Group controlId="signupFormPassword">
-                                <Form.Control type="password" placeholder="Password" required/>
+                                <Form.Control
+                                    name="password"
+                                    type="password"
+                                    placeholder="Password"
+                                    required
+                                />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group controlId="signupFormPasswordConfirm">
-                                <Form.Control name="password" type="password" placeholder="Type password again" required/>
+                                <Form.Control
+                                    name="password_confirmation"
+                                    type="password"
+                                    placeholder="Type password again"
+                                    message="test"
+                                    required
+                                />
                             </Form.Group>
                         </Col>
                 </Form.Group>
