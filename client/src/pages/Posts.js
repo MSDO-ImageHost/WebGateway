@@ -1,5 +1,9 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
+
+// Application components
+import '../App.css';
+import { CommentRow, NewCommentForm } from './Comments';
 
 // Server communication
 import { Get } from 'react-axios'
@@ -14,7 +18,6 @@ import Col from 'react-bootstrap/Col'
 import Alert from "react-bootstrap/esm/Alert";
 import Spinner from "react-bootstrap/esm/Spinner";
 
-import '../App.css';
 
 
 // Used on the frontpage for posts overview
@@ -33,7 +36,6 @@ class PostListingEntry extends Component {
         </Card>
     }
 }
-
 class NewPostPage extends Component {
     render() {
         return <Container fluid="md">
@@ -63,13 +65,8 @@ class NewPostPage extends Component {
 }
 
 
-
 class PostPage extends Component {
     render() {
-        //const comments = TEST_COMMENTS.map(comment => {
-        //    return <CommentRow key={comment.comment_id} data={comment}/>
-        //})
-
         const post = this.props.location.state
         return <Container>
             <Card border="primary" style={{ width: '100%', marginTop: '10px' }}>
@@ -92,8 +89,8 @@ class PostPage extends Component {
                     </div>)
                 }
                 else if(isLoading) {
-                    return (<div class="spinner-center">
-                        <Spinner class="spinner-center" animation="grow" variant="primary" />
+                    return (<div className="spinner-center">
+                        <Spinner animation="grow" variant="primary" />
                     </div>)
                 }
                 else if(response !== null) {
@@ -102,27 +99,11 @@ class PostPage extends Component {
                 return (<div>Default message before request is made.</div>)
             }}
             </Get>
+
+            <NewCommentForm post_id={post.post_id}/>
         </Container>
     }
 }
 
-class CommentRow extends Component {
-    render() {
-        const comment = this.props.data
-        return <Card border="primary" style={{ width: '100%', marginTop: '10px' }}>
-            <Card.Body>
-                <Card.Text>{comment.content}</Card.Text>
-            </Card.Body>
-        </Card>
-    }
-}
 
-
-
-
-
-export {
-    PostPage,
-    PostListingEntry,
-    NewPostPage
-}
+export { PostPage, PostListingEntry, NewPostPage }

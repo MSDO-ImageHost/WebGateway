@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 
 // Auth
@@ -68,16 +68,22 @@ class Signup extends Component {
 
     postSignupForm(event) {
         event.preventDefault();
-        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries())
 
-        if (formDataObj.password !== formDataObj.password_confirmation) {
+        formData = {
+            username: event.target.signupFormUsername.value,
+            email: event.target.signupFormEmail.value,
+            password: event.target.signupFormPassword.value
+        }
+
+        // Validate passwords
+        if (event.target.signupFormPassword.value !== event.target.signupFormPasswordConfirm.value) {
             return alert("Passwords do not match")
         }
 
         fetch('/api/user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formDataObj)
+            body: JSON.stringify(formData)
         }).then(res => res.json()).then(data => console.log(data))
 
         return <Redirect to={'/'} />
@@ -90,13 +96,13 @@ class Signup extends Component {
                 {/* Username */}
                 <Form.Group as={Row} controlId="signupFormUsername">
                     <Form.Label column sm={2}>Nickname</Form.Label>
-                    <Col sm={10}><Form.Control name="username" type="text" placeholder="Enter nickname" required/></Col>
+                    <Col sm={10}><Form.Control type="text" placeholder="Enter nickname" required/></Col>
                 </Form.Group>
 
                 {/* Email */}
                 <Form.Group as={Row} controlId="signupFormEmail">
                     <Form.Label column sm={2}>Email</Form.Label>
-                    <Col sm={10}><Form.Control name="email" type="email" placeholder="Email" required/></Col>
+                    <Col sm={10}><Form.Control type="email" placeholder="Email" required/></Col>
                 </Form.Group>
 
                 {/* Passwords */}
@@ -105,7 +111,6 @@ class Signup extends Component {
                         <Col>
                             <Form.Group controlId="signupFormPassword">
                                 <Form.Control
-                                    name="password"
                                     type="password"
                                     placeholder="Password"
                                     required
@@ -115,7 +120,6 @@ class Signup extends Component {
                         <Col>
                             <Form.Group controlId="signupFormPasswordConfirm">
                                 <Form.Control
-                                    name="password_confirmation"
                                     type="password"
                                     placeholder="Type password again"
                                     message="test"
@@ -129,9 +133,6 @@ class Signup extends Component {
         </Container>
     }
 }
-
-
-
 
 
 

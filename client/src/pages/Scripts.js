@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 class ScriptsPage extends Component{
@@ -8,6 +8,4 @@ class ScriptsPage extends Component{
 }
 
 
-export {
-    ScriptsPage
-}
+export { ScriptsPage }

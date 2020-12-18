@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 // App components
 import { PostListingEntry } from './Posts';
@@ -28,8 +28,8 @@ class Frontpage extends Component{
                     </div>)
                 }
                 else if(isLoading) {
-                    return (<div class="spinner-center">
-                            <Spinner class="spinner-center" animation="grow" variant="primary" />
+                    return (<div className="spinner-center">
+                            <Spinner animation="grow" variant="primary" />
                         </div>
                     )
                 }
@@ -41,6 +41,6 @@ class Frontpage extends Component{
             </Get>
         </Container>
     }
-}
+};
 
-export default Frontpage;
+export { Frontpage }

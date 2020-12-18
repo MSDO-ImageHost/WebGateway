@@ -6,10 +6,10 @@ import './App.css';
 import { AuthProvider } from 'react-auth-kit'
 
 // Application pages
-import Frontpage from "./pages/Frontpage";
-import Account from "./pages/Account";
+import { Frontpage } from "./pages/Frontpage";
+import { Account } from "./pages/Account";
 import { NewPostPage, PostPage } from "./pages/Posts";
-import Users from "./pages/Users";
+import { Users } from "./pages/Users";
 import { ScriptsPage } from "./pages/Scripts";
 import { Login, Signup } from "./pages/Authenticate";
 
