@@ -3,6 +3,7 @@ const path = require("path");
 const amqpClient = require("./src/amqp/AmqpClient");
 const passport = require("passport");
 const jwtStrategy = require("passport-jwt");
+const cookieParser = require("cookie-parser");
 
 // API routes
 const Authentication = require("./src/rest/Authentication.js");
@@ -12,7 +13,6 @@ const Posts = require("./src/rest/Posts.js");
 const app = express();
 const amqpURI = process.env.AMQP_URI;
 
-
 let amqpChannel;
 amqpClient.createClient({ url: amqpURI })
     .then(ch => {
@@ -20,17 +20,20 @@ amqpClient.createClient({ url: amqpURI })
         amqpChannel = ch;
     });
 
-
-// Use required API routes
-app.use('/api/auth', Authentication);
-app.use('/api/user', Accounts);
-app.use('/api/post', Posts);
+app.use(cookieParser());
+app.use(express.json());
 
 app.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now());
     console.log(`${req.method} ${req.baseUrl}${req.path} Triggered`);
     next();
 });
+
+// Use required API routes
+app.use('/api/login', Authentication);
+app.use('/api/user', Accounts);
+app.use('/api/post', Posts);
+
 
 app.get('/ping', function(req, res) {
     amqpClient.sendMessage(amqpChannel, '{"message": "Ping"}', 'ping')

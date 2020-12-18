@@ -1,27 +1,27 @@
 const TEST_COMMENTS = [
     {
-       comment_id:1,
-       post_id:5,
-       created_at:"2020-12-16 19:35:55",
-       content:"im another one"
+        comment_id: 1,
+        post_id: 5,
+        created_at: "2020-12-16 19:35:55",
+        content: "im another one"
     },
     {
-       comment_id:2,
-       post_id:5,
-       created_at:"2020-12-16 19:35:59",
-       content:"im another one"
+        comment_id: 2,
+        post_id: 5,
+        created_at: "2020-12-16 19:35:59",
+        content: "im another one"
     },
     {
-       comment_id:3,
-       post_id:5,
-       created_at:"2020-12-16 19:36:14",
-       content:"imma fking yeet"
+        comment_id: 3,
+        post_id: 5,
+        created_at: "2020-12-16 19:36:14",
+        content: "imma fking yeet"
     },
     {
-       comment_id:4,
-       post_id:5,
-       created_at:"2020-12-16 19:38:54",
-       content:"imma fking yeet"
+        comment_id: 4,
+        post_id: 5,
+        created_at: "2020-12-16 19:38:54",
+        content: "imma fking yeet"
     }
 ];
 
@@ -64,4 +64,18 @@ const TEST_POSTS = [
     }
 ];
 
-module.exports = { TEST_POSTS, TEST_COMMENTS };
+const jwt = require("jwt-simple");
+
+const JWT_SECRET = "testSecret";
+
+const JWT_ENCODE = (payload) => {
+    payload.iat = Date.now();
+    payload.exp = Date.UTC(2021, 0, 23);
+    return jwt.encode(payload, JWT_SECRET);
+};
+
+const JWT_DECODE = (token) => {
+    return jwt.decode(token, JWT_SECRET)
+};
+
+module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE};

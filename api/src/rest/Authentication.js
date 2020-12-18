@@ -1,39 +1,27 @@
+const {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
+
 const express = require("express");
 const router = express.Router();
 
 
-const test_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0MDMyMDAsImlhdCI6MTY2NTQwMzIwMCwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsInJvbGUiOjAsInN1YiI6IjEyIn0.0KKTtjDmMjQ9uRryM5LGGYK5Ko_sDsuCH_PqSIPrD2I";
-
-
-// middleware that is specific to this router
-router.use(function timeLog(req, res, next) {
-    console.log('Time: ', Date.now());
-    console.log(`${req.method} ${req.baseUrl}${req.path} Triggered`)
-    next();
+// Creates a JWT for an a existing user (login)
+router.post('', function (req, res) {
+    // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
+    const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
+    res.json({token});
 });
-
-
-// Creates a new user (signup)
-router.post('/login', function (req, res) {
-    console.log("here")
-    res.status(200).redirect('/')
-});
-
-
-// Signs in a existing user
-router.get('/login', function (req, res) {
-});
-
 
 // Updates a users password
-router.put('/login', function (req, res) {
+router.put('', function (req, res) {
     //RequestAccountPasswordUpdate
+    res.status(200).send();
 });
 
 
 // Terminates a users login session
-router.delete('/login', function (req, res) {
+router.delete('', function (req, res) {
     //invalidate token
+    res.status(200).send();
 });
 
 
