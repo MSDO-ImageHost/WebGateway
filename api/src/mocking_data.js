@@ -1,3 +1,8 @@
+
+const jwt = require("jwt-simple");
+const JWT_SECRET = "testSecret";
+
+
 const TEST_COMMENTS = [
     {
         comment_id: 1,
@@ -64,10 +69,6 @@ const TEST_POSTS = [
     }
 ];
 
-const jwt = require("jwt-simple");
-
-const JWT_SECRET = "testSecret";
-
 const JWT_ENCODE = (payload) => {
     payload.iat = Date.now();
     payload.exp = Date.UTC(2021, 0, 23);
@@ -78,4 +79,25 @@ const JWT_DECODE = (token) => {
     return jwt.decode(token, JWT_SECRET)
 };
 
-module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE};
+
+const ADD_POST = (newPostData) => {
+    TEST_POSTS.push({
+        post_id: Date.now(),
+        author_id: newPostData.author_id,
+        created_at: Date.now(),
+        header: {
+            author_id: newPostData.author_id,
+            created_at: Date.now(),
+            data: newPostData.header,
+        },
+        body: {
+            author_id: newPostData.author_id,
+            created_at: Date.now(),
+            data: newPostData.body,
+        },
+        tags: newPostData.tags,
+        image_url: newPostData.image_data,
+    })
+}
+
+module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST};

@@ -7,6 +7,8 @@ import App from './App.js';
 
 render((
     <BrowserRouter>
+    {/* <React.StrictMode> */}
         <App/>
+    {/* </React.StrictMode> */}
     </BrowserRouter>
 ), document.getElementById('root'));

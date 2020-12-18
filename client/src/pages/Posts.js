@@ -37,17 +37,35 @@ class PostListingEntry extends Component {
     }
 }
 class NewPostPage extends Component {
+
+    postNewPostForm(event) {
+        event.preventDefault();
+
+        const formData = {
+            header: event.target.newPostTitle.value,
+            body: event.target.newPostContent.value,
+            image_data: null,
+            tags: []
+        }
+
+        fetch('/api/post', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData)
+        }).then(res => res.json()).then(data => console.log(data))
+    }
+
     render() {
         return <Container fluid="md">
             <h1>Create new post</h1>
-            <Form >
-                {/* Username */}
+            <Form onSubmit={this.postNewPostForm}>
+                {/* Title */}
                 <Form.Group as={Row} controlId="newPostTitle">
                     <Form.Label column sm={2}>Title</Form.Label>
                     <Col sm={10}><Form.Control type="text" placeholder="Title of the post" /></Col>
                 </Form.Group>
 
-                {/* Email */}
+                {/* Content */}
                 <Form.Group as={Row} controlId="newPostContent">
                     <Form.Label column sm={2}>Content</Form.Label>
                     <Col sm={10}><Form.Control as="textarea"  placeholder="Post content" /></Col>
@@ -56,7 +74,7 @@ class NewPostPage extends Component {
                 {/* Image upload */}
                 <Form.Group as={Row} controlId="newPostImage">
                     <Form.Label column sm={2}>Image</Form.Label>
-                    <Col sm={10}><Form.File id="custom-file"label="Custom file input"custom /></Col>
+                    <Col sm={10}><Form.File label="Custom file input" custom/></Col>
                 </Form.Group>
                 <Button variant="primary" type="submit" style={{float: 'right'}}>Create</Button>
             </Form>
@@ -66,6 +84,7 @@ class NewPostPage extends Component {
 
 
 class PostPage extends Component {
+
     render() {
         const post = this.props.location.state
         return <Container>

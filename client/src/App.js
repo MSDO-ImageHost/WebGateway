@@ -4,6 +4,7 @@ import './App.css';
 
 // Auth
 import { AuthProvider } from 'react-auth-kit'
+import { PrivateRoute } from 'react-auth-kit'
 
 // Application pages
 import { Frontpage } from "./pages/Frontpage";
@@ -40,14 +41,17 @@ class App extends Component {
             </Navbar.Collapse>
           </Navbar>
           <Switch>
+            {/* Public routes */}
             <Route exact path='/' component={Frontpage}/>
             <Route path='/post' component={PostPage}/>
-            <Route path='/createpost' component={NewPostPage}/>
-            <Route path='/account' component={Account}/>
             <Route path='/users' component={Users}/>
-            <Route path='/scripts' component={ScriptsPage}/>
             <Route path='/login' component={Login}/>
             <Route path='/signup' component={Signup}/>
+
+            {/* Controlled routes */}
+            <PrivateRoute path='/account' component={Account} loginPath={'/login'} exact/>
+            <PrivateRoute path='/createpost' component={NewPostPage} loginPath={'/login'}/>
+            <PrivateRoute path='/scripts' component={ScriptsPage} loginPath={'/login'}/>
           </Switch>
         </div>
       </Router>

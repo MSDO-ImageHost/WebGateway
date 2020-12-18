@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 
 // Auth
-import { withSignIn } from 'react-auth-kit'
+import { useIsAuthenticated, useSignIn } from 'react-auth-kit'
 
 // Bootstrap
 import Form from 'react-bootstrap/Form';
@@ -69,7 +69,7 @@ class Signup extends Component {
     postSignupForm(event) {
         event.preventDefault();
 
-        formData = {
+        const formData = {
             username: event.target.signupFormUsername.value,
             email: event.target.signupFormEmail.value,
             password: event.target.signupFormPassword.value

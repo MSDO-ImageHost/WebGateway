@@ -28,6 +28,7 @@ class CommentRow extends Component {
 
 class NewCommentForm extends Component {
 
+
     renderResponse(error, response, isLoading) {
         if(error) {
           return (<div>Something bad happened: {error.message}</div>)
