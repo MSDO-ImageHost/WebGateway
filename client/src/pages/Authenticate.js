@@ -47,12 +47,13 @@ class Signup extends Component {
 
         console.log(formDataObj)
 
-        const response = fetch('http://localhost:5000/api/auth/login', {
+        const response = fetch('/api/login', {
             method: 'POST',
             mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formDataObj)
+            body: formDataObj
         })
+        console.log(formDataObj)
 
         response
             .then(console.log)
