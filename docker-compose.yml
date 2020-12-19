@@ -86,7 +86,7 @@ services:
       - AMQP_USER=${RABBIT_USER}
       - AMQP_PASS=${RABBIT_PASS}
       - AMQP_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672
-      - MYSQL_PASSWORD=${MYSQ_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     networks:
       - rabbit-network
       - auth-network
@@ -102,7 +102,7 @@ services:
       - auth-db-data:/var/lib/mysql
       - ./.compose-service-files/auth-init.sql:/data/application/init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQ_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=authentication
     networks:
       - auth-network

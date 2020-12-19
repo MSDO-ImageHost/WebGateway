@@ -13,12 +13,7 @@ const Posts = require("./src/rest/Posts.js");
 const app = express();
 const amqpURI = process.env.AMQP_URI;
 
-let amqpChannel;
-amqpClient.createClient({ url: amqpURI })
-    .then(ch => {
-    // channel is kept for later use
-        amqpChannel = ch;
-    });
+amqpClient.createClient({ url: amqpURI });
 
 // Middleware parsers
 app.use(cookieParser());
@@ -43,7 +38,7 @@ app.use('/api/post', Posts);
 
 
 app.get('/ping', function(req, res) {
-    amqpClient.sendMessage(amqpChannel, '{"message": "Ping"}', 'ping')
+    amqpClient.sendMessage('{"message": "Ping"}', 'ping')
         .then(msg => {
             const result = JSON.parse(msg.toString());
             console.log("Received " + msg.toString());
