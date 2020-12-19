@@ -1,7 +1,7 @@
 const {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
 const express = require("express");
-const validJWT = require("../validJWT");
+const validJWT = require("../jwtAuth");
 
 const router = express.Router();
 

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const {validJWT, maybeJWT} = require("../jwtAuth");
 
 const {JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
@@ -27,7 +28,7 @@ const data = [{
     last_login: "2020-12-15T13:16:36.080",
 }];
 
-router.get('/', function (req, res) {
+router.get('/', maybeJWT, function (req, res) {
     res.json(data)
 });
 
@@ -41,26 +42,26 @@ router.post('/', function (req, res) {
     res.status(201).json({token});
 });
 
-router.get('/:id', function (req, res) {
+router.get('/:id', maybeJWT, function (req, res) {
     //RequestAccountData
     res.send(data[req.params.user])
 });
-router.put('/:id', function (req, res) {
+router.put('/:id', validJWT, function (req, res) {
     //UpdateAccount
 });
-router.delete('/:id', function (req, res) {
+router.delete('/:id', validJWT, function (req, res) {
     //RequestAccountDelete
 });
-router.put('/admin/ban', function (req, res) {
+router.put('/admin/ban', validJWT, function (req, res) {
     //RequestBanUser
 });
-router.put('/admin/flag', function (req, res) {
+router.put('/admin/flag', validJWT, function (req, res) {
     //RequestFlagUser
 });
-router.get('/admin/flag', function (req, res) {
+router.get('/admin/flag', validJWT, function (req, res) {
     //RequestAllFlagged
 });
-router.get('/:id/posts', function (req, res) {
+router.get('/:id/posts', maybeJWT, function (req, res) {
     //Get the posts a user have created
     res.status(200).send();
 });

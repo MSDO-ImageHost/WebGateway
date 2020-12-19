@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/post/:pid/likes/:userid', function (req, res) {
     //RequestLikeStatus
 });
-router.put('/post/:pid/likes/:userid', function (req, res) {
+router.put('/post/:pid/likes/:userid', validJWT, function (req, res) {
     //UpdateLike
 });
 router.get('/post/:pid/likes', function (req, res) {
