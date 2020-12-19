@@ -11,8 +11,9 @@ router.post('', function (req, res) {
     // Request body contains this: `{username:<String>, password:<String>}`
 
     // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
-    const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
-    res.cookie('jwt', token).status(200).json({token});
+    const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
+    const authUser = {name:"John Doe", email:"johndoe@example.org", role:0}
+    res/*.cookie('jwt', token)*/.status(200).json({token, user:authUser});
 });
 
 // Updates a users password
