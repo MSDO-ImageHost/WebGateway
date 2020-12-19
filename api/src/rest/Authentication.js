@@ -1,7 +1,7 @@
 const {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
 const express = require("express");
-const validJWT = require("../jwtAuth");
+const {validJWT, maybeJWT} = require("../jwtAuth");
 
 const router = express.Router();
 
@@ -12,14 +12,14 @@ router.post('', function (req, res) {
 
     // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
     const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
-    res.status(200).json({token});
+    res.cookie('jwt', token).status(200).json({token});
 });
 
 // Updates a users password
 router.get('', validJWT, function (req, res) {
     //RequestAccountPasswordUpdate
     res.json({
-        token: req.header('Authorization').split(" ")[1],
+        token: req.jwt,
         claims: req.claims
     });
 });
