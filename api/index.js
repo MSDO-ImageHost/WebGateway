@@ -1,10 +1,6 @@
 const express = require("express");
-const path = require("path");
 const amqpClient = require("./src/amqp/AmqpClient");
-const passport = require("passport");
-const jwtStrategy = require("passport-jwt");
 const cookieParser = require("cookie-parser");
-const awtAuth = require("./src/awtAuth");
 
 // API routes
 const Authentication = require("./src/rest/Authentication.js");
@@ -24,7 +20,6 @@ amqpClient.createClient({ url: amqpURI })
 // Middleware parsers
 app.use(cookieParser());
 app.use(express.json());
-app.use(awtAuth.initialize());
 
 // Custom middleware
 app.use(function timeLog(req, res, next) {
@@ -41,7 +36,6 @@ app.use((res, req, next) => {for (let i = 0; i < 2000000000; i++) {}; next()})
 app.use('/api/login', Authentication);
 app.use('/api/user', Accounts);
 app.use('/api/post', Posts);
-
 
 app.get('/ping', function(req, res) {
     amqpClient.sendMessage(amqpChannel, '{"message": "Ping"}', 'ping')

@@ -1,8 +1,9 @@
 const {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
 const express = require("express");
-const router = express.Router();
+const validJWT = require("../validJWT");
 
+const router = express.Router();
 
 // Creates a JWT for an a existing user (login)
 router.post('', function (req, res) {
@@ -15,14 +16,23 @@ router.post('', function (req, res) {
 });
 
 // Updates a users password
-router.put('', function (req, res) {
+router.get('', validJWT, function (req, res) {
+    //RequestAccountPasswordUpdate
+    res.json({
+        token: req.header('Authorization').split(" ")[1],
+        claims: req.claims
+    });
+});
+
+// Updates a users password
+router.put('', validJWT, function (req, res) {
     //RequestAccountPasswordUpdate
     res.status(200).send();
 });
 
 
 // Terminates a users login session
-router.delete('', function (req, res) {
+router.delete('', validJWT, function (req, res) {
     //invalidate token
     res.status(200).send();
 });

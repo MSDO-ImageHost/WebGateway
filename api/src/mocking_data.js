@@ -1,7 +1,5 @@
-
 const jwt = require("jwt-simple");
-const JWT_SECRET = "testSecret";
-
+const JWT_SECRET = "secret";
 
 const TEST_COMMENTS = [
     {
@@ -76,6 +74,7 @@ const JWT_ENCODE = (payload) => {
 };
 
 const JWT_DECODE = (token) => {
+    //TODO Check the JWT is actually valid
     return jwt.decode(token, JWT_SECRET)
 };
 
