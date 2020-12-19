@@ -46,7 +46,7 @@ paths:
       responses:
         default:
           description: Default response
-  /login:
+  /:
     get:
       summary: Gets the login token
       description: |-
@@ -62,16 +62,6 @@ paths:
       description: It invalidates the jwt such that it can no longer be used to login.
       parameters: []
       operationId: deleteLogin
-      responses:
-        default:
-          description: Default response
-    x-temp:
-      summary: Creates a user which can be used to log in
-      description: |-
-        Sends the event RequestAccountCreate.
-        Gets the event ConfirmAccountCreation in reponse.
-      parameters: []
-      operationId: putLogin
       responses:
         default:
           description: Default response
@@ -242,8 +232,8 @@ paths:
       responses:
         default:
           description: Default response
-  /user/admin/ban:
-    x-temp:
+  /user/admin:
+    put:
       summary: Update role of a user
       description: |-
         Can only be done by a admin user who is logged in.
@@ -254,6 +244,7 @@ paths:
       responses:
         default:
           description: Default response
+  /user/admin/ban:
     put:
       summary: Ban a user
       description: |-
@@ -372,14 +363,6 @@ paths:
         default:
           description: Default response
   '/tag/{tid}':
-    x-temp:
-      summary: ''
-      description: ''
-      parameters: []
-      operationId: ''
-      responses:
-        default:
-          description: Default response
     put:
       summary: Update a tag using its id.
       description: |-
