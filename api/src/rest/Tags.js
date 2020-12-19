@@ -1,6 +1,8 @@
 const express = require("express");
+const {validJWT, maybeJWT} = require("../jwtAuth");
 
 const router = express.Router();
+
 
 router.post('/tag', validJWT, function (req, res) {
     //CreateTag

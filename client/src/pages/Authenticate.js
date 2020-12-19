@@ -2,7 +2,10 @@ import { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 
 // Auth
-import { useIsAuthenticated, useSignIn } from 'react-auth-kit'
+import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
+
+// Server communication
+import axios from 'axios';
 
 // Bootstrap
 import Form from 'react-bootstrap/Form';
@@ -80,13 +83,19 @@ class Signup extends Component {
             return alert("Passwords do not match")
         }
 
-        fetch('/api/user', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formData)
-        }).then(res => res.json()).then(data => console.log(data))
+        axios.post('/api/auth', formData).then((res) => {
+            console.log(res)
+            if(res.status !== 200) {
+                return alert("Oh noooo")
+            }
 
-        return <Redirect to={'/'} />
+            useSignIn()({
+                token: res.data.token,
+                expiresIn: res.data.expiresIn,
+                tokenType: "Bearer",
+                authState: res.data.authUserState
+            })
+        })
     }
 
     render() {

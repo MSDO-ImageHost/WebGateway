@@ -1,22 +1,25 @@
 import { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
+
+// Auth
+import { useAuthUser, useSignOut } from 'react-auth-kit'
+
 
 // Application components
 import '../App.css';
 import { CommentRow, NewCommentForm } from './Comments';
 
 // Server communication
-import { Get } from 'react-axios'
+import { Get } from 'react-axios';
+import { APIStatusRenderings } from '../helpers/APIStatusRenderings';
 
 // Bootstrap
-import Card from 'react-bootstrap/Card'
-import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/esm/Container";
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Alert from "react-bootstrap/esm/Alert";
-import Spinner from "react-bootstrap/esm/Spinner";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 
 
@@ -48,7 +51,7 @@ class NewPostPage extends Component {
             tags: []
         }
 
-        fetch('/api/post', {
+        fetch('/api/posts', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formData)
@@ -94,24 +97,15 @@ class PostPage extends Component {
                     <Card.Subtitle>{post.header.author_id}</Card.Subtitle>
                     <Card.Img variant="top" src={post.image_url} />
                     <Card.Text>{post.body.data}</Card.Text>
-                    <Link to={{pathname: `/post/${post.post_id}`, state: post}}><Button variant="primary">Open post</Button></Link>
+                    <Link to={{pathname: `/posts/${post.post_id}`, state: post}}><Button variant="primary">Open post</Button></Link>
                     <Card.Footer>{post.tags}</Card.Footer>
                 </Card.Body>
             </Card>
 
-            <Get url={`/api/post/${post.post_id}/comments`}>
+            <Get url={`/api/posts/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
-                if(error) {
-                    return (<div>
-                        <Alert variant='danger'>{error.message}</Alert>
-                        <Button onClick={() => makeRequest({ params: { reload: true } })}>Retry</Button>
-                    </div>)
-                }
-                else if(isLoading) {
-                    return (<div className="spinner-center">
-                        <Spinner animation="grow" variant="primary" />
-                    </div>)
-                }
+                if(error || isLoading) return APIStatusRenderings.intermediateStatusRendering(error, isLoading)
+
                 else if(response !== null) {
                     return (response.data.map(comment => <CommentRow key={comment.comment_id} data={comment}/>))
                 }

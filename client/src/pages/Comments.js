@@ -1,17 +1,19 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+// App components
+import '../App.css';
+
 // Server communication
-import { Post } from 'react-axios'
+import { Post } from 'react-axios';
 
 // Bootstrap
-import Card from 'react-bootstrap/Card'
-import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-import '../App.css';
 
 
 class CommentRow extends Component {

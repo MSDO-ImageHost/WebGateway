@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './App.css';
 
 // Auth
-import { AuthProvider } from 'react-auth-kit'
-import { PrivateRoute } from 'react-auth-kit'
+import { AuthProvider, PrivateRoute } from 'react-auth-kit'
 
 // Application pages
 import { Frontpage } from "./pages/Frontpage";
@@ -22,11 +21,9 @@ import Button from 'react-bootstrap/Button';
 class App extends Component {
   render() {
     return <AuthProvider authStorageType = {'cookie'}
-      authStorageName={'_auth_t'}
+      authStorageName={'jwt'}
       authTimeStorageName={'_auth_time'}
-      stateStorageName={'_auth_state'}
-      cookieDomain={window.location.hostname}
-      cookieSecure={window.location.protocol === "https:"}>
+      stateStorageName={'_auth_state'}>
 
       <Router>
         <div>
