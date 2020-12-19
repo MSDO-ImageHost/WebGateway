@@ -100,4 +100,4 @@ const ADD_POST = (newPostData) => {
     })
 }
 
-module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST};
+module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET};

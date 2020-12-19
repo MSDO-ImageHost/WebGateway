@@ -4,6 +4,7 @@ const amqpClient = require("./src/amqp/AmqpClient");
 const passport = require("passport");
 const jwtStrategy = require("passport-jwt");
 const cookieParser = require("cookie-parser");
+const awtAuth = require("./src/awtAuth");
 
 // API routes
 const Authentication = require("./src/rest/Authentication.js");
@@ -23,7 +24,7 @@ amqpClient.createClient({ url: amqpURI })
 // Middleware parsers
 app.use(cookieParser());
 app.use(express.json());
-
+app.use(awtAuth.initialize());
 
 // Custom middleware
 app.use(function timeLog(req, res, next) {
