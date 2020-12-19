@@ -11,7 +11,7 @@ function validJWT(req, res, next) {
         console.log("Received jwt: " + jwt);
         //Verify JWT here
         let payload = JWT_DECODE(jwt);
-        console.log("Received jwt payload: " + payload);
+        console.log("Received jwt payload: " + JSON.stringify(payload));
         req.jwt = jwt;
         req.claims = payload;
         next();
@@ -32,7 +32,7 @@ function maybeJWT(req, res, next) {
         console.log("Received jwt: " + jwt);
         //Verify JWT here
         let payload = JWT_DECODE(jwt);
-        console.log("Received jwt payload: " + payload);
+        console.log("Received jwt payload: " + JSON.stringify(payload));
         req.jwt = jwt;
         req.claims = payload;
         next();
