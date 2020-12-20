@@ -2,6 +2,9 @@ const express = require("express");
 const amqpClient = require("./src/amqp/AmqpClient");
 const cookieParser = require("cookie-parser");
 
+const amqpURI = process.env.AMQP_URI;
+amqpClient.createChannel(amqpURI);
+
 // API routers
 const Authentication = require("./src/rest/Authentication.js");
 const Accounts = require("./src/rest/Accounts.js");
@@ -9,12 +12,10 @@ const Posts = require("./src/rest/Posts.js");
 const Scripts = require("./src/rest/UserScripts.js");
 const ImageStorage = require("./src/rest/ImageStorage.js");
 const Tags = require("./src/rest/Tags.js");
-
+const Likes = require("./src/rest/Likes.js");
+const Comments = require("./src/rest/Comments.js");
 
 const app = express();
-const amqpURI = process.env.AMQP_URI;
-
-amqpClient.createChannel(amqpURI);
 
 // Middleware parsers
 app.use(cookieParser());
@@ -27,9 +28,6 @@ app.use(function timeLog(req, res, next) {
     next();
 });
 
-// Artificial response delay
-app.use((res, req, next) => {for (let i = 0; i < 2000000000; i++) {}; next()})
-
 
 // Use required API routes
 app.use('/api/login', Authentication);
@@ -38,7 +36,8 @@ app.use('/api/posts', Posts);
 app.use('/api/scripts', Scripts);
 app.use('/api/images', ImageStorage);
 app.use('/api/tags', Tags);
-
+app.use('/api/likes', Likes);
+app.use('/api/comments',Comments);
 app.get('/ping', function(req, res) {
     amqpClient.sendMessage('{"message": "Ping"}', 'ping')
         .then(msg => {

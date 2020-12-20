@@ -2,6 +2,7 @@ const {TEST_POSTS, TEST_COMMENTS, ADD_POST} = require("../mocking_data");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 const express = require("express");
 const router = express.Router();
+const app = express();
 
 router.post('', validJWT, function (req, res) {
     const newPost = ADD_POST({
