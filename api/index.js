@@ -5,15 +5,17 @@ const passport = require("passport");
 const jwtStrategy = require("passport-jwt");
 const cookieParser = require("cookie-parser");
 
+const amqpURI = process.env.AMQP_URI;
+amqpClient.createClient({ url: amqpURI });
+
 // API routes
 const Authentication = require("./src/rest/Authentication.js");
 const Accounts = require("./src/rest/Accounts.js");
 const Posts = require("./src/rest/Posts.js");
 
 const app = express();
-const amqpURI = process.env.AMQP_URI;
 
-amqpClient.createClient({ url: amqpURI });
+
 
 // Middleware parsers
 app.use(cookieParser());

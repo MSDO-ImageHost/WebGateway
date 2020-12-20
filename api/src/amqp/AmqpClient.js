@@ -15,7 +15,7 @@ let amqpChannel;
  * @returns {Promise} - return AMQP channel
  */
 
-const createClient = (setting) => AMQP.connect(setting.url)
+const createClient = async (setting) => await AMQP.connect(setting.url)
         .then(conn => {
             console.log("Created channel!")
             return conn.createChannel()

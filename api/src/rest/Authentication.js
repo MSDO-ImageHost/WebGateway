@@ -1,8 +1,10 @@
 const {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
 const express = require("express");
+const amqpClient = require("../amqp/AmqpClient");
 const router = express.Router();
 
+amqpClient.bindQueue(["ReturnAuthenticationToken","ConfirmSetPassword","ConfirmInvalidateToken"])
 
 // Creates a JWT for an a existing user (login)
 router.post('', function (req, res) {
