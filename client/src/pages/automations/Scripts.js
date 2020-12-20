@@ -16,20 +16,6 @@ import Spinner from "react-bootstrap/esm/Spinner";
 
 class ScriptsPage extends Component {
 
-    // errorRendering = (error) => {
-    //     return (<div>
-    //         <Alert variant='danger'>{error.message}</Alert>
-    //         <Button onClick={() => makeRequest({ params: { reload: true } })}>Retry</Button>
-    //     </div>)
-    // }
-
-    // loadingRendering = (isLoading) => {
-    //     return (<div className="spinner-center">
-    //         <Spinner animation="grow" variant="primary" />
-    //     </div>)
-    // }
-
-
     render() {
         return <Container>
             {/* <Get url="/api/scripts">
