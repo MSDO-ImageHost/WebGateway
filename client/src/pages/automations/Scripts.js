@@ -17,6 +17,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Alert from "react-bootstrap/esm/Alert";
 import Spinner from "react-bootstrap/esm/Spinner";
+import bsCustomFileInput from 'bs-custom-file-input';
 
 class ScriptsPage extends Component {
 
@@ -33,6 +34,7 @@ class ScriptsPage extends Component {
         axios.get("/api/scripts").then(
             (result) => {
                 if (result.status === 200 && result.data) {
+                    console.log(result.data);
                     let scripts = result.data.map(script => ({id: script.id, name: script.name, owner: script.owner}));
                     this.setState({scripts})
                 } else {
@@ -48,17 +50,19 @@ class ScriptsPage extends Component {
     render() {
         if (this.state.error == null) {
             return <Container>
+                <ScriptUploadForm reload={this.reload.bind(this)}/>
                 {
                     this.state.scripts.map(script => <ScriptListingEntry id={script.id} name={script.name}
-                                                                         owner={script.owner} reload={this.reload.bind(this)}/>)
+                                                                         owner={script.owner}
+                                                                         reload={this.reload.bind(this)}/>)
                 }
             </Container>
         } else return <Container>
+            <ScriptUploadForm reload={this.reload.bind(this)}/>
             {this.state.error}
         </Container>
     }
 }
-
 
 class ScriptListingEntry extends Component {
     render() {
@@ -94,6 +98,44 @@ class ScriptListingEntry extends Component {
                 </Button>
             </Col>
         </Row>
+    }
+}
+
+class ScriptUploadForm extends Component {
+    render() {
+        bsCustomFileInput.init();
+        const reloadScripts = this.props.reload;
+        let fileUploadHandler = () => {
+            const reader = new FileReader();
+            let onFileLoad = event => {
+                let data = event.target.result;
+                axios.post("/api/scripts/", {file: btoa(data), filename: this.state.filename}).then((response) => {
+                    console.log(typeof reloadScripts);
+                    reloadScripts()
+                })
+            };
+            onFileLoad.bind(this);
+            reader.onload = onFileLoad;
+            reader.readAsBinaryString(this.state.file)
+        };
+
+        return <Form>
+            <Form.Row className="align-center">
+                <Col>
+                    <Form.Group inline>
+                        <Form.Control id="filename" type="text" placeholder="Filename" onChange={event => this.setState({filename: event.target.value})}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group inline>
+                        <Form.File id="uploadScript" onChange={event => this.setState({file: event.target.files[0]})}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Button onClick={fileUploadHandler}>Submit</Button>
+                </Col>
+            </Form.Row>
+        </Form>
     }
 }
 
