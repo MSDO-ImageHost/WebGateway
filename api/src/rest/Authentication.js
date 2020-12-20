@@ -45,6 +45,7 @@ router.put('', validJWT, function (req, res) {
     // FOR LATER: jwt = req.cookies["_auth_t"]
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountPasswordUpdate").then(msg => {
         const result = JSON.parse(msg.toString());
+        console.log("Inside data: " + JSON.stringify(result.data));
         console.log("Received " + msg.toString());
         res.json(result);
     });
