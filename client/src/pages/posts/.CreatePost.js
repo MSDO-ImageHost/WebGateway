@@ -14,28 +14,41 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
+import FileBase64 from 'react-file-base64';
+
+
 
 class NewPostPage extends Component {
 
     constructor(props) {
         super(props)
         this.postNewPostForm = this.postNewPostForm.bind(this)
+        this.getBase64 = this.getBase64.bind(this)
+    }
+
+    getBase64(file, cb) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            cb(reader.result)
+        };
+        reader.onerror = (error) => {
+            console.log('Error: ', error);
+        };
     }
 
     postNewPostForm(event) {
         event.preventDefault();
-
         const formData = {
             header: event.target.titleField.value,
             body: event.target.contentField.value,
-            image_data: null,
+            image_data: event.target.newPostImage.value,
             tags: []
         }
-        console.log(formData)
 
         // Post post data :)
         axios.post('/api/posts', formData).then((res) => {
-                if(res.status !== 201) return alert("Oh noooo. \n status:", res.status)
+            if(res.status !== 201) return alert("Oh noooo. \n status:", res.status)
             console.log(res)
             this.props.history.push({
                 pathname: `/posts/${res.data.post_id}`,

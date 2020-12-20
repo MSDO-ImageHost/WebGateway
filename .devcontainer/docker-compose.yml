@@ -35,6 +35,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+      - AMQP_URI=amqp://guest:guest@rabbitmq:5672/
     restart: unless-stopped
 
 
@@ -45,8 +46,7 @@ services:
     environment:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
-      - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
+      - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
       - JWT_HMAC_SECRET=secret
     depends_on:
       - mongo
@@ -67,7 +67,7 @@ services:
     environment:
       - AMQP_USER=dev
       - AMQP_PASS=dev
-      - AMQP_URI=amqp://dev:dev@rabbitmq:5672
+      - AMQP_URI=amqp://guest:guest@rabbitmq:5672
       - MYSQL_PASSWORD=DM8742020
     restart: unless-stopped
 
