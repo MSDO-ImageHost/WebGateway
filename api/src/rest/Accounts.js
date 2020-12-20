@@ -1,32 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {validJWT, maybeJWT} = require("../jwtAuth");
+const amqpClient = require("../amqp/AmqpClient");
 
 const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
-
-const data = [{
-    username: "Max Mustermann",
-    email: "max.mustermann@firma.de",
-    role: "0",
-    last_changed: "2020-12-14T13:16:36.080",
-    created_at: "2020-12-13T13:16:36.080",
-    last_login: "2020-12-15T13:16:36.080",
-}, {
-    username: "Jens Jensen",
-    email: "jens.jensen@selskab.dk",
-    role: "10",
-    last_changed: "2020-12-14T13:16:36.080",
-    created_at: "2020-12-13T13:16:36.080",
-    last_login: "2020-12-15T13:16:36.080",
-}, {
-    username: "John Bull",
-    email: "john.bull@company.co.uk",
-    role: "20",
-    last_changed: "2020-12-14T13:16:36.080",
-    created_at: "2020-12-13T13:16:36.080",
-    last_login: "2020-12-15T13:16:36.080",
-}];
 
 router.get('/', maybeJWT, function (req, res) {
     res.json(data)
@@ -34,8 +12,17 @@ router.get('/', maybeJWT, function (req, res) {
 
 // RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
+
+    const newUser ={
+        username:   req.body.username,
+        user_email: req.body.email,
+        password:   req.body.password,
+        role:       0
+    }
+
+    //amqpClient.sendMessage(newUser, "RequestAccountCreate").then(res => console.log(res))
+
     const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
-    newUser ={ username:req.body.username, email:req.body.email, password:req.body.password, role:0 }
     TEST_USERS.push(newUser)
     res.status(201).json({token, user:newUser});
 });

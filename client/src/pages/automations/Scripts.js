@@ -42,4 +42,9 @@ class ScriptListingEntry extends Component {
 
 }
 
+
+class NewScriptUpload extends Component {
+    
+}
+
 export { ScriptsPage }

@@ -17,6 +17,7 @@ const Comments = require("./src/rest/Comments.js");
 
 const app = express();
 
+
 // Middleware parsers
 app.use(cookieParser());
 app.use(express.json());

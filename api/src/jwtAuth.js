@@ -1,8 +1,6 @@
 const {JWT_DECODE} = require("./mocking_data");
 
 function validJWT(req, res, next) {
-
-    console.log(req.cookies)
     try {
         let jwt = req.cookies["_auth_t"] || req.header('Authorization').split(" ")[1];
         if (jwt == null) {
