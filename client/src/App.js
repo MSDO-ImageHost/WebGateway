@@ -7,7 +7,7 @@ import { AuthProvider, PrivateRoute } from 'react-auth-kit';
 
 // Application pages
 import { ProfilePage } from "./pages/account/Account";
-import { NewPostPage, PostListingPage } from "./pages/posts/Posts";
+import { NewPostPage, FullPostPage, PostListingPage } from "./pages/posts/Posts";
 import { Users } from "./pages/users/Users";
 import { ScriptsPage } from "./pages/automations/Scripts";
 import { SignupView, SigninView } from "./pages/authentication/Authentication";
@@ -35,7 +35,7 @@ class App extends Component {
         <NavigationBar/>
         <Switch>
           <Route exact path='/' component={PostListingPage}/>
-          {/* <Route path='/post' component={PostPage}/> */}
+          <Route path='/posts' component={FullPostPage}/>
           <Route path='/users' component={Users}/>
           <Route path='/login' component={SigninView}/>
           <Route path='/signup' component={SignupView}/>

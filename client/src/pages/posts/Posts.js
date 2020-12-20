@@ -1,11 +1,11 @@
 import NewPostPage from './.CreatePost';
-import { PostListingContainer, PostListingEntry } from './.PostListing';
-import { PostListingPage } from './.PostListingPage';
+import { FullPostPage } from './.FullPostPage';
+import { PostListingPage, PostListingEntry } from './.PostListingPage';
 
 
 export {
     NewPostPage,
-    PostListingContainer,
+    FullPostPage,
     PostListingEntry,
     PostListingPage
 }

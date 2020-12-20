@@ -3,35 +3,10 @@ const JWT_SECRET = "secret";
 
 
 const TEST_USERS = [];
+const TEST_COMMENTS = [];
+const TEST_POSTS = [];
 
-const TEST_COMMENTS = [
-    {
-        comment_id: 1,
-        post_id: 5,
-        created_at: "2020-12-16 19:35:55",
-        content: "im another one"
-    },
-    {
-        comment_id: 2,
-        post_id: 5,
-        created_at: "2020-12-16 19:35:59",
-        content: "im another one"
-    },
-    {
-        comment_id: 3,
-        post_id: 5,
-        created_at: "2020-12-16 19:36:14",
-        content: "imma fking yeet"
-    },
-    {
-        comment_id: 4,
-        post_id: 5,
-        created_at: "2020-12-16 19:38:54",
-        content: "imma fking yeet"
-    }
-];
-
-const TEST_POSTS = [
+const _TEST_POSTS = [
     {
         post_id: "1",
         author_id: "Jake",
@@ -84,7 +59,7 @@ const JWT_DECODE = (token) => {
 
 const ADD_POST = (newPostData) => {
     TEST_POSTS.push({
-        post_id: Date.now(),
+        post_id: TEST_POSTS.length,
         author_id: newPostData.author_id,
         created_at: Date.now(),
         header: {

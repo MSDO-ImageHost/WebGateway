@@ -4,6 +4,9 @@ import { Component } from 'react';
 import '../../App.css';
 import { FormFieldGroup } from '../../ui_components/FormFields';
 
+// Server communication
+import axios from 'axios';
+
 // Bootstrap
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/esm/Container";
@@ -12,8 +15,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 
-
 class NewPostPage extends Component {
+
+    constructor(props) {
+        super(props)
+        this.postNewPostForm = this.postNewPostForm.bind(this)
+    }
 
     postNewPostForm(event) {
         event.preventDefault();
@@ -24,11 +31,16 @@ class NewPostPage extends Component {
             image_data: null,
             tags: []
         }
+        console.log(formData)
 
         // Post post data :)
         axios.post('/api/posts', formData).then((res) => {
-            if(res.status !== 200) return alert("Oh noooo. \n status:", res.status)
-            this.props.history.push("/");
+                if(res.status !== 201) return alert("Oh noooo. \n status:", res.status)
+            console.log(res)
+            this.props.history.push({
+                pathname: `/posts/${res.data.post_id}`,
+                state: res.data
+            });
         })
     }
 
