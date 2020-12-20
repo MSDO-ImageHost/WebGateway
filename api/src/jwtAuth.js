@@ -1,8 +1,10 @@
 const {JWT_DECODE} = require("./mocking_data");
 
 function validJWT(req, res, next) {
+
+    console.log(req.cookies)
     try {
-        let jwt = req.cookies["jwt"] || req.header('Authorization').split(" ")[1];
+        let jwt = req.cookies["_auth_t"] || req.header('Authorization').split(" ")[1];
         if (jwt == null) {
             //Reject because there is no valid token
             res.status(401).send();
@@ -23,7 +25,7 @@ function validJWT(req, res, next) {
 
 function maybeJWT(req, res, next) {
     try {
-        let jwt = req.cookies["jwt"] || req.header('Authorization').split(" ")[1];
+        let jwt = req.cookies["_auth_t"] || req.header('Authorization').split(" ")[1];
         if (jwt == null) {
             //Reject because there is no valid token
             next();

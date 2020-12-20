@@ -58,7 +58,7 @@ const JWT_DECODE = (token) => {
 
 
 const ADD_POST = (newPostData) => {
-    TEST_POSTS.push({
+    newPost = {
         post_id: TEST_POSTS.length,
         author_id: newPostData.author_id,
         created_at: Date.now(),
@@ -74,7 +74,9 @@ const ADD_POST = (newPostData) => {
         },
         tags: newPostData.tags,
         image_url: newPostData.image_data,
-    })
+    }
+    TEST_POSTS.push(newPost)
+    return newPost
 }
 
 module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET, TEST_USERS};

@@ -4,18 +4,15 @@ const express = require("express");
 const router = express.Router();
 const app = express();
 
-
-router.post('', function (req, res) {
-
-    const postdata = req.body;
-    ADD_POST({
+router.post('', validJWT, function (req, res) {
+    const newPost = ADD_POST({
         author_id: "Jake",
-        header: postdata.header,
-        body: postdata.body,
+        header: req.body.header,
+        body: req.body.body,
         image_data: "/images/thisisfine.gif",
-        tags: postdata.tags
+        tags: req.body.tags
     });
-    res.status(201).json(TEST_POSTS[TEST_POSTS.length-1]);
+    res.status(201).json(newPost);
 });
 
 router.delete('', validJWT, function (req, res) {
@@ -32,7 +29,7 @@ router.get('/:pid', function (req, res, next) {
 });
 
 // Create a new comment for a post
-router.post('/:pid/comments', /*validJWT,*/ function (req, res) {
+router.post('/:pid/comments', validJWT, function (req, res) {
     //CreateComment on post
     const newComment = {
         post_id: req.params['pid'],
