@@ -40,7 +40,7 @@ app.use('/api/tags', Tags);
 app.use('/api/likes', Likes);
 app.use('/api/comments',Comments);
 app.get('/ping', function(req, res) {
-    amqpClient.sendMessage('{"message": "Ping"}', 'ping')
+    amqpClient.sendMessage('{"message": "Ping"}', 'ping', null)
         .then(msg => {
             const result = JSON.parse(msg.toString());
             console.log("Received " + msg.toString());
