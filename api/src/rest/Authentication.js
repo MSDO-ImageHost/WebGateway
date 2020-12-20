@@ -8,9 +8,6 @@ const router = express.Router();
 amqpClient.bindQueue(["ReturnAuthenticationToken","ConfirmSetPassword","ConfirmInvalidateToken"])
 
 const {validJWT, maybeJWT} = require("../jwtAuth");
-const amqpClient = require("../amqp/AmqpClient");
-
-const router = express.Router();
 
 // Creates a JWT for an a existing user (login) // Request body contains this: `{username:<String>, password:<String>}`
 router.post('', function (req, res) {
@@ -25,9 +22,14 @@ router.post('', function (req, res) {
     //}
     //res.status(200).json({token, user:found});
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestLoginToken").then(msg => {
-        const result = JSON.parse(msg.toString());
-        console.log("Received " + msg.toString());
-        res.json(result);
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + result);
+            res.json(result); 
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
     });
 });
 
