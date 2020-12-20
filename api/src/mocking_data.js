@@ -1,36 +1,12 @@
-
 const jwt = require("jwt-simple");
-const JWT_SECRET = "testSecret";
+const JWT_SECRET = "secret";
 
 
-const TEST_COMMENTS = [
-    {
-        comment_id: 1,
-        post_id: 5,
-        created_at: "2020-12-16 19:35:55",
-        content: "im another one"
-    },
-    {
-        comment_id: 2,
-        post_id: 5,
-        created_at: "2020-12-16 19:35:59",
-        content: "im another one"
-    },
-    {
-        comment_id: 3,
-        post_id: 5,
-        created_at: "2020-12-16 19:36:14",
-        content: "imma fking yeet"
-    },
-    {
-        comment_id: 4,
-        post_id: 5,
-        created_at: "2020-12-16 19:38:54",
-        content: "imma fking yeet"
-    }
-];
+const TEST_USERS = [];
+const TEST_COMMENTS = [];
+const TEST_POSTS = [];
 
-const TEST_POSTS = [
+const _TEST_POSTS = [
     {
         post_id: "1",
         author_id: "Jake",
@@ -76,13 +52,14 @@ const JWT_ENCODE = (payload) => {
 };
 
 const JWT_DECODE = (token) => {
+    //TODO Check the JWT is actually valid
     return jwt.decode(token, JWT_SECRET)
 };
 
 
 const ADD_POST = (newPostData) => {
-    TEST_POSTS.push({
-        post_id: Date.now(),
+    newPost = {
+        post_id: TEST_POSTS.length,
         author_id: newPostData.author_id,
         created_at: Date.now(),
         header: {
@@ -97,7 +74,9 @@ const ADD_POST = (newPostData) => {
         },
         tags: newPostData.tags,
         image_url: newPostData.image_data,
-    })
+    }
+    TEST_POSTS.push(newPost)
+    return newPost
 }
 
-module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST};
+module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET, TEST_USERS};

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const {validJWT, maybeJWT} = require("../jwtAuth");
 
-const {JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
+const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
 
 const data = [{
@@ -27,40 +28,38 @@ const data = [{
     last_login: "2020-12-15T13:16:36.080",
 }];
 
-router.get('/', function (req, res) {
+router.get('/', maybeJWT, function (req, res) {
     res.json(data)
 });
 
-
-// RequestAccountCreate
+// RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
-    // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
-
-    // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
-    const token = JWT_ENCODE({sub: req.body.userid, role: 1, iss: "ImageHost.sdu.dk"});
-    res.status(201).json({token});
+    const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
+    newUser ={ username:req.body.username, email:req.body.email, password:req.body.password, role:0 }
+    TEST_USERS.push(newUser)
+    res.status(201).json({token, user:newUser});
 });
 
-router.get('/:id', function (req, res) {
+router.get('/:id', maybeJWT, function (req, res) {
     //RequestAccountData
     res.send(data[req.params.user])
 });
-router.put('/:id', function (req, res) {
+router.put('/:id', validJWT, function (req, res) {
     //UpdateAccount
 });
-router.delete('/:id', function (req, res) {
+router.delete('/:id', validJWT, function (req, res) {
     //RequestAccountDelete
 });
-router.put('/admin/ban', function (req, res) {
+router.put('/admin/ban', validJWT, function (req, res) {
     //RequestBanUser
 });
-router.put('/admin/flag', function (req, res) {
+router.put('/admin/flag', validJWT, function (req, res) {
     //RequestFlagUser
 });
-router.get('/admin/flag', function (req, res) {
+router.get('/admin/flag', validJWT, function (req, res) {
     //RequestAllFlagged
 });
-router.get('/:id/posts', function (req, res) {
+router.get('/:id/posts', maybeJWT, function (req, res) {
     //Get the posts a user have created
     res.status(200).send();
 });

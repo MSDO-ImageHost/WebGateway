@@ -7,7 +7,7 @@ router.get('/post/:pid/likes/:userid', function (req, res) {
     //RequestLikeStatus
     console.log(req.body)
 });
-router.put('/post/:pid/likes/:userid', function (req, res) {
+router.put('/post/:pid/likes/:userid', validJWT, function (req, res) {
     //UpdateLike
     console.log(req.body)
 });
