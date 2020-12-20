@@ -15,26 +15,6 @@ var amqpPromise;
  * @returns {Promise} - return AMQP channel
  */
 
-<<<<<<< HEAD
-const createClient = async (setting) => await AMQP.connect(setting.url)
-        .then(conn => {
-            console.log("Created channel!")
-            return conn.createChannel()
-        })
-        .then(channel => {
-            amqpChannel = channel;
-            console.log("Created queue!")
-            channel.assertQueue(QUEUE, { durable: true });
-            console.log("Created exchange!")
-            channel.assertExchange(EXCHANGE, 'direct', {durable: false});
-            channel.responseEmitter = new EventEmitter();
-            channel.responseEmitter.setMaxListeners(0);
-            channel.consume(QUEUE, function(msg) {
-                console.log("[x] " + msg.properties);
-                channel.responseEmitter.emit(msg.properties.correlationId, msg.content);
-            } , { noAck: true } );
-        });
-=======
  function createChannel(url){
     amqpPromise = AMQP.connect(url).then(conn => {
         return conn.createChannel()
@@ -54,7 +34,6 @@ const createClient = async (setting) => await AMQP.connect(setting.url)
         setTimeout(createChannel, 5000, url) //Retry every 5s
     });
  }
->>>>>>> 87fcb9bbca43ba92a5271662e9d30f5e3a827d9c
 
 const bindQueue = (events) => {
     amqpPromise.then( (channel) => {
