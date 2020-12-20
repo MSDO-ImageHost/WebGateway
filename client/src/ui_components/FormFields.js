@@ -1,14 +1,10 @@
-
-
 // Bootstrap
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 
-function FormFieldGroup(props) {
+const FormFieldGroup = (props) => {
     return (<Form.Group as={Row} controlId={props.form.id}>
         <Form.Label column sm={2}>{props.form.title}</Form.Label>
         <Col><Form.Control type={props.form.type} placeholder={props.form.ph} required/></Col>
@@ -16,7 +12,7 @@ function FormFieldGroup(props) {
 }
 
 
-function PasswordConfirmFormFieldsGroup(props) {
+const PasswordConfirmFormFieldsGroup = (props) => {
     return (<Form.Group as={Row}>
         <Form.Label column sm={2}>Password</Form.Label>
         <Col> <Form.Group controlId="passwordField">

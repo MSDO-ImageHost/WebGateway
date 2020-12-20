@@ -1,18 +1,18 @@
 import { Component } from 'react';
 
 // App components
-import '../App.css';
+import '../../App.css';
 import { PostListingEntry } from './Posts';
 
 // Server communication
 import { Get } from 'react-axios';
-import { APIStatusRenderings } from '../helpers/APIStatusRenderings';
+import { APIStatusRenderings } from '../../helpers/APIStatusRenderings';
 
 // Bootstrap
 import Container from "react-bootstrap/esm/Container";
 
 
-class Frontpage extends Component{
+class PostListingPage extends Component {
 
     render() {
         return <Container>
@@ -30,4 +30,4 @@ class Frontpage extends Component{
     }
 };
 
-export { Frontpage }
+export { PostListingPage }

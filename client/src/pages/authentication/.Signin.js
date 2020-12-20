@@ -1,5 +1,5 @@
 import { Component } from 'react';
-//import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // Auth
 import { withSignIn } from 'react-auth-kit';
@@ -8,7 +8,7 @@ import { withSignIn } from 'react-auth-kit';
 import axios from 'axios';
 
 // Application components
-import { FormFieldGroup, PasswordConfirmFormFieldsGroup } from '../../ui_components/Forms';
+import { FormFieldGroup } from '../../ui_components/FormFields';
 
 // Bootstrap
 import Form from 'react-bootstrap/Form';
@@ -16,30 +16,24 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 
 
-class SignupView extends Component {
+class SigninView extends Component {
 
     constructor(props) {
         super(props);
-        this.postSignupForm = this.postSignupForm.bind(this);
+        this.postLoginForm = this.postLoginForm.bind(this);
     }
 
-    postSignupForm(event) {
+    postLoginForm(event) {
         event.preventDefault();
         const formData = {
             username: event.target.usernameField.value,
             email: event.target.emailField.value,
-            password: event.target.passwordField.value,
-            password_confirm: event.target.confirmPasswordField.value
-        }
-
-        // Validate passwords
-        if (formData.password !== formData.password_confirm) {
-            return alert("Passwords do not match")
+            password: event.target.passwordField.value
         }
 
         // Post data
-        axios.post('/api/users', formData).then((res) => {
-            if(res.status !== 201) return alert("Oh noooo. \n status:", res.status)
+        axios.post('/api/login', formData).then((res) => {
+            if(res.status !== 200) return alert("Oh noooo. \n status:", res.status)
 
             const hasAuth = this.props.signIn({
                 token: res.data.token,
@@ -51,22 +45,23 @@ class SignupView extends Component {
             if (hasAuth) {
                 this.props.history.push("/");
             } else {
-                alert("Sorry, but an error occured while signing you up")
+                alert("Sorry, but I could not sign you in")
             }
         })
     }
 
     render() {
         return <Container fluid="md">
-            <h1>Please give us your details</h1>
-            <Form onSubmit={this.postSignupForm}>
+            <h1>Enter credentials to login</h1>
+            <Form onSubmit={this.postLoginForm}>
                 <FormFieldGroup form={{id:"usernameField", title:"Nickname", type:"text", ph:"Enter nickname"}}/>
                 <FormFieldGroup form={{id:"emailField", title:"Email", type:"email", ph:"Enter email"}}/>
-                <PasswordConfirmFormFieldsGroup form={{id:"emailField", title:"Email", type:"email", ph:"Enter email"}}/>
-                <Button variant="primary" type="submit" style={{float: 'right'}}>Sign up</Button>
+                <FormFieldGroup form={{id:"passwordField", title:"Password", type:"password", ph:"Password"}}/>
+                <Form.Text className="text-muted">Not signed up yet? Don't worry, you can sign up <Link to="signup">here</Link></Form.Text>
+                <Button variant="primary" type="submit" style={{float: 'right'}}>Sign in</Button>
             </Form>
         </Container>
     }
 }
 
-export default withSignIn(SignupView)
+export default withSignIn(SigninView)

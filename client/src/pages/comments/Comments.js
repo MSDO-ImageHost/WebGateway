@@ -1,11 +1,9 @@
 import { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 // App components
-import '../App.css';
+import '../../App.css';
 
 // Server communication
-import { Post } from 'react-axios';
 
 // Bootstrap
 import Card from 'react-bootstrap/Card';
@@ -56,10 +54,6 @@ class NewCommentForm extends Component {
             <Button variant="primary" type="submit">Submit</Button>
         </Form>
 
-        // <Post url="/api/comment" data={{ content: 'A comment from Axios!' }}>
-        //     {this.renderResponse}
-        //     {/* <CommentRow key={comment.comment_id} data={comment}/> */}
-        // </Post>
     }
 }
 
