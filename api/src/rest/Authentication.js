@@ -8,6 +8,7 @@ const router = express.Router();
 amqpClient.bindQueue(["ReturnAuthenticationToken","ConfirmSetPassword","ConfirmInvalidateToken"])
 
 const {validJWT, maybeJWT} = require("../jwtAuth");
+const amqpClient = require("../amqp/AmqpClient");
 
 const router = express.Router();
 

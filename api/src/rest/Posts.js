@@ -2,17 +2,30 @@ const {TEST_POSTS, TEST_COMMENTS, ADD_POST} = require("../mocking_data");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 const express = require("express");
 const router = express.Router();
-const app = express();
+const amqpClient = require("../amqp/AmqpClient");
+
+// Queue bindings
+amqpClient.bindQueue(["ConfirmOnePostCreation"]);
+
 
 router.post('', validJWT, function (req, res) {
+
     const newPost = ADD_POST({
-        author_id: "Jake",
+        author_id: req.claims.sub,
         header: req.body.header,
         body: req.body.body,
         image_data: "/images/thisisfine.gif",
         tags: req.body.tags
     });
-    res.status(201).json(newPost);
+
+    const msgRes = amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost").then(msg => {
+        console.log("here", msg)
+        res.status(201).json(newPost);
+    });
+
+    msgRes.then(r => {
+        console.log(r)
+    })
 });
 
 router.delete('', validJWT, function (req, res) {

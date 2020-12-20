@@ -1,8 +1,9 @@
-import { Component } from 'react';
-import { Link } from 'react-router-dom';
+import {Component} from 'react';
+import React from 'react';
+import {Link} from 'react-router-dom';
 
 // Server communication
-import { Get } from 'react-axios';
+import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios'
 
 // Bootstrap
 import Card from 'react-bootstrap/Card';
@@ -18,28 +19,31 @@ class ScriptsPage extends Component {
 
     render() {
         return <Container>
-            {/* <Get url="/api/scripts">
-            {(error, response, isLoading, makeRequest) => {
-                if(error) {
-                    return this.errorRendering(error)
-                }
-                else if(isLoading) {
-                    return this.loadingRendering(isLoading)
-                }
-                else if(response !== null) {
-                    return (response.data.map(post => <ScriptListingEntry key={post.post_id} data={script}/>))
-                }
-                return (<div>Default message before request is made.</div>)
-            }}
-            </Get> */}
+            <Get url="/api/scripts">
+                {(error, response, isLoading, makeRequest) => {
+                    if (error) {
+                        return <div>Error loading scripts</div>
+                    } else if (response !== null) {
+                        return (response.data.map(script => <ScriptListingEntry key={script.id} name={script.name} owner={script.owner}/>))
+                    }
+                    return (<div>Loading scripts...</div>)
+                }}
+            </Get>
         </Container>
     }
 }
 
 
-
 class ScriptListingEntry extends Component {
-
+    render() {
+        console.log(this.props);
+        return <Row>
+            <Col xs={6}>{this.props.name}</Col>
+            <Col>{this.props.owner}</Col>
+            <Col>Download</Col>
+            <Col>Delete</Col>
+        </Row>
+    }
 }
 
-export { ScriptsPage }
+export {ScriptsPage}

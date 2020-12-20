@@ -14,7 +14,6 @@ const SignOutButton = () => {
     const signOut = useSignOut()
 
     const InvalidateSession = () => {
-
         signOut()
 
         // Post data

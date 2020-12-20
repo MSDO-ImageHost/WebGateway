@@ -28,7 +28,6 @@ class FullPostPage extends Component {
                     <Card.Subtitle>{post.header.author_id}</Card.Subtitle>
                     <Card.Img variant="top" src={post.image_url} />
                     <Card.Text>{post.body.data}</Card.Text>
-                    <Link to={{pathname: `/posts/${post.post_id}`, state: post}}><Button variant="primary">Open post</Button></Link>
                     <Card.Footer>{post.tags}</Card.Footer>
                 </Card.Body>
             </Card>
