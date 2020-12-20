@@ -14,7 +14,7 @@ const Tags = require("./src/rest/Tags.js");
 const app = express();
 const amqpURI = process.env.AMQP_URI;
 
-amqpClient.createClient({ url: amqpURI });
+amqpClient.createChannel(amqpURI);
 
 // Middleware parsers
 app.use(cookieParser());
