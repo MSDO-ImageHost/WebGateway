@@ -2,6 +2,7 @@ const {TEST_POSTS, TEST_COMMENTS, TEST_USERS, JWT_ENCODE, JWT_DECODE} = require(
 
 const express = require("express");
 const {validJWT, maybeJWT} = require("../jwtAuth");
+const amqpClient = require("../amqp/AmqpClient");
 
 const router = express.Router();
 
@@ -11,11 +12,11 @@ router.post('', function (req, res) {
     const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
     findUser = { username:req.body.username, email:req.body.email, password:req.body.password }
     found = TEST_USERS.find(user => {return user.username === findUser.username && user.password === findUser.password })
-    console.log(found)
 
     if (found == undefined) {
         return res.status(401).send()
     }
+
     res.status(200).json({token, user:found});
 });
 
