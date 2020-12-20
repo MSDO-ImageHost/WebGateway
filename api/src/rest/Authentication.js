@@ -1,19 +1,22 @@
-const {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
+const {TEST_POSTS, TEST_COMMENTS, TEST_USERS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
 const express = require("express");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 
 const router = express.Router();
 
-// Creates a JWT for an a existing user (login)
+// Creates a JWT for an a existing user (login) // Request body contains this: `{username:<String>, password:<String>}`
 router.post('', function (req, res) {
-
-    // Request body contains this: `{username:<String>, password:<String>}`
-
     // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
     const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
-    const authUser = {name:"John Doe", email:"johndoe@example.org", role:0}
-    res/*.cookie('jwt', token)*/.status(200).json({token, user:authUser});
+    findUser = { username:req.body.username, email:req.body.email, password:req.body.password }
+    found = TEST_USERS.find(user => {return user.username === findUser.username && user.password === findUser.password })
+    console.log(found)
+
+    if (found == undefined) {
+        return res.status(401).send()
+    }
+    res.status(200).json({token, user:found});
 });
 
 // Updates a users password

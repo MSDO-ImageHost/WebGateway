@@ -7,7 +7,7 @@ import { CommentRow, NewCommentForm } from '../comments/Comments';
 
 // Server communication
 import { Get } from 'react-axios';
-import { APIStatusRenderings } from '../../helpers/APIStatusRenderings';
+import { HttpStatusMessage } from '../../ui_components/HttpStatusMessage';
 
 // Bootstrap
 import Card from 'react-bootstrap/Card';
@@ -33,7 +33,7 @@ class PostListingContainer extends Component {
 
             <Get url={`/api/posts/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
-                if(error || isLoading) return APIStatusRenderings.intermediateStatusRendering(error, isLoading)
+                if(error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading)
 
                 else if(response !== null) {
                     return (response.data.map(comment => <CommentRow key={comment.comment_id} data={comment}/>))

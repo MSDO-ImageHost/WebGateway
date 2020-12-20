@@ -8,7 +8,7 @@ import Spinner from "react-bootstrap/esm/Spinner";
 
 
 
-class APIStatusRenderings {
+class HttpStatusMessage {
     static errorRendering = (error, makeRequest) => {
         return (<div>
             <Alert variant='danger'>{error.message}</Alert>
@@ -29,6 +29,4 @@ class APIStatusRenderings {
 }
 
 
-
-
-export { APIStatusRenderings }
+export { HttpStatusMessage }

@@ -1,6 +1,9 @@
 const jwt = require("jwt-simple");
 const JWT_SECRET = "secret";
 
+
+const TEST_USERS = [];
+
 const TEST_COMMENTS = [
     {
         comment_id: 1,
@@ -99,4 +102,4 @@ const ADD_POST = (newPostData) => {
     })
 }
 
-module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET};
+module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET, TEST_USERS};

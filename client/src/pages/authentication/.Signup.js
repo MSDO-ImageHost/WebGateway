@@ -20,11 +20,13 @@ class SignupView extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {transmitting: false};
         this.postSignupForm = this.postSignupForm.bind(this);
     }
 
     postSignupForm(event) {
         event.preventDefault();
+        this.state.transmitting = true
         const formData = {
             username: event.target.usernameField.value,
             email: event.target.emailField.value,
@@ -48,6 +50,7 @@ class SignupView extends Component {
                 authState: res.data.user
             })
 
+            this.state.transmitting = false
             if (hasAuth) {
                 this.props.history.push("/account");
             } else {

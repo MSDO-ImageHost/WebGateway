@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {validJWT, maybeJWT} = require("../jwtAuth");
 
-const {JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
+const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
 
 const data = [{
@@ -32,13 +32,12 @@ router.get('/', maybeJWT, function (req, res) {
     res.json(data)
 });
 
-// RequestAccountCreate
+// RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
-    // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
-
     const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
-    const authUser = {name:"John Doe", email:"johndoe@example.org", role:0}
-    res/*.cookie('jwt', token)*/.status(201).json({token, user:authUser});
+    newUser ={ username:req.body.username, email:req.body.email, password:req.body.password, role:0 }
+    TEST_USERS.push(newUser)
+    res.status(201).json({token, user:newUser});
 });
 
 router.get('/:id', maybeJWT, function (req, res) {

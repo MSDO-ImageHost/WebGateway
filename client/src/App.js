@@ -6,7 +6,7 @@ import './App.css';
 import { AuthProvider, PrivateRoute } from 'react-auth-kit';
 
 // Application pages
-import { Account } from "./pages/account/Account";
+import { ProfilePage } from "./pages/account/Account";
 import { NewPostPage, PostListingPage } from "./pages/posts/Posts";
 import { Users } from "./pages/users/Users";
 import { ScriptsPage } from "./pages/automations/Scripts";
@@ -39,9 +39,10 @@ class App extends Component {
           <Route path='/users' component={Users}/>
           <Route path='/login' component={SigninView}/>
           <Route path='/signup' component={SignupView}/>
-          <PrivateRoute exact path='/account' component={Account} loginPath={'/login'}/>
+          <PrivateRoute exact path='/account' component={ProfilePage} loginPath={'/login'}/>
           <PrivateRoute exact path='/createpost' component={NewPostPage} loginPath={'/login'}/>
           <PrivateRoute exact path='/scripts' component={ScriptsPage} loginPath={'/login'}/>
+          <PrivateRoute exact path='/logout' component={ScriptsPage} loginPath={'/login'}/>
         </Switch>
       </Router>
     </AuthProvider>
