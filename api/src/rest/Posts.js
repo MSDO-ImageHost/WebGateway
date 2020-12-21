@@ -14,7 +14,7 @@ amqpClient.bindQueue([
     "ConfirmUpdateOnePost",
     "ConfirmDeleteOnePost",
     "ConfirmDeleteManyPosts",
-    "ConfirmCommentComment", 
+    "ConfirmCommentCreation", 
     "ReturnCommentsForPost"
 ]);
 
@@ -62,7 +62,7 @@ router.post('/:pid/comments', validJWT, function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"CommentCreation",token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body),"CreateComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
