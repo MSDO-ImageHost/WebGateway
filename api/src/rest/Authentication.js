@@ -24,7 +24,7 @@ router.post('', function (req, res) {
     //    if(msg.properties.headers.status_code === 200){
     //        const result = msg.content.toString();
     //        console.log("Received " + result);
-    //        res.json(result); 
+    //        res.json(result);
     //    }
     //    else{
     //        res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
@@ -51,7 +51,7 @@ router.put('', validJWT, function (req, res) {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + result);
-            res.json(result); 
+            res.json(result);
         }
         else{
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
@@ -61,11 +61,10 @@ router.put('', validJWT, function (req, res) {
 
 
 // Terminates a users login session
-// Look at later! 
+// Look at later!
 router.delete('', validJWT, function (req, res) {
     //invalidate token
     res.status(200).send("Token invalidated");
-    
 });
 
 
