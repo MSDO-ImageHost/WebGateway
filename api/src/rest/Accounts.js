@@ -6,6 +6,9 @@ const amqpClient = require("../amqp/AmqpClient");
 const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
 
+// Queue bindings
+amqpClient.bindQueue(["ConfirmAccountCreation"]);
+
 router.get('/', maybeJWT, function (req, res) {
     res.json(data)
 });
@@ -13,15 +16,18 @@ router.get('/', maybeJWT, function (req, res) {
 // RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
 
-    const newUser ={
+    const newUser = {
         username:   req.body.username,
         user_email: req.body.email,
         password:   req.body.password,
-        role:       0
-    }
+        role:       "0"
+    };
 
-    //amqpClient.sendMessage(newUser, "RequestAccountCreate").then(res => console.log(res))
-
+    //amqpClient.sendMessage(JSON.stringify(newUser), {}, "RequestAccountCreate").then(msg => {
+    //    console.log("here", msg)
+    //    res.status(201).json(newPost);
+    //});
+    
     const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
     TEST_USERS.push(newUser)
     res.status(201).json({token, user:newUser});

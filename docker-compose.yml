@@ -5,14 +5,6 @@ volumes:
   posts-db-data:
   auth-db-data:
 
-
-networks:
-  rabbit-network:
-  auth-network:
-  posts-network:
-
-
-
 services:
 
   rabbitmq:
@@ -22,58 +14,39 @@ services:
     ports:
       - 15672:15672
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
-    networks:
-      - rabbit-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - AMQP_URI=amqp://guest:guest@rabbitmq:5672/
     restart: unless-stopped
 
-  ## Gateway ##
+
   gateway:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - AMQP_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672/
-      - GATEWAY_QUEUE=gateway-queue
-    networks:
-      - rabbit-network
+    build: .
     ports:
       - 5000:5000
-    depends_on:
-      - rabbitmq
+    environment:
+      - TZ=Europe/Copenhagen
+      - AMQP_URI=amqp://guest:guest@rabbitmq:5672/
+      - JWT_HMAC_SECRET=secret
+      - PORT=5000
     restart: unless-stopped
-  ## End of Gateway ##
 
 
   ## Posts ##
   posts:
-    image: imagehostmad/posts:latest
+    #image: imagehostmad/posts:latest
+    build: ../Posts
     environment:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
-      - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672/
+      - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
       - JWT_HMAC_SECRET=secret
-    networks:
-      - rabbit-network
-      - posts-network
-    depends_on:
-      - rabbitmq
-      - mongo
     restart: unless-stopped
 
   mongo:
     image: mongo:latest
     volumes:
       - posts-db-data:/data/db
-    networks:
-      - posts-network
     restart: unless-stopped
   ## End of Posts ##
 
@@ -83,28 +56,24 @@ services:
   authentication:
     image: imagehostmad/authentication:latest
     environment:
-      - AMQP_USER=${RABBIT_USER}
-      - AMQP_PASS=${RABBIT_PASS}
-      - AMQP_URI=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    networks:
-      - rabbit-network
-      - auth-network
-    depends_on:
-      - rabbitmq
-      - mysql
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DB=authentication
+      - MYSQL_PORT=3306
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - RABBITMQ_HOST=rabbitmq
     restart: unless-stopped
-    
+
   mysql:
     image: mysql:8
     command: --init-file /data/application/init.sql
     volumes:
       - auth-db-data:/var/lib/mysql
-      - ./.compose-service-files/auth-init.sql:/data/application/init.sql
+      - .compose-service-files/auth-init.sql:/data/application/init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=1234
       - MYSQL_DATABASE=authentication
-    networks:
-      - auth-network
     restart: always
   ## End of Authentication ##

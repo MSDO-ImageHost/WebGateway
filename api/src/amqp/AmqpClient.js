@@ -26,7 +26,7 @@ var amqpPromise;
         channel.responseEmitter = new EventEmitter();
         channel.responseEmitter.setMaxListeners(0);
         channel.consume(QUEUE, function(msg) {
-            console.log(" [x] " + msg);
+            console.log("[x] " + msg.properties);
             channel.responseEmitter.emit(msg.properties.correlationId, msg);
         } , { noAck: true } );
         return channel;

@@ -18,7 +18,9 @@ router.post('', validJWT, function (req, res) {
         tags: req.body.tags
     });
 
-    const msgRes = amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost").then(msg => {
+    const headers = { "jwt": req.jwt }
+
+    const msgRes = amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", headers).then(msg => {
         console.log("here", msg)
         res.status(201).json(newPost);
     });
