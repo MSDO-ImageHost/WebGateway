@@ -6,7 +6,7 @@ const router = express.Router();
 
 amqpClient.bindQueue(["ImageLoadRequest", "ImageCreateRequest", "ImageDeleteRequest"]);
 
-router.post('/image', validJWT, function (req, res) {
+router.post('/', validJWT, function (req, res) {
     //Creates an image
     var token = {
         "jwt":req.cookies["_auth_t"]
@@ -24,7 +24,7 @@ router.post('/image', validJWT, function (req, res) {
         }
     });
 });
-router.get('/image/:iid', function (req, res) {
+router.get('/:iid', function (req, res) {
     //Gets an image using its id
     var token = {
         "jwt":req.cookies["_auth_t"]
@@ -40,7 +40,7 @@ router.get('/image/:iid', function (req, res) {
         }
     });
 });
-router.delete('/image/:iid', validJWT, function (req, res) {
+router.delete('/:iid', validJWT, function (req, res) {
     //Deletes an image using its id.
     var token = {
         "jwt":req.cookies["_auth_t"]
@@ -57,4 +57,4 @@ router.delete('/image/:iid', validJWT, function (req, res) {
     });
 });
 
-module.exports = router;
+module.exports = {api: router, images: express.Router()};
