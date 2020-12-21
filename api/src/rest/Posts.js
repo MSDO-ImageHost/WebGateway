@@ -14,7 +14,7 @@ amqpClient.bindQueue([
     "ConfirmUpdateOnePost",
     "ConfirmDeleteOnePost",
     "ConfirmDeleteManyPosts",
-    "ConfirmCommentCreation", 
+    "ConfirmCommentCreation",
     "ReturnCommentsForPost"
 ]);
 
@@ -23,10 +23,10 @@ router.post('/', validJWT, function (req, res) {
     const newPost = {
         header: req.body.header,
         body: req.body.body,
-        image_data: req.body.image_data.base64,
+        image_data: req.body.image_data.base64.split(',')[1],
         tags: req.body.tags.replace(' ', '').split(',')
     };
-    //console.log(JSON.stringify(newPost))
+    console.log(newPost)
     amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", {jwt:req.jwt}).then(msg => {
         msgJson = JSON.parse(msg.content.toString())
         res.status(201).json(msgJson);

@@ -5,6 +5,11 @@ volumes:
   posts-db-data:
   auth-db-data:
 
+networks:
+  rabbit-network:
+  auth-network:
+  posts-network:
+
 services:
   vscode:
     image: qmcgaw/nodedevcontainer
