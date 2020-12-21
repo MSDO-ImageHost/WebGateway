@@ -12,7 +12,7 @@ router.post('/image', validJWT, function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
+        if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
@@ -30,7 +30,7 @@ router.get('/image/:iid', function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageLoadResponse",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
+        if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
@@ -46,7 +46,7 @@ router.delete('/image/:iid', validJWT, function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
+        if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
