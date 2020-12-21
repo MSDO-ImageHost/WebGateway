@@ -5,12 +5,19 @@ volumes:
   posts-db-data:
   auth-db-data:
 
+networks:
+  rabbit-network:
+  auth-network:
+  posts-network:
+
 services:
 
   rabbitmq:
     image: rabbitmq:3-management
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbitmq-data:/var/lib/
+    networks: 
+      - rabbit-network
     ports:
       - 15672:15672
     environment:
@@ -24,6 +31,8 @@ services:
     build: .
     ports:
       - 5000:5000
+    networks: 
+      - rabbit-network  
     environment:
       - TZ=Europe/Copenhagen
       - AMQP_URI=amqp://guest:guest@rabbitmq:5672/

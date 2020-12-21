@@ -13,7 +13,9 @@ amqpClient.bindQueue([
     "ReturnUserPosts",
     "ConfirmUpdateOnePost",
     "ConfirmDeleteOnePost",
-    "ConfirmDeleteManyPosts"
+    "ConfirmDeleteManyPosts",
+    "ConfirmCommentCreation", 
+    "ReturnCommentsForPost"
 ]);
 
 // Create a new post
@@ -58,7 +60,20 @@ router.get('/:pid/history', function (req, res) {
 
 // Create a new comment for a post
 router.post('/:pid/comments', validJWT, function (req, res) {
-
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"CreateComment",token).then(msg => {
+        if(msg.properties.headers.http_response === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.http_response).send("Failed to create comment.");
+        }
+    });
+    /*
     const newComment = {
         post_id: req.params['pid'],
         content: req.body.content,
@@ -67,13 +82,26 @@ router.post('/:pid/comments', validJWT, function (req, res) {
         comment_id: TEST_COMMENTS.length
     }
     TEST_COMMENTS.push(newComment)
-    res.status(201).json(newComment)
+    res.status(201).json(newComment)*/
 });
 
 
 // Get all comments for a specific post
 router.get('/:pid/comments', function (req, res, next) {
-    res.status(200).json(TEST_COMMENTS.filter(c => c.post_id === req.params['pid']))
+    //res.status(200).json(TEST_COMMENTS.filter(c => c.post_id === req.params['pid']))
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"RequestCommentsForPost",token).then(msg => {
+        if(msg.properties.headers.http_response === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.http_response).send("Failed to fetch comments for post.");
+        }
+    });
 });
 
 // Update a post

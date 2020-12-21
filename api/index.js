@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const path = require('path')
 
 const amqpURI = process.env.AMQP_URI;
-
 amqpClient.createChannel(amqpURI);
 
 // API routers

@@ -23,20 +23,27 @@ router.post('/', function (req, res) {
         role:       0
     };
 
-    const token = JWT_ENCODE({sub:"0", role:0, iss: "ImageHost.sdu.dk"});
-    TEST_USERS.push(newUser)
-    res.status(201).json({token, user:newUser});
-
-    //amqpClient.sendMessage(JSON.stringify(newUser),"RequestAccountCreate",null).then(msg => {
-    //    if(msg.properties.headers.status_code === 200){
-    //        const result = msg.content.toString();
-    //        console.log("Received " + result);
-    //        res.status(201).json({jwt, newUser});
-    //    }
-    //    else{
-    //        res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-    //    }
-    //});
+    amqpClient.sendMessage(JSON.stringify(newUser),"RequestAccountCreate",null).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + result);
+            var json = JSON.parse(result);
+            //{"status_code":200,"data":{"user_email":"hej@hej.dk","role":"0","updated_at":"2020-12-21 03:26:16","last_login":"2020-12-21 03:26:16","jwt":"merp","created_at":"2020-12-21 03:23:46","username":"hej"},"message":"token created"}
+            const newUser ={
+                username:   json.username,
+                user_email: json.user_email,
+                role:       json.role
+            };
+            var re = {
+                user: newUser
+            }
+            console.log("Received " + re);
+            res.status(201).json(re); 
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
 });
 
 router.get('/:id', maybeJWT, function (req, res) {
