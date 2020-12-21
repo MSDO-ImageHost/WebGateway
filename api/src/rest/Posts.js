@@ -60,12 +60,15 @@ router.get('/:pid/history', function (req, res) {
     });
 });
 
-// Create a new comment for a post
+// Create a new comment for a post /api/posts/<post_id>/comments <- {"content": "kommentar!!"}
 router.post('/:pid/comments', validJWT, function (req, res) {
-    var token = {
-        "jwt":req.cookies["_auth_t"]
+    const token = {"jwt":req.cookies["_auth_t"]}
+    const payload = {
+        post_id: req.params['pid'],
+        content: req.body.content
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"CreateComment",token).then(msg => {
+
+    amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
