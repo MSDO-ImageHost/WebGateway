@@ -22,6 +22,7 @@ router.post('/', function (req, res) {
         password:   req.body.password,
         role:       0
     };
+
     const token = JWT_ENCODE({sub:"0", role:0, iss: "ImageHost.sdu.dk"});
     TEST_USERS.push(newUser)
     res.status(201).json({token, user:newUser});
@@ -30,7 +31,6 @@ router.post('/', function (req, res) {
     //    if(msg.properties.headers.status_code === 200){
     //        const result = msg.content.toString();
     //        console.log("Received " + result);
-//
     //        res.status(201).json({jwt, newUser});
     //    }
     //    else{

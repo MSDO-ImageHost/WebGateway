@@ -35,6 +35,7 @@ services:
   ## Posts ##
   posts:
     image: imagehostmad/posts:latest
+    #build: ../Posts
     environment:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false

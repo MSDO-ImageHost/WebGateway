@@ -41,7 +41,11 @@ services:
     extends:
       file: ../docker-compose.yml
       service: mongo
-
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    restart: always
 
 
   authentication:
