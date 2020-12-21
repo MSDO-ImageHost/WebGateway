@@ -280,7 +280,7 @@ paths:
       responses:
         default:
           description: Default response
-  /users/admin/flag:
+  /users/admin/flag/{id}:
     put:
       summary: Flag a user
       description: |-
@@ -303,7 +303,7 @@ paths:
       responses:
         default:
           description: Default response
-  /users/admin/ban:
+  /users/admin/ban/{id}:
     put:
       summary: Ban a user
       description: |-
@@ -315,7 +315,7 @@ paths:
       responses:
         default:
           description: Default response
-  /users/admin:
+  /users/admin/{id}:
     put:
       summary: Update role of a user
       description: |-
