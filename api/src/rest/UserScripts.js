@@ -26,6 +26,16 @@ let mock = [
 
 router.post('', validJWT, function (req, res) {
     //Creates a script
+    console.log(`Uploaded ${req.body.filename}`);
+    let data = Buffer.from(req.body.file, 'base64');
+    mock.push({
+        name: req.body.filename,
+        owner: req.claims.sub,
+        ownerId: req.claims.sub,
+        id: mock.length+1
+    });
+    //TODO: Do something with data
+    res.sendStatus(200);
 });
 router.get('', validJWT, function (req, res) {
     //Gets a list of all scripts this user is allowed to see.
