@@ -1,7 +1,8 @@
 const {TEST_POSTS, TEST_COMMENTS, TEST_USERS, JWT_ENCODE, JWT_DECODE} = require("../mocking_data");
 
-const express = require("express");
+const jwtSimple = require("jwt-simple");
 
+const express = require("express");
 const amqpClient = require("../amqp/AmqpClient");
 const router = express.Router();
 
@@ -15,8 +16,14 @@ router.post('', function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestLoginToken",null).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
-            var json = JSON.parse(result);
-            res.status(200).json({token:json.jwt, user: json});
+            const json = JSON.parse(result);
+            const authUser = {
+                user_id: jwtSimple.decode(json.jwt, process.env.JWT_HMAC_SECRET).sub,
+                username: json.username,
+                user_email: json.user_email,
+                role: json.role
+            }
+            res.status(200).json({token:json.jwt, user: authUser});
         }
         else{
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
