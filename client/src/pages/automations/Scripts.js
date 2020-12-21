@@ -31,7 +31,7 @@ class ScriptsPage extends Component {
     }
 
     reload() {
-        axios.get("/api/scripts").then(
+        axios.get("/api/scripts/FindOwnUserScripts").then(
             (result) => {
                 if (result.status === 200 && result.data) {
                     console.log(result.data);
@@ -64,6 +64,7 @@ class ScriptsPage extends Component {
     }
 }
 
+//Is this finduserscript?
 class ScriptListingEntry extends Component {
     render() {
         console.log(this.props);
@@ -76,7 +77,7 @@ class ScriptListingEntry extends Component {
         };
         const reload = this.props.reload;
         const handleDelete = (script_id) => {
-            axios.delete("/api/scripts/" + script_id).then(() => {
+            axios.delete("/api/scripts/DeleteUserScript", {"user_script":script_id}).then(() => {
                 reload()
             });
         };
@@ -101,6 +102,12 @@ class ScriptListingEntry extends Component {
     }
 }
 
+//TODO Change to take multiple files
+//{
+//            "program": [{"filename": "test.py", "content": file_content}, {"filename": "requirements.txt", "content": file_content}],
+//            "main_file": "test.py",
+//            "language": "python",
+//        }
 class ScriptUploadForm extends Component {
     render() {
         bsCustomFileInput.init();
@@ -109,7 +116,7 @@ class ScriptUploadForm extends Component {
             const reader = new FileReader();
             let onFileLoad = event => {
                 let data = event.target.result;
-                axios.post("/api/scripts/", {file: btoa(data), filename: this.state.filename}).then((response) => {
+                axios.post("/api/scripts/CreateUserScript", {file: btoa(data), filename: this.state.filename}).then((response) => {
                     console.log(typeof reloadScripts);
                     reloadScripts()
                 })
