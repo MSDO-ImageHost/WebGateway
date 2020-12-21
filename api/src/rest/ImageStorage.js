@@ -4,14 +4,14 @@ const amqpClient = require("../amqp/AmqpClient");
 
 const router = express.Router();
 
-amqpClient.bindQueue(["ConfirmImageUpload", "ConfirmImageDelete", "ReturnImageReceive"]);
+amqpClient.bindQueue(["ImageLoadRequest", "ImageCreateRequest", "ImageDeleteRequest"]);
 
 router.post('/image', validJWT, function (req, res) {
     //Creates an image
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"CreateImage",token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
@@ -29,7 +29,7 @@ router.get('/image/:iid', function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestImage",token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body),"ImageLoadResponse",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
@@ -45,7 +45,7 @@ router.delete('/image/:iid', validJWT, function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"DeleteImage",token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
