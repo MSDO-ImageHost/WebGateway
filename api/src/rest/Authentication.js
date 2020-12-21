@@ -11,21 +11,30 @@ const {validJWT, maybeJWT} = require("../jwtAuth");
 
 // Creates a JWT for an a existing user (login) // Request body contains this: `{username:<String>, password:<String>}`
 router.post('', function (req, res) {
-    // {"sub":"5","role":"user","iss":"ImageHost.sdu.dk","exp":1638560713,"iat":1607024713}
-    //const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
+
+    //const token = JWT_ENCODE({sub:"0", role:0, iss: "ImageHost.sdu.dk"});
     //findUser = { username:req.body.username, email:req.body.email, password:req.body.password }
     //found = TEST_USERS.find(user => {return user.username === findUser.username && user.password === findUser.password })
-    //console.log(found)
-
     //if (found == undefined) {
     //    return res.status(401).send()
     //}
     //res.status(200).json({token, user:found});
+
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestLoginToken",null).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+            var json = JSON.parse(result);
+            const newUser ={
+                username:   json.username,
+                user_email: json.user_email,
+                role:       json.role
+            };
+            var re = {
+                jwt:json.jwt,
+                user: newUser
+            }
+            console.log("Received " + re);
+            res.status(200).json(re); 
         }
         else{
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);

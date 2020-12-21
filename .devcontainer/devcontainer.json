@@ -10,8 +10,8 @@
         "posts",
         "mongo",
         "authentication",
-        "mysql"
-        //"mongo-express",
+        "mysql",
+        "mongo-express"
     ],
     "shutdownAction": "stopCompose",
     //"postCreateCommand": "npm install",

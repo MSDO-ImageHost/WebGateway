@@ -1,53 +1,13 @@
 const jwt = require("jwt-simple");
 const JWT_SECRET = "secret";
 
-
 const TEST_USERS = [];
 const TEST_COMMENTS = [];
 const TEST_POSTS = [];
 
-const _TEST_POSTS = [
-    {
-        post_id: "1",
-        author_id: "Jake",
-        created_at: "bigbang",
-        updated_at: "tomorrow",
-        header: {
-            author_id: "Jake",
-            created_at: "bigbang",
-            data: "Adventure Time",
-        },
-        body: {
-            author_id: "Jake",
-            created_at: "bigbang",
-            data: "This is fine",
-        },
-        tags: ["fire", "no problem", "it is fine"],
-        image_url: "/images/thisisfine.gif",
-    },
-    {
-        post_id: "2",
-        author_id: "John",
-        created_at: "bigbang",
-        updated_at: "tomorrow",
-        header: {
-            author_id: "John",
-            created_at: "bigbang",
-            data: "This is a title",
-        },
-        body: {
-            author_id: "John",
-            created_at: "bigbang",
-            data: "This is fine",
-        },
-        tags: ["fire", "no problem", "it is fine"],
-        image_url: "/images/thisisfine.gif",
-    }
-];
-
 const JWT_ENCODE = (payload) => {
-    payload.iat = Date.now();
-    payload.exp = Date.UTC(2021, 0, 23);
+    payload.iat = Math.floor(Date.now() / 1000);
+    payload.exp = Date.UTC(2021, 0, 23) / 1000;
     return jwt.encode(payload, JWT_SECRET);
 };
 

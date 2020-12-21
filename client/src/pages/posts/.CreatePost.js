@@ -23,18 +23,6 @@ class NewPostPage extends Component {
     constructor(props) {
         super(props)
         this.postNewPostForm = this.postNewPostForm.bind(this)
-        this.getBase64 = this.getBase64.bind(this)
-    }
-
-    getBase64(file, cb) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            cb(reader.result)
-        };
-        reader.onerror = (error) => {
-            console.log('Error: ', error);
-        };
     }
 
     postNewPostForm(event) {

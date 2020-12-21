@@ -7,30 +7,38 @@ const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
 amqpClient.bindQueue(["ConfirmAccountCreation", "ReturnAccountInfo","ConfirmAccountUpdate", "ConfirmAccountDeletion", "ConfirmBanUser", "ConfirmFlagUser", "ReturnAllFlagged"])
 
+// Queue bindings
+amqpClient.bindQueue(["ConfirmAccountCreation"]);
+
 router.get('/', maybeJWT, function (req, res) {
     res.json(data)
 });
 
 // RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
-
-    const newUser ={
+    const newUser = {
         username:   req.body.username,
         user_email: req.body.email,
         password:   req.body.password,
         role:       0
-    }
+    };
 
-    //amqpClient.sendMessage(newUser, "RequestAccountCreate").then(res => console.log(res))
-
-   /* const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
-    TEST_USERS.push(newUser)
-    res.status(201).json({token, user:newUser});*/
     amqpClient.sendMessage(JSON.stringify(newUser),"RequestAccountCreate",null).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + result);
-            res.status(201).json(result); 
+            var json = JSON.parse(result);
+            //{"status_code":200,"data":{"user_email":"hej@hej.dk","role":"0","updated_at":"2020-12-21 03:26:16","last_login":"2020-12-21 03:26:16","jwt":"merp","created_at":"2020-12-21 03:23:46","username":"hej"},"message":"token created"}
+            const newUser ={
+                username:   json.username,
+                user_email: json.user_email,
+                role:       json.role
+            };
+            var re = {
+                user: newUser
+            }
+            console.log("Received " + re);
+            res.status(201).json(re); 
         }
         else{
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);

@@ -28,14 +28,14 @@ router.get('/tag/:tid', function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "ReturnTag", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body), "RequestTag", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
             res.json(result);
         }
         else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+            res.status(msg.properties.headers.status_code).json(msg.properties.headers.message);
         }
     });
 });
@@ -45,7 +45,7 @@ router.put('/tag/:tid', function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "ConfirmTagUpdate", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body), "UpdateTag", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -62,7 +62,7 @@ router.delete('/tag/:tid', validJWT, function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "ConfirmTagDelete", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body), "DeleteTag", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -79,7 +79,7 @@ router.post('/post/:pid/tags', validJWT, function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "ConfirmAddedTag", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body), "AddTagToPost", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -96,7 +96,7 @@ router.delete('/post/:pid/tags', validJWT, function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "ConfirmTagRemoval", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body), "RemoveTagFromPost", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);

@@ -1,9 +1,9 @@
 const express = require("express");
 const amqpClient = require("./src/amqp/AmqpClient");
 const cookieParser = require("cookie-parser");
+const path = require('path')
 
 const amqpURI = process.env.AMQP_URI;
-const path = require("path");
 amqpClient.createChannel(amqpURI);
 
 // API routers
@@ -63,3 +63,6 @@ console.log('App is listening on port ' + port);
 
 // Capture interruption signal and terminate gracefully
 process.on('SIGINT', () => {console.info("Interrupted"); process.exit(0)})
+
+
+

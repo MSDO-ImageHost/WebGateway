@@ -5,27 +5,21 @@ const router = express.Router();
 const amqpClient = require("../amqp/AmqpClient");
 
 // Queue bindings
-amqpClient.bindQueue(["ConfirmOnePostCreation"]);
+amqpClient.bindQueue(["ConfirmOnePostCreation", "ReturnManyPosts"]);
 
 
 router.post('', validJWT, function (req, res) {
-
-    const newPost = ADD_POST({
+    const newPost = {
         author_id: req.claims.sub,
         header: req.body.header,
         body: req.body.body,
-        image_data: "/images/thisisfine.gif",
+        image_data: [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33], //"/images/thisisfine.gif",
         tags: req.body.tags
+    };
+    amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", {jwt:req.jwt}).then(msg => {
+        msgJson = JSON.parse(msg.content.toString())
+        res.status(201).json(msgJson);
     });
-
-    const msgRes = amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost").then(msg => {
-        console.log("here", msg)
-        res.status(201).json(newPost);
-    });
-
-    msgRes.then(r => {
-        console.log(r)
-    })
 });
 
 router.delete('', validJWT, function (req, res) {
@@ -33,8 +27,10 @@ router.delete('', validJWT, function (req, res) {
 });
 
 router.get('', function (req, res) {
-    //List all posts
-    res.json(TEST_POSTS);
+    amqpClient.sendMessage(JSON.stringify({}), "RequestManyPosts", null).then(msg => {
+        msgJson = JSON.parse(msg.content.toString())
+        res.status(200).json(msgJson);
+    });
 });
 
 router.get('/:pid', function (req, res, next) {
@@ -43,7 +39,7 @@ router.get('/:pid', function (req, res, next) {
 
 // Create a new comment for a post
 router.post('/:pid/comments', validJWT, function (req, res) {
-    //CreateComment on post
+
     const newComment = {
         post_id: req.params['pid'],
         content: req.body.content,
