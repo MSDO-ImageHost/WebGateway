@@ -12,7 +12,7 @@ router.post('/image', validJWT, function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
-        if(msg.properties.headers.http_response === 200){
+        if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
@@ -20,7 +20,7 @@ router.post('/image', validJWT, function (req, res) {
         else{
             // I am assuming you store a error message inside properties.headers.message, change if it is not true.
             // Also has to change is it is status_code, http_response, or a third thing.
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+            res.status(msg.properties.headers.status_code).send("[-] Failed to create image");
         }
     });
 });
@@ -30,13 +30,13 @@ router.get('/image/:iid', function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageLoadResponse",token).then(msg => {
-        if(msg.properties.headers.http_response === 200){
+        if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+            res.status(msg.properties.headers.status_code).send("[-] Failed to get image");
         }
     });
 });
@@ -46,13 +46,13 @@ router.delete('/image/:iid', validJWT, function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",token).then(msg => {
-        if(msg.properties.headers.http_response === 200){
+        if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+            res.status(msg.properties.headers.status_code).send("[-] Failed to delete image");
         }
     });
 });
