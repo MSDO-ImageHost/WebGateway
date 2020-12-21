@@ -40,7 +40,10 @@ router.get('/:id', maybeJWT, function (req, res) {
     var token = {
         "jwt": req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "RequestAccountData", token).then(msg => {
+    const payload = {
+        user_id: req.params['id']
+    }
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountData", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + result);
@@ -70,7 +73,10 @@ router.delete('/:id', validJWT, function (req, res) {
     var token = {
         "jwt": req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "RequestAccountDelete", token).then(msg => {
+    const payload = {
+        user_id: req.params['id']
+    }
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountDelete", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + result);
@@ -86,7 +92,11 @@ router.put('/admin/:id', validJWT, function (req, res) {
     var token = {
         "jwt": req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "UpdateAccountPrivileges", token).then(msg => {
+    const payload = {
+        user_id: req.params['id'],
+        new_role: req.body.new_role
+    }
+    amqpClient.sendMessage(JSON.stringify(payload), "UpdateAccountPrivileges", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + result);
@@ -97,12 +107,16 @@ router.put('/admin/:id', validJWT, function (req, res) {
     });
 });
 
-router.put('/admin/ban', validJWT, function (req, res) {
+router.put('/admin/ban/:id', validJWT, function (req, res) {
     //RequestBanUser
     var token = {
         "jwt": req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "RequestBanUser", token).then(msg => {
+    const payload = {
+        user_id: req.params['id'],
+        permanent: req.body.permanent
+    }
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestBanUser", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + result);
@@ -112,12 +126,15 @@ router.put('/admin/ban', validJWT, function (req, res) {
         }
     });
 });
-router.put('/admin/flag', validJWT, function (req, res) {
+router.put('/admin/flag/:id', validJWT, function (req, res) {
     //RequestFlagUser
     var token = {
         "jwt": req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "RequestFlagUser", token).then(msg => {
+    const payload = {
+        user_id: req.params['id']
+    }
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestFlagUser", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + result);
