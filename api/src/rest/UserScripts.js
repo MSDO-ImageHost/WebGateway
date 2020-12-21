@@ -1,60 +1,105 @@
 const express = require("express");
 const {validJWT, maybeJWT} = require("../jwtAuth");
-
+const amqpClient = require("../amqp/AmqpClient")
 const router = express.Router();
 
-let mock = [
-    {
-        name: "Script 1",
-        owner: "Dude",
-        ownerId: 1,
-        id: 1
-    },
-    {
-        name: "Script 2",
-        owner: "Dude",
-        ownerId: 1,
-        id: 2
-    },
-    {
-        name: "Script 3",
-        owner: "Mod",
-        ownerId: 2,
-        id: 3
-    }
-];
+amqpClient.bindQueue(["ConfirmUserScriptCreation", "ConfirmUserScriptUpdate", "ConfirmUserScriptDeletion", "ConfirmUserScriptRunning", "ReturnUsersUserScripts"]);
 
-router.post('', validJWT, function (req, res) {
+router.post('/CreateUserScript', validJWT, function (req, res) {
     //Creates a script
-    console.log(`Uploaded ${req.body.filename}`);
-    let data = Buffer.from(req.body.file, 'base64');
-    mock.push({
-        name: req.body.filename,
-        owner: req.claims.sub,
-        ownerId: req.claims.sub,
-        id: mock.length+1
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"CreateUserScript",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
     });
-    //TODO: Do something with data
-    res.sendStatus(200);
 });
-router.get('', validJWT, function (req, res) {
+router.get('/FindOwnUserScripts', validJWT, function (req, res) {
     //Gets a list of all scripts this user is allowed to see.
-    res.json(mock)
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.claims.sub),"FindUsersUserScripts",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
 });
-router.get('/:sid', validJWT, function (req, res) {
-    let data = Buffer.from(`Hello world! ${req.params.sid}`);
-    res.send(data)
+router.get('/FindUsersUserScripts', validJWT, function (req, res) {
+    //Gets a list of all scripts this user is allowed to see.
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"FindUsersUserScripts",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
 });
-router.put('/:sid', validJWT, function (req, res) {
+router.put('/UpdateUserScript', validJWT, function (req, res) {
     //Updates a script using its id.
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"UpdateUserScript",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
 });
-router.delete('/:sid', validJWT, function (req, res) {
+router.delete('/DeleteUserScript', validJWT, function (req, res) {
     //Deletes a script using its id.
-    mock = mock.filter((script) => script.id !== parseInt(req.params.sid));
-    res.sendStatus(200)
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"DeleteUserScript",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
 });
-router.get('/:sid/run', validJWT, function (req, res) {
+router.get('/RunUserScript', validJWT, function (req, res) {
     //Gets a script to run using its id.
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"RunUserScript",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
 });
 
 module.exports = router;
