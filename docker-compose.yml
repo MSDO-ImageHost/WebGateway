@@ -2,22 +2,17 @@ version: "3.7"
 
 volumes:
   rabbitmq-data:
-  posts-db-data:
-  auth-db-data:
+  mongo-data:
+  mysql-data:
 
-networks:
-  rabbit-network:
-  auth-network:
-  posts-network:
 
 services:
 
+  ## WORKING
   rabbitmq:
     image: rabbitmq:3-management
     volumes:
       - rabbitmq-data:/var/lib/
-    #networks: 
-    #  - rabbit-network
     ports:
       - 15672:15672
     environment:
@@ -27,12 +22,38 @@ services:
     restart: unless-stopped
 
 
+  ## WORKING
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+      - ${PWD}/.compose-service-files/mongo-entrypoint.js:/docker-entrypoint-initdb.d/entrypoint.js
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
+      - MONGO_HOST=mongodb
+    command: [--auth]
+    restart: unless-stopped
+
+
+  ## WORKING
+  mysql:
+    image: mysql:8
+    command: --init-file /data/application/init.sql
+    volumes:
+      #- mysql-data:/var/lib/mysql
+      -  ${PWD}/.compose-service-files/mysql-init.sql:/data/application/init.sql
+    environment:
+      - MYSQL_ROOT_USERNAME=root
+      - MYSQL_ROOT_PASSWORD=1234
+    restart: unless-stopped
+
+
+  ## WORKING
   gateway:
     build: .
     ports:
       - 5000:5000
-    #networks:
-    #  - rabbit-network 
     environment:
       - TZ=Europe/Copenhagen
       - AMQP_URI=amqp://guest:guest@rabbitmq:5672/
@@ -41,20 +62,17 @@ services:
     restart: unless-stopped
 
 
-  ## Posts ##
+  ## WORKING
   posts:
-    #image: imagehostmad/posts:latest
-    build: ../Posts
-    #networks:
-    #  - rabbit-network
-    #  - posts-network
+    image: imagehostmad/posts:latest
+    #build: ../Posts
     environment:
       - TZ=Europe/Copenhagen
-      - MONGO_CONN_URI=mongodb://root:root@mongo:27017/?readPreference=primary&ssl=false
+      - MONGO_CONN_URI=mongodb://root:rootpassword@mongo:27017/?readPreference=primary&ssl=false
       - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
       - MONGO_HOST=mongo
       - MONGO_USER=root
-      - MONGO_PASS=root
+      - MONGO_PASS=rootpassword
       - AMQP_USER=guest
       - AMQP_PASS=guest
       - AMQP_HOST=rabbitmq
@@ -63,33 +81,8 @@ services:
       - JWT_HMAC_SECRET=secret
     restart: unless-stopped
 
-  mongo:
-    image: mongo:latest
-    volumes:
-      - posts-db-data:/data/db
-      - ${PWD}/.compose-service-files/mongo-entrypoint.js:/docker-entrypoint-initdb.d/entrypoint.js
-    #networks:
-    #  - posts-network
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
-    command: [--auth]
-    restart: unless-stopped
-  mongo-express:
-    image: mongo-express
-    ports:
-      - 8081:8081
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=root
-    #networks:
-    #  - posts-network
-    restart: always
-  ## End of Posts ##
 
-
-
-  ## Authentication ##
+  ## WORKING
   authentication:
     image: imagehostmad/authentication:latest
     environment:
@@ -101,21 +94,75 @@ services:
       - RABBITMQ_USER=guest
       - RABBITMQ_PASS=guest
       - RABBITMQ_HOST=rabbitmq
-    #networks:
-    #  - rabbit-network
-    #  - auth-network
     restart: unless-stopped
 
-  mysql:
-    image: mysql:8
-    command: --init-file /data/application/init.sql
-    volumes:
-      - auth-db-data:/var/lib/mysql
-      - .compose-service-files/auth-init.sql:/data/application/init.sql
+
+  ## WORKING
+  likes:
+    image: imagehostmad/likes:latest
     environment:
       - MYSQL_ROOT_PASSWORD=1234
-      - MYSQL_DATABASE=authentication
-    #networks:
-    #  - auth-network
-    restart: always
-  ## End of Authentication ##
+      - MYSQL_USER=root
+      - MYSQL_DB=Likes
+      - MYSQL_PORT=3306
+      - MYSQL_HOST=mysql
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - RABBITMQ_HOST=rabbitmq
+    restart: unless-stopped
+
+
+  ## WORKING
+  tags:
+    image: imagehostmad/tags:latest
+    environment:
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOST=rabbitmq
+      - AMQP_URI=amqp://guest:guest@rabbitmq:5672
+      - MYSQL_USER=dbadmin
+      - MYSQL_PASSWORD=1234
+      - MYSQL_HOST=mysql
+      - SECRET_KEY=secret
+    restart: unless-stopped
+
+
+  ## WORKING
+  comments:
+    image: imagehostmad/comments:main
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - MYSQL_DATABASE=commentdb
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=1234
+      - MYSQL_ROOT_PASSWORD=1234
+    restart: unless-stopped
+
+
+  # WORKING
+  userscripts:
+    image: imagehostmad/user-scripts:latest
+    environment:
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOST=rabbitmq
+      - MONGO_USERNAME=root
+      - MONGO_PASSWORD=rootpassword
+      - MONGO_HOST=mongo
+    restart: unless-stopped
+
+
+
+  imagestorage:
+    image: imagehostmad/imagestorage:main
+    #build: https://github.com/MSDO-ImageHost/ImageStorage.git
+    environment:
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOST=rabbitmq
+    restart: unless-stopped
+  
