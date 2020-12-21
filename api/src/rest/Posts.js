@@ -64,10 +64,10 @@ router.get('/:pid/history', function (req, res) {
 router.post('/:pid/comments', validJWT, function (req, res) {
     const token = {"jwt":req.cookies["_auth_t"]}
     const payload = {
+        user_id: req.claims.sub,
         post_id: req.params['pid'],
         content: req.body.content
     }
-
     amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
@@ -78,16 +78,6 @@ router.post('/:pid/comments', validJWT, function (req, res) {
             res.status(msg.properties.headers.http_response).send("Failed to create comment.");
         }
     });
-    /*
-    const newComment = {
-        post_id: req.params['pid'],
-        content: req.body.content,
-        author_id: 'Christian',
-        created_at: Date.now(),
-        comment_id: TEST_COMMENTS.length
-    }
-    TEST_COMMENTS.push(newComment)
-    res.status(201).json(newComment)*/
 });
 
 
@@ -97,7 +87,10 @@ router.get('/:pid/comments', function (req, res, next) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestCommentsForPost",token).then(msg => {
+    const payload = {
+        comment_id: req.params['pid']
+    }
+    amqpClient.sendMessage(JSON.stringify(payload),"RequestCommentsForPost",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
