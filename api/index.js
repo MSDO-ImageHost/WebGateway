@@ -3,7 +3,7 @@ const amqpClient = require("./src/amqp/AmqpClient");
 const cookieParser = require("cookie-parser");
 
 const amqpURI = process.env.AMQP_URI;
-
+const path = require("path");
 amqpClient.createChannel(amqpURI);
 
 // API routers
@@ -50,12 +50,12 @@ app.get('/ping', function(req, res) {
 });
 
 // Serve the static files from the React app
-//app.use(express.static(path.join(__dirname, '../client/build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Handles any requests that don't match the ones above
-//app.get('*', (req, res) => {
-//    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-//});
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port);
