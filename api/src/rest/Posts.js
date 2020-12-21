@@ -132,7 +132,5 @@ router.delete('/', validJWT, function (req, res) {
 });
 
 
-const imageRouter = express.router();
-//TODO: Implement Image Router
 
-module.exports = {api: router, images: imageRouter};
+module.exports = router;
