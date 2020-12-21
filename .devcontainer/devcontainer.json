@@ -7,11 +7,16 @@
     "runServices": [
         "vscode",
         "rabbitmq",
-        "posts",
         "mongo",
-        "authentication",
         "mysql",
-        "mongo-express"
+        "mongo-express",
+        "authentication",
+        "posts",
+        "tags",
+        "likes",
+        "comments",
+        "userscripts",
+        "imagestorage"
     ],
     "shutdownAction": "stopCompose",
     //"postCreateCommand": "npm install",

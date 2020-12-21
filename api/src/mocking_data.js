@@ -4,6 +4,7 @@ const JWT_SECRET = "secret";
 const TEST_USERS = [];
 const TEST_COMMENTS = [];
 const TEST_POSTS = [];
+const TEST_IMAGES = [];
 
 const JWT_ENCODE = (payload) => {
     payload.iat = Math.floor(Date.now() / 1000);
@@ -39,4 +40,4 @@ const ADD_POST = (newPostData) => {
     return newPost
 }
 
-module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET, TEST_USERS};
+module.exports = {TEST_POSTS, TEST_COMMENTS, JWT_ENCODE, JWT_DECODE, ADD_POST, JWT_SECRET, TEST_USERS, TEST_IMAGES};

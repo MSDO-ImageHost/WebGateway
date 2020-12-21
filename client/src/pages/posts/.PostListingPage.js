@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import '../../App.css';
 
 // Server communication
+import axios from 'axios';
 import { Get } from 'react-axios';
 import { HttpStatusMessage } from '../../ui_components/HttpStatusMessage';
 
@@ -40,12 +41,53 @@ class PostListingEntry extends Component {
             <Card.Body>
                 <Card.Title>{post.header.data}</Card.Title>
                 <Card.Subtitle>{post.header.author_id}</Card.Subtitle>
-                <Card.Img variant="top" src={post.image_url} />
+                <PostImageView data={post}/>
+                {/* <Card.Img variant="top" src={post.image_url} /> */}
                 <Card.Text>{post.body.data}</Card.Text>
                 <Link to={{pathname: `/posts/${post.post_id}`, state: post}}><Button variant="primary">Open post</Button></Link>
                 <Card.Footer>{post.tags}</Card.Footer>
             </Card.Body>
         </Card>
+    }
+}
+
+
+class PostLikesElement extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {likes: -1, has_liked: false}
+        this.fetchLikesData = this.fetchLikesData.bind(this)
+        this.fetchLikesData()
+    }
+    fetchLikesData() {
+        const post = this.props.data
+        axios.get(`/api/likes/${post.post_id}`).then(res => {
+            if(res.status !== 200) return this.setState({image_data:'/images/thisisfine.gif'})
+            this.setState({ likes: res.data.likes })
+        })
+    }
+    render () {
+        return <p>{this.state.image_data}</p>
+    }
+}
+class PostImageView extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {image_data: {}}
+        this.fetchImageData = this.fetchImageData.bind(this)
+        this.fetchImageData()
+    }
+    fetchImageData() {
+        const post = this.props.data
+        axios.get(`/api/images/${post.post_id}`).then(res => {
+            if(res.status !== 200) return this.setState({image_data:'/images/thisisfine.gif'})
+            this.setState({image_data: `data:image/png;base64,${res.data.image_data}`})
+        })
+    }
+    render () {
+        return <Card.Img variant="top" src={this.state.image_data}/>
     }
 }
 

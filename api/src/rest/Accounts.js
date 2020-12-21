@@ -22,16 +22,10 @@ router.post('/', function (req, res) {
         password: req.body.password,
         role: 0
     };
-    console.log
-    //const token = JWT_ENCODE({sub:"0", role:0, iss: "ImageHost.sdu.dk"});
-    //TEST_USERS.push(newUser)
-    //res.status(201).json({token, user:newUser});
-    //return
 
     amqpClient.sendMessage(JSON.stringify(newUser), "RequestAccountCreate", null).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + result);
             var json = JSON.parse(result);
             //{"status_code":200,"data":{"user_email":"hej@hej.dk","role":"0","updated_at":"2020-12-21 03:26:16","last_login":"2020-12-21 03:26:16","jwt":"merp","created_at":"2020-12-21 03:23:46","username":"hej"},"message":"token created"}
             res.status(201).json({user: json});

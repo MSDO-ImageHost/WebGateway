@@ -1,3 +1,5 @@
+const {TEST_IMAGES} = require("../mocking_data");
+
 const express = require("express");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 const amqpClient = require("../amqp/AmqpClient");
@@ -25,10 +27,12 @@ router.post('/', validJWT, function (req, res) {
     });
 });
 router.get('/:iid', function (req, res) {
-    //Gets an image using its id
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
+    res.status(200).json(TEST_IMAGES[TEST_IMAGES.length-1])
+    return
+
+    const token = {"jwt":req.cookies["_auth_t"]}
+    const post_id = req.params['iid']
+
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageLoadResponse",token).then(msg => {
         if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();

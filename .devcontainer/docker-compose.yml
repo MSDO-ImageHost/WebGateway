@@ -2,8 +2,8 @@ version: "3.7"
 
 volumes:
   rabbitmq-data:
-  posts-db-data:
-  auth-db-data:
+  mongo-data:
+  mysql-data:
 
 services:
   vscode:

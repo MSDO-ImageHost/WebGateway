@@ -1,4 +1,4 @@
-const {TEST_POSTS, TEST_COMMENTS, ADD_POST} = require("../mocking_data");
+const {TEST_IMAGES} = require("../mocking_data");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 const express = require("express");
 const router = express.Router();
@@ -26,7 +26,9 @@ router.post('/', validJWT, function (req, res) {
         image_data: req.body.image_data.base64.split(',')[1],
         tags: req.body.tags.replace(' ', '').split(',')
     };
-    console.log(newPost)
+
+    TEST_IMAGES.push({image_data: newPost.image_data})
+
     amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", {jwt:req.jwt}).then(msg => {
         msgJson = JSON.parse(msg.content.toString())
         res.status(201).json(msgJson);
