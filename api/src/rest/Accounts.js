@@ -16,32 +16,27 @@ router.get('/', maybeJWT, function (req, res) {
 
 // RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
-
- /*   const newUser ={
+    const newUser = {
         username:   req.body.username,
         user_email: req.body.email,
         password:   req.body.password,
-        role:       "0"
+        role:       0
     };
-
-    //amqpClient.sendMessage(JSON.stringify(newUser), {}, "RequestAccountCreate").then(msg => {
-    //    console.log("here", msg)
-    //    res.status(201).json(newPost);
-    //});
-    
-    const token = JWT_ENCODE({sub:0, role:0, iss: "ImageHost.sdu.dk"});
+    const token = JWT_ENCODE({sub:"0", role:0, iss: "ImageHost.sdu.dk"});
     TEST_USERS.push(newUser)
-    res.status(201).json({token, user:newUser});*/
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountCreate",null).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
-        }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
-    });
+    res.status(201).json({token, user:newUser});
+
+    //amqpClient.sendMessage(JSON.stringify(newUser),"RequestAccountCreate",null).then(msg => {
+    //    if(msg.properties.headers.status_code === 200){
+    //        const result = msg.content.toString();
+    //        console.log("Received " + result);
+//
+    //        res.status(201).json({jwt, newUser});
+    //    }
+    //    else{
+    //        res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+    //    }
+    //});
 });
 
 router.get('/:id', maybeJWT, function (req, res) {

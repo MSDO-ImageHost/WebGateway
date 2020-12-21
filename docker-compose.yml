@@ -34,8 +34,7 @@ services:
 
   ## Posts ##
   posts:
-    #image: imagehostmad/posts:latest
-    build: ../Posts
+    image: imagehostmad/posts:latest
     environment:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
@@ -48,6 +47,11 @@ services:
     volumes:
       - posts-db-data:/data/db
     restart: unless-stopped
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    restart: always
   ## End of Posts ##
 
 

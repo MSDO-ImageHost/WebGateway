@@ -9,8 +9,8 @@
         "rabbitmq",
         "posts",
         "mongo",
-        //"authentication",
-        //"mysql"
+        "authentication",
+        "mysql"
     ],
     "shutdownAction": "stopCompose",
     //"postCreateCommand": "npm install",

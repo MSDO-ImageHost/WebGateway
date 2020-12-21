@@ -27,7 +27,6 @@ class SigninView extends Component {
         event.preventDefault();
         const formData = {
             username: event.target.usernameField.value,
-            email: event.target.emailField.value,
             password: event.target.passwordField.value
         }
 
@@ -55,7 +54,6 @@ class SigninView extends Component {
             <h1>Enter credentials to login</h1>
             <Form onSubmit={this.postLoginForm}>
                 <FormFieldGroup form={{id:"usernameField", title:"Nickname", type:"text", ph:"Enter nickname"}}/>
-                <FormFieldGroup form={{id:"emailField", title:"Email", type:"email", ph:"Enter email"}}/>
                 <FormFieldGroup form={{id:"passwordField", title:"Password", type:"password", ph:"Password"}}/>
                 <Form.Text className="text-muted">Not signed up yet? Don't worry, you can sign up <Link to="signup">here</Link></Form.Text>
                 <Button variant="primary" type="submit" style={{float: 'right'}}>Sign in</Button>

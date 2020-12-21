@@ -9,25 +9,19 @@ amqpClient.bindQueue(["ConfirmOnePostCreation"]);
 
 
 router.post('', validJWT, function (req, res) {
-
-    const newPost = ADD_POST({
+    const newPost = {
         author_id: req.claims.sub,
         header: req.body.header,
         body: req.body.body,
-        image_data: "/images/thisisfine.gif",
+        image_data: [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33], //"/images/thisisfine.gif",
         tags: req.body.tags
+    };
+
+    amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", {jwt:req.jwt}).then(msg => {
+        msgJson = JSON.parse(msg.content.toString())
+        console.log(msgJson)
+        res.status(201).json(msgJson);
     });
-
-    const headers = { "jwt": req.jwt }
-
-    const msgRes = amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", headers).then(msg => {
-        console.log("here", msg)
-        res.status(201).json(newPost);
-    });
-
-    msgRes.then(r => {
-        console.log(r)
-    })
 });
 
 router.delete('', validJWT, function (req, res) {
