@@ -26,7 +26,7 @@ var amqpPromise;
         channel.responseEmitter = new EventEmitter();
         channel.responseEmitter.setMaxListeners(0);
         channel.consume(QUEUE, function(msg) {
-            console.log("[x] " + msg.properties);
+            console.log(" [x] " + msg);
             channel.responseEmitter.emit(msg.properties.correlationId, msg);
         } , { noAck: true } );
         return channel;
@@ -54,14 +54,15 @@ const bindQueue = (events) => {
  * @params {String} event - name of the event
  * @returns {Promise} - return msg that send back from consumer
  */
-const sendMessage = (message, event) => new Promise(resolve => {
+const sendMessage = (message, event, headers) => new Promise(resolve => {
     amqpPromise.then( (channel) => {
         console.log(" [x] Sending " + event);
         const cID = uuid();
         channel.responseEmitter.once(cID, resolve);
         var options = {
             correlationId: cID,
-            contentType: "application/json"
+            contentType: "application/json",
+            headers: headers
         };
         channel.publish(EXCHANGE,event,Buffer.from(message), options);
     }).catch( () => {

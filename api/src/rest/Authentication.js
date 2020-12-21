@@ -21,7 +21,7 @@ router.post('', function (req, res) {
     //    return res.status(401).send()
     //}
     //res.status(200).json({token, user:found});
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestLoginToken").then(msg => {
+    amqpClient.sendMessage(JSON.stringify(req.body),"RequestLoginToken",null).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + result);
@@ -45,12 +45,18 @@ router.post('', function (req, res) {
 // Updates a users password
 router.put('', validJWT, function (req, res) {
     //RequestAccountPasswordUpdate
-    // FOR LATER: jwt = req.cookies["_auth_t"]
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountPasswordUpdate").then(msg => {
-        const result = JSON.parse(msg.toString());
-        console.log("Inside data: " + JSON.stringify(result.data));
-        console.log("Received " + msg.toString());
-        res.json(result);
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountPasswordUpdate",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + result);
+            res.json(result); 
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
     });
 });
 
@@ -59,6 +65,7 @@ router.put('', validJWT, function (req, res) {
 // Look at later! 
 router.delete('', validJWT, function (req, res) {
     //invalidate token
+    res.status(200).send("Token invalidated");
     
 });
 
