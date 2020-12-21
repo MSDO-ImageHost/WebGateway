@@ -19,10 +19,10 @@ const Comments = require("./src/rest/Comments.js");
 
 const app = express();
 
-
 // Middleware parsers
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
+//app.use('/api/posts', express.json({ limit: '10mb' }));
 
 // Custom middleware
 app.use(function timeLog(req, res, next) {

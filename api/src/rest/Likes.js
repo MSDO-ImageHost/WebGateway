@@ -19,7 +19,7 @@ router.get('/post/:pid/likes/:userid', validJWT, function (req, res) {
         }
     });
 });
-    
+
 router.put('/post/:pid/likes/:userid',validJWT, function (req, res) {
     //UpdateLike
     var token = {
@@ -36,6 +36,7 @@ router.put('/post/:pid/likes/:userid',validJWT, function (req, res) {
         }
     });
 });
+
 router.get('/post/:pid/likes', function (req, res) {
     //RequestLikesForPost
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestLikesForPost",null).then(msg => {

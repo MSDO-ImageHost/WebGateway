@@ -21,9 +21,10 @@ router.post('/', validJWT, function (req, res) {
     const newPost = {
         header: req.body.header,
         body: req.body.body,
-        image_data: [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33], //"/images/thisisfine.gif",
-        tags: req.body.tags
+        image_data: req.body.image_data.base64,
+        tags: req.body.tags.replace(' ', '').split(',')
     };
+    //console.log(JSON.stringify(newPost))
     amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", {jwt:req.jwt}).then(msg => {
         msgJson = JSON.parse(msg.content.toString())
         res.status(201).json(msgJson);
