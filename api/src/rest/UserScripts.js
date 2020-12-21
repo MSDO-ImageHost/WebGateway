@@ -3,7 +3,7 @@ const {validJWT, maybeJWT} = require("../jwtAuth");
 const amqpClient = require("../amqp/AmqpClient")
 const router = express.Router();
 
-amqpClient.bindQueue(["ConfirmUserScriptCreation", "ConfirmUserScriptUpdate", "ConfirmUserScriptDeletion", "ConfirmUserScriptRunning", "ReturnUsersUserScripts"]);
+amqpClient.bindQueue(["ConfirmUserScriptCreation", "ConfirmUserScriptUpdate", "ConfirmUserScriptDeletion", "ConfirmUserScriptRunning", "ReturnUsersUserScripts", "ReturnUserScript"]);
 
 router.post('/CreateUserScript', validJWT, function (req, res) {
     //Creates a script
@@ -26,7 +26,10 @@ router.get('/FindOwnUserScripts', validJWT, function (req, res) {
     var token = {
         "jwt":req.cookies["_auth_t"]
     }
-    amqpClient.sendMessage(JSON.stringify(req.claims.sub),"FindUsersUserScripts",token).then(msg => {
+    var body = {
+      "user_id":req.claims.sub
+    }
+    amqpClient.sendMessage(body,"FindUsersUserScripts",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
@@ -43,6 +46,22 @@ router.get('/FindUsersUserScripts', validJWT, function (req, res) {
         "jwt":req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"FindUsersUserScripts",token).then(msg => {
+        if(msg.properties.headers.status_code === 200){
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else{
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
+    });
+});
+router.get('/FindUserScript', validJWT, function (req, res) {
+    //Gets a list of all scripts this user is allowed to see.
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    amqpClient.sendMessage(JSON.stringify(req.body),"FindUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());

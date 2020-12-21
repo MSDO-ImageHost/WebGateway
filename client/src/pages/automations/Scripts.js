@@ -64,12 +64,11 @@ class ScriptsPage extends Component {
     }
 }
 
-//Is this finduserscript?
 class ScriptListingEntry extends Component {
     render() {
         console.log(this.props);
         const handleDownload = (script_name, script_id) => {
-            axios.get("/api/scripts/" + script_id, {responseType: "blob"}).then(
+            axios.get("/api/scripts/FindUserScript", {"user_script":script_id}, {responseType: "blob"}).then(
                 (response) => {
                     fileDownload(response.data, script_name)
                 }
