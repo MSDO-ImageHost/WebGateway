@@ -12,6 +12,8 @@ import PostLikesElement from './.PostLikesElement';
 import PostImageElement from './.PostImageElement';
 import PostUserElement from './.PostUserElement';
 import PostTagsElement from './.PostTagsElement';
+import AuthorButtons from './.AuthorButtons';
+
 
 // Server communication
 import { Get } from 'react-axios';
@@ -43,7 +45,7 @@ class FullPostPage extends Component {
                         <Col md={4}><PostUserElement data={post}/>{date} @ {clock}</Col>
                         <Col md={1}></Col>
                         <Col md={4}><PostTagsElement data={post}/></Col>
-                        <Col md={2}></Col>
+                        <Col md={2}><AuthorButtons data={post}/></Col>
                         <Col md={1}><PostLikesElement data={post}/></Col>
                     </Row>
                 </Card.Footer>

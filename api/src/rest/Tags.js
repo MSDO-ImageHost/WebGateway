@@ -21,7 +21,6 @@ router.post('/tag', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body), "CreateTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {
@@ -39,7 +38,6 @@ router.get('/:tid', function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload), "RequestTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {
@@ -60,7 +58,6 @@ router.put('/:tid', function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload), "UpdateTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {
@@ -79,7 +76,6 @@ router.delete('/:tid', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload), "DeleteTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {
@@ -98,7 +94,6 @@ router.get('/:tid/posts', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload), "RequestPostsForTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {
@@ -119,7 +114,6 @@ router.post('/post/:pid/tags', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload), "AddTagToPost", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {
@@ -140,7 +134,6 @@ router.delete('/post/:pid/tags', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload), "RemoveTagFromPost", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + msg.content);
             res.json(result);
         }
         else {

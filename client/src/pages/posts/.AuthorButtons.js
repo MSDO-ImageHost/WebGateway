@@ -26,11 +26,23 @@ import Col from "react-bootstrap/esm/Col";
 
 class AuthorButtons extends Component {
 
+    constructor(props) {
+        super(props)
+        this.deletePost = this.deletePost.bind(this)
+    }
+
+    deletePost () {
+        console.log("deleting post")
+        axios.delete(`/api/posts/${this.props.data.post_id}`, {}).then(res => {
+            console.log(res)
+        })
+    }
+
     render() {
-        return <Button>
-            
-        </Button>
+        return <Button onClick={this.deletePost} variant="danger">Delete</Button>
     }
 }
 
+
+export default AuthorButtons
 
