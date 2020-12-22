@@ -70,7 +70,7 @@ class ScriptListingEntry extends Component {
         const handleDownload = (script_id) => {
             axios.post("/api/scripts/FindUserScript", {"user_script":script_id}).then(
                 (response) => {
-                    fileDownload(JSON.stringify(response.data["user_script"]["logs"]), "logs.txt")
+                    fileDownload(JSON.stringify(logs.map(log => ${log.created_at}: ${log.log}\n)), "logs.txt")
                 }
             )
         };
@@ -88,8 +88,6 @@ class ScriptListingEntry extends Component {
         return <Row>
             <Col xs={1}>{this.props.main_file}</Col>
             <Col>{this.props.language}</Col>
-            <Col>{this.props.owner}</Col>
-
             <Col>
                 <Button variant="outline-primary" onClick={() => {
                     handleDownload(this.props._id)
