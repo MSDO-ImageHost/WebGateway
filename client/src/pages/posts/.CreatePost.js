@@ -61,8 +61,7 @@ class NewPostPage extends Component {
                 {/* Image upload */}
                 <Form.Group as={Row} controlId="newPostImage">
                     <Form.Label column sm={2}>Image</Form.Label>
-                    {/* <Col sm={10}><Form.File label="Custom file input" custom/></Col> */}
-                    <Col sm={10}><FileBase64 multiple={ true } onDone={ this.getImageFile.bind(this) } required/></Col>
+                    <Col sm={10}><FileBase64 multiple={ false } onDone={ this.getImageFile.bind(this) } required/></Col>
                 </Form.Group>
                 {<Image src={this.state.image_file.base64} fluid />}
 

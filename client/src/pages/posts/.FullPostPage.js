@@ -52,11 +52,7 @@ class FullPostPage extends Component {
                     </Row>
                 </Card.Footer>
             </Card>
-            <Row>
-                <Col></Col><div style={{marginTop: '10px'}}>
-                    <AuthorizeNewCommentForm post={post}/>
-                </div>
-            </Row>
+            <div style={{marginTop: '10px'}}><AuthorizeNewCommentForm post={post}/></div>
             <Get url={`/api/posts/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
                 if(error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading, makeRequest)

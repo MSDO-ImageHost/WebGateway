@@ -37,10 +37,11 @@ class NewCommentForm extends Component {
 
     render () {
         return <Form onSubmit={this.postCommentContent}>
-            <Form.Group as={Row} controlId="submitPostComment">
-                {/* <Form.Label column sm={2}>Comment</Form.Label> */}
-                <Col><Form.Control as="textarea" placeholder="Publish your opinion" required/></Col>
-                <Button variant="primary" type="submit">Submit</Button>
+            <Form.Group controlId="submitPostComment">
+                <Row>
+                    <Col ><Form.Control as="textarea" placeholder="Publish your opinion" required/></Col>
+                    <Col md={{span:1, offset:0}}><Button variant="primary" type="submit">Post</Button></Col>
+                </Row>
             </Form.Group>
         </Form>
     }

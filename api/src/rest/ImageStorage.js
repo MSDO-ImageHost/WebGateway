@@ -9,13 +9,8 @@ amqpClient.bindQueue(["ImageLoadResponse", "ImageCreateRequest", "ImageDeleteReq
 
 
 router.get('/:iid', function (req, res) {
-    //return res.status(200).json({image_data: `data:image/jpeg;base64,${BASE64_IMAGE}`})
-
     const headers = {jwt:req.cookies['_auth_t']}
     const post_id = {post_id: req.params['iid']}
-
-    console.log(headers, post_id)
-
     amqpClient.sendMessage(JSON.stringify(post_id), "ImageLoadRequest", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200){
             const result = JSON.parse(msg.content.toString());
