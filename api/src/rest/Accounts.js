@@ -16,6 +16,7 @@ router.get('/', maybeJWT, function (req, res) {
 
 // RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
+    //RequestAccountCreate
     const newUser = {
         username: req.body.username,
         user_email: req.body.email,
@@ -74,8 +75,7 @@ router.delete('/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        const result = JSON.parse(msg.content.toString());
-        res.json(result);
+        res.status(204); //Nothing is returned from authentication.
     });
 });
 
@@ -90,8 +90,7 @@ router.put('/admin/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        const result = JSON.parse(msg.content.toString());
-        res.json(result);
+        res.status(204); //Nothing is returned from authentication.
     });
 });
 
@@ -106,8 +105,7 @@ router.put('/admin/ban/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        const result = JSON.parse(msg.content.toString());
-        res.json(result);
+        res.status(204); //Nothing is returned from authentication.
     });
 });
 router.put('/admin/flag/:id', validJWT, function (req, res) {
@@ -120,8 +118,7 @@ router.put('/admin/flag/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        const result = JSON.parse(msg.content.toString());
-        res.json(result);
+        res.status(204); //Nothing is returned from authentication.
     });
 });
 router.get('/admin/flag', validJWT, function (req, res) {
@@ -136,6 +133,7 @@ router.get('/admin/flag', validJWT, function (req, res) {
     });
 });
 router.get('/:id/posts', maybeJWT, function (req, res) {
+    //RequestUserPosts
     amqpClient.sendMessage(JSON.stringify({"author_id": req.params.id}), "RequestUserPosts", null).then(msg => {
         msgJson = JSON.parse(msg.content.toString());
         res.status(200).json(msgJson);
