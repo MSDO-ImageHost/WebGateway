@@ -76,6 +76,15 @@ paths:
       responses:
         default:
           description: Default response
+  /users/{id}/name:
+    get:
+      summary: Gets the username for a user using its id.
+      description: ''
+      parameters: []
+      operationId: getUsername
+      responses:
+        default:
+          description: Default response
   /users:
     post:
       summary: Create a user which can be used to login
