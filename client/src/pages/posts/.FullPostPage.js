@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 // Auth
-import { useAuthUser, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, withAuthUser, useIsAuthenticated } from 'react-auth-kit';
 
 // Application components
 import '../../App.css';
@@ -28,11 +28,14 @@ import Col from "react-bootstrap/esm/Col";
 
 class FullPostPage extends Component {
 
+
     render() {
         const post = this.props.location.state
         const dateObj = new Date(post.created_at)
         const clock = dateObj.toLocaleTimeString()
         const date = dateObj.toDateString()
+        const author_control = this.props.authState && this.props.authState.user_id === post.author_id ? <AuthorButtons data={post}/> : null
+
         return <Container>
             <Card border="primary" style={{ width: '100%', marginTop: '10px'}}>
                 <PostImageElement data={post}/>
@@ -45,7 +48,7 @@ class FullPostPage extends Component {
                         <Col md={4}><PostUserElement data={post}/>{date} @ {clock}</Col>
                         <Col md={1}></Col>
                         <Col md={4}><PostTagsElement data={post}/></Col>
-                        <Col md={2}><AuthorButtons data={post}/></Col>
+                        <Col md={2}>{author_control}</Col>
                         <Col md={1}><PostLikesElement data={post}/></Col>
                     </Row>
                 </Card.Footer>
@@ -67,10 +70,10 @@ class FullPostPage extends Component {
     }
 }
 
+//  <AuthorButtons data={post}/>
+
 const AuthorizeNewCommentForm = (post) => {
     return !useIsAuthenticated()() ?  null : (<NewCommentForm data={post}/>)
 }
 
-export {
-    FullPostPage,
-}
+export default withAuthUser(FullPostPage)

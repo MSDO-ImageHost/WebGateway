@@ -29,7 +29,7 @@ router.delete('/:iid', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",headers).then(msg => {
         if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
+            //console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{

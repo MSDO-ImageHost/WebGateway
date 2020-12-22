@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 // Auth
-import { useAuthUser, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, withIsAuthenticated } from 'react-auth-kit';
 
 // Application components
 import '../../App.css';
@@ -32,9 +32,10 @@ class AuthorButtons extends Component {
     }
 
     deletePost () {
-        console.log("deleting post")
         axios.delete(`/api/posts/${this.props.data.post_id}`, {}).then(res => {
-            console.log(res)
+            if(res.status !== 200) return alert("Oh noooo. An error occurred")
+            //this.location.history.push("/")
+            window.location.replace("/");
         })
     }
 

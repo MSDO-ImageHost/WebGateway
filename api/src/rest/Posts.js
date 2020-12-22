@@ -124,20 +124,19 @@ router.put('/:pid', validJWT, function (req, res) {
     const updatedPost = { post_id: res.params['pid'], header: req.body.header, body: req.body.body};
     amqpClient.sendMessage(JSON.stringify(updatedPost), "UpdateOnePost", headers).then(msg => {
         msgJson = JSON.parse(msg.content.toString())
-        res.status(204).json(msgJson);
+        res.status(200).json(msgJson);
     });
 });
 
 // Delete one post using it's id
 router.delete('/:pid', validJWT, function (req, res) {
     const headers = {jwt:req.jwt}
-    payload = {post_id: res.params['pid']}
-    return res.status(200).send()
+    payload = {post_id: req.params['pid']}
 
-    console.log(headers, post_id)
+    console.log(headers, payload)
     amqpClient.sendMessage(JSON.stringify(payload), "DeleteOnePost", headers).then(msg => {
         const result = JSON.parse(msg.content.toString())
-        res.status(204).json(result);
+        res.status(200).json(result);
     });
 });
 

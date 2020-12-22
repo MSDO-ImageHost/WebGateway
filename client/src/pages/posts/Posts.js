@@ -1,5 +1,5 @@
 import NewPostPage from './.CreatePost';
-import { FullPostPage } from './.FullPostPage';
+import FullPostPage from './.FullPostPage';
 import { PostListingPage, PostListingEntry } from './.PostListingPage';
 
 
