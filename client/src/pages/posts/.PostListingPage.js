@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 // App components
 import '../../App.css';
+import PostLikesElement from './.PostLikesElement';
 
 // Server communication
 import axios from 'axios';
@@ -13,6 +14,8 @@ import { HttpStatusMessage } from '../../ui_components/HttpStatusMessage';
 import Container from "react-bootstrap/esm/Container";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 
 class PostListingPage extends Component {
@@ -37,40 +40,69 @@ class PostListingPage extends Component {
 class PostListingEntry extends Component {
     render() {
         const post = this.props.data
+        const dateObj = new Date(post.created_at)
+        const clock = dateObj.toLocaleTimeString()
+        const date = dateObj.toDateString()
+
         return <Card border="primary" style={{ width: '100%', marginTop: '10px'}}>
+            <Card.Img src="/images/thisisfine.gif" />
             <Card.Body>
                 <Card.Title>{post.header.data}</Card.Title>
-                <Card.Subtitle>{post.header.author_id}</Card.Subtitle>
-                <PostImageView data={post}/>
-                {/* <Card.Img variant="top" src={post.image_url} /> */}
+                {/* <PostImageView data={post}/> */}
                 <Card.Text>{post.body.data}</Card.Text>
-                <Link to={{pathname: `/posts/${post.post_id}`, state: post}}><Button variant="primary">Open post</Button></Link>
-                <Card.Footer>{post.tags}</Card.Footer>
             </Card.Body>
+            <Card.Footer className="text-muted">
+                <Row>
+                    <Col md={3}><PostUserElement data={post}/>{date} @ {clock}</Col>
+                    <Col md={4}></Col>
+                    <Col md={2}><PostLikesElement data={post}/></Col>
+                    <Col md={2}><Link style={{float: 'right'}} to={{pathname: `/posts/${post.post_id}`, state: post}}><Button variant="primary">Read post</Button></Link></Col>
+                </Row>
+            </Card.Footer>
         </Card>
     }
 }
 
 
-class PostLikesElement extends Component {
-
+class PostTagsElement extends Component {
     constructor(props) {
         super(props)
-        this.state = {likes: -1, has_liked: false}
-        this.fetchLikesData = this.fetchLikesData.bind(this)
-        this.fetchLikesData()
+        this.state = {tags: []}
+        this.fetchTags = this.fetchTags.bind(this)
+        this.fetchTags()
     }
-    fetchLikesData() {
+    fetchTags() {
         const post = this.props.data
-        axios.get(`/api/likes/${post.post_id}`).then(res => {
-            if(res.status !== 200) return this.setState({image_data:'/images/thisisfine.gif'})
-            this.setState({ likes: res.data.likes })
+        axios.get(`/api/posts/${post.post_id}/tags/`).then(res => {
+            if(res.status !== 200) return
+            this.setState({ tags: res.data.tags })
         })
     }
     render () {
-        return <p>{this.state.image_data}</p>
+        return <p>{this.state.tags}</p>
     }
 }
+
+
+// Renders the user name and link (to users account) button
+class PostUserElement extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {username: this.props.data.author_id}
+        this.fetcUserData = this.fetcUserData.bind(this)
+        this.fetcUserData()
+    }
+    fetcUserData() {
+        axios.get(`/api/users/${this.props.data.author_id}`).then(res => {
+            if(res.status !== 200) return
+            this.setState({ username: res.data.username })
+        })
+    }
+    render () { return <div>Posted by <Link to={{pathname: `/accounts/${this.props.data.author_id}`}}>{this.state.username}</Link></div>}
+}
+
+// Renders the image
 class PostImageView extends Component {
 
     constructor(props) {
@@ -86,9 +118,7 @@ class PostImageView extends Component {
             this.setState({image_data: `data:image/png;base64,${res.data.image_data}`})
         })
     }
-    render () {
-        return <Card.Img variant="top" src={this.state.image_data}/>
-    }
+    render () { return <Card.Img variant="top" src={this.state.image_data}/> }
 }
 
 

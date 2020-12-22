@@ -8,35 +8,17 @@ const router = express.Router();
 
 amqpClient.bindQueue(["ImageLoadRequest", "ImageCreateRequest", "ImageDeleteRequest"]);
 
-router.post('/', validJWT, function (req, res) {
-    //Creates an image
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
-        if(msg.properties.headers.status_code != 400){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
-            res.json(result);
-        }
-        else{
-            // I am assuming you store a error message inside properties.headers.message, change if it is not true.
-            // Also has to change is it is status_code, http_response, or a third thing.
-            res.status(msg.properties.headers.status_code).send("[-] Failed to create image");
-        }
-    });
-});
+
 router.get('/:iid', function (req, res) {
-    res.status(200).json(TEST_IMAGES[TEST_IMAGES.length-1])
-    return
-
     const token = {"jwt":req.cookies["_auth_t"]}
-    const post_id = req.params['iid']
+    const post_id = {post_id: req.params['iid']}
 
-    amqpClient.sendMessage(JSON.stringify(req.body),"ImageLoadResponse",token).then(msg => {
+    console.log(post_id)
+
+    amqpClient.sendMessage(JSON.stringify(post_id), "ImageLoadResponse", token).then(msg => {
         if(msg.properties.headers.status_code != 400){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
+            const result = JSON.parse(msg.content.toString());
+            console.log(result)
             res.json(result);
         }
         else{
@@ -60,5 +42,28 @@ router.delete('/:iid', validJWT, function (req, res) {
         }
     });
 });
+
+
+
+//router.post('/', validJWT, function (req, res) {
+//    //Creates an image
+//    const token = {
+//        "jwt":req.cookies["_auth_t"]
+//    }
+//    amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
+//        if(msg.properties.headers.status_code != 400){
+//            const result = msg.content.toString();
+//            console.log("Received " + msg.content.toString());
+//            res.json(result);
+//        }
+//        else{
+//            // I am assuming you store a error message inside properties.headers.message, change if it is not true.
+//            // Also has to change is it is status_code, http_response, or a third thing.
+//            res.status(msg.properties.headers.status_code).send("[-] Failed to create image");
+//        }
+//    });
+//});
+
+
 
 module.exports = {api: router, images: express.Router()};

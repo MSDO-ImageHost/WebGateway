@@ -28,8 +28,6 @@ router.post('/', validJWT, function (req, res) {
         tags: req.body.tags.replace(' ', '').split(',')
     };
 
-    TEST_IMAGES.push({image_data: newPost.image_data})
-
     amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", {jwt:req.jwt}).then(msg => {
         msgJson = JSON.parse(msg.content.toString())
         res.status(201).json(msgJson);
@@ -63,7 +61,7 @@ router.get('/:pid/history', function (req, res) {
 
 // Create a new comment for a post /api/posts/<post_id>/comments <- {"content": "kommentar!!"}
 router.post('/:pid/comments', validJWT, function (req, res) {
-    const token = {"jwt":req.cookies["_auth_t"]}
+    const token = {"jwt":req.jwt}
     const payload = {
         user_id: req.claims.sub,
         post_id: req.params['pid'],
@@ -85,7 +83,7 @@ router.post('/:pid/comments', validJWT, function (req, res) {
 router.get('/:pid/comments', function (req, res, next) {
     //res.status(200).json(TEST_COMMENTS.filter(c => c.post_id === req.params['pid']))
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         post_id: req.params['pid']
@@ -101,23 +99,21 @@ router.get('/:pid/comments', function (req, res, next) {
     });
 });
 
+
+// TODO: Service fails if no JWT is present
 // Get all tags for a specific post
 router.get('/:pid/tags', function (req, res, next) {
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    const payload = {
-        post_id: req.params['pid']
-    }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestTagsForPost", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
-            res.json(result);
+
+    return res.status(200).json(["Hello", "This", "is", "fine"]);
+
+    const headers = {"jwt":req.jwt}
+    const payload = { post_id: req.params['pid']}
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestTagsForPost", headers).then(msg => {
+        // Request could not be fulfilled
+        if (msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.status_code);
         }
-        else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.status_code);
-        }
+        const result = JSON.parse(msg.content.toString());
     });
 });
 

@@ -25,8 +25,7 @@ app.use(express.json({ limit: '2mb' }));
 
 // Custom middleware
 app.use(function timeLog(req, res, next) {
-    console.log('Time: ', Date.now());
-    console.log(`${req.method} ${req.baseUrl}${req.path}`);
+    console.log(`${Date.now()}: ${req.method} ${req.baseUrl}${req.path}`);
     next();
 });
 
@@ -51,15 +50,15 @@ app.get('/ping', function(req, res) {
 });
 
 // Serve the static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
+//app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+//app.get('*', (req, res) => {
+//    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+//});
 
 const port = process.env.PORT || 5000;
-app.listen(port);
+app.listen(port).setTimeout(10 * 1000);
 console.log('App is listening on port ' + port);
 
 // Capture interruption signal and terminate gracefully

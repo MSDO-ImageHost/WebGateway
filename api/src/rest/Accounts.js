@@ -35,22 +35,12 @@ router.post('/', function (req, res) {
     });
 });
 
-router.get('/:id', maybeJWT, function (req, res) {
+router.get('/:id', function (req, res) {
     //RequestAccountData
-    var token = {
-        "jwt": req.cookies["_auth_t"]
-    }
-    const payload = {
-        user_id: req.params['id']
-    }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountData", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+    const payload = {user_id: req.params['id']}
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountData", {}).then(msg => {
+        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
+        res.json({result, username: payload.user_id}); // User ID should instead be the users real name (need implementation in authentication service)
     });
 });
 router.put('/:id', validJWT, function (req, res) {
@@ -59,13 +49,11 @@ router.put('/:id', validJWT, function (req, res) {
         "jwt": req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "UpdateAccount", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.delete('/:id', validJWT, function (req, res) {
@@ -77,13 +65,11 @@ router.delete('/:id', validJWT, function (req, res) {
         user_id: req.params['id']
     }
     amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountDelete", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 
@@ -97,13 +83,11 @@ router.put('/admin/:id', validJWT, function (req, res) {
         new_role: req.body.new_role
     }
     amqpClient.sendMessage(JSON.stringify(payload), "UpdateAccountPrivileges", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 
@@ -117,13 +101,11 @@ router.put('/admin/ban/:id', validJWT, function (req, res) {
         permanent: req.body.permanent
     }
     amqpClient.sendMessage(JSON.stringify(payload), "RequestBanUser", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.put('/admin/flag/:id', validJWT, function (req, res) {
@@ -135,13 +117,11 @@ router.put('/admin/flag/:id', validJWT, function (req, res) {
         user_id: req.params['id']
     }
     amqpClient.sendMessage(JSON.stringify(payload), "RequestFlagUser", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.get('/admin/flag', validJWT, function (req, res) {
@@ -150,13 +130,11 @@ router.get('/admin/flag', validJWT, function (req, res) {
         "jwt": req.cookies["_auth_t"]
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "RequestAllFlagged", token).then(msg => {
-        if (msg.properties.headers.status_code === 200) {
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result);
-        } else {
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.get('/:id/posts', maybeJWT, function (req, res) {

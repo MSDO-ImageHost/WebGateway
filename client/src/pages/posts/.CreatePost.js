@@ -23,9 +23,7 @@ class NewPostPage extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {image_file: {}}
-
         this.postNewPostForm = this.postNewPostForm.bind(this);
     }
 

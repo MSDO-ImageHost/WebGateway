@@ -38,8 +38,7 @@ class FullPostPage extends Component {
 
             <Get url={`/api/posts/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
-                if(error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading)
-
+                if(error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading, makeRequest)
                 else if(response !== null) {
                     return (response.data.map(comment => <CommentRow key={comment.comment_id} data={comment}/>))
                 }
