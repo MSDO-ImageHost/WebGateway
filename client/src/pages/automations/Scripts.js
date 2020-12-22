@@ -70,6 +70,7 @@ class ScriptListingEntry extends Component {
         const handleDownload = (script_id) => {
             axios.post("/api/scripts/FindUserScript", {"user_script":script_id}).then(
                 (response) => {
+                    console.log(response.data.user_scripts.logs);
                     fileDownload(JSON.stringify(response.data.user_scripts.logs.map(log => `${log.created_at}: ${log.log}\n`)), "logs.txt")
                 }
             )
