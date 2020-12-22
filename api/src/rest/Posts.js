@@ -15,7 +15,8 @@ amqpClient.bindQueue([
     "ConfirmDeleteOnePost",
     "ConfirmDeleteManyPosts",
     "ConfirmCommentCreation",
-    "ReturnCommentsForPost"
+    "ReturnCommentsForPost",
+    "ReturnTagsForPost"
 ]);
 
 // Create a new post
@@ -88,7 +89,7 @@ router.get('/:pid/comments', function (req, res, next) {
         "jwt":req.cookies["_auth_t"]
     }
     const payload = {
-        comment_id: req.params['pid']
+        post_id: req.params['pid']
     }
     amqpClient.sendMessage(JSON.stringify(payload),"RequestCommentsForPost",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
@@ -98,6 +99,26 @@ router.get('/:pid/comments', function (req, res, next) {
         }
         else{
             res.status(msg.properties.headers.http_response).send("Failed to fetch comments for post.");
+        }
+    });
+});
+
+// Get all tags for a specific post
+router.get('/:pid/tags', function (req, res, next) {
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    const payload = {
+        post_id: req.params['pid']
+    }
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestTagsForPost", token).then(msg => {
+        if (msg.properties.headers.status_code === 200) {
+            const result = msg.content.toString();
+            console.log("Received " + msg.content.toString());
+            res.json(result);
+        }
+        else {
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.status_code);
         }
     });
 });
