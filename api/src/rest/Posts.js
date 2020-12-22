@@ -71,7 +71,7 @@ router.post('/:pid/comments', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = JSON.parse(msg.content.toString());
-            res.json(result);
+            res.status(201).json(result);
         }
         else{
             res.status(msg.properties.headers.http_response).send("Failed to create comment.");
