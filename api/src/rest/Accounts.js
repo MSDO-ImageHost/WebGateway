@@ -75,7 +75,7 @@ router.delete('/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        res.status(204); //Nothing is returned from authentication.
+        res.status(204).send(); //Nothing is returned from authentication.
     });
 });
 
@@ -90,7 +90,7 @@ router.put('/admin/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        res.status(204); //Nothing is returned from authentication.
+        res.status(204).send(); //Nothing is returned from authentication.
     });
 });
 
@@ -105,7 +105,7 @@ router.put('/admin/ban/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        res.status(204); //Nothing is returned from authentication.
+        res.status(204).send(); //Nothing is returned from authentication.
     });
 });
 router.put('/admin/flag/:id', validJWT, function (req, res) {
@@ -118,7 +118,7 @@ router.put('/admin/flag/:id', validJWT, function (req, res) {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        res.status(204); //Nothing is returned from authentication.
+        res.status(204).send(); //Nothing is returned from authentication.
     });
 });
 router.get('/admin/flag', validJWT, function (req, res) {

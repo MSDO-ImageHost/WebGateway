@@ -48,7 +48,7 @@ router.put('', validJWT, function (req, res) {
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountPasswordUpdate",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
-            res.status(204);
+            res.status(204).send();
         }
         else{
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
