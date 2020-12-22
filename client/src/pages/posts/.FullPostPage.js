@@ -2,11 +2,12 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 // Auth
-import { useAuthUser, withAuthUser, useIsAuthenticated } from 'react-auth-kit';
+import { withAuthUser, useIsAuthenticated } from 'react-auth-kit';
 
 // Application components
 import '../../App.css';
-import { CommentRow, NewCommentForm } from '../comments/Comments';
+import CommentRow from '../comments/CommentRow';
+import NewCommentForm  from '../comments/NewCommentForm';
 import { HttpStatusMessage } from '../../ui_components/HttpStatusMessage';
 import PostLikesElement from './.PostLikesElement';
 import PostImageElement from './.PostImageElement';
@@ -45,18 +46,17 @@ class FullPostPage extends Component {
                 </Card.Body>
                 <Card.Footer className="text-muted">
                     <Row>
-                        <Col md={4}><PostUserElement data={post}/>{date} @ {clock}</Col>
-                        <Col md={1}></Col>
-                        <Col md={4}><PostTagsElement data={post}/></Col>
-                        <Col md={2}>{author_control}</Col>
-                        <Col md={1}><PostLikesElement data={post}/></Col>
+                        <Col md={3}><PostUserElement data={post}/>{date} @ {clock}</Col>
+                        <Col><PostTagsElement data={post}/></Col>
+                        <Col md={{ span: 2 }}>{author_control}<PostLikesElement data={post}/></Col>
                     </Row>
                 </Card.Footer>
             </Card>
-            <div style={{marginTop: '10px'}}>
-                <AuthorizeNewCommentForm post={post}/>
-            </div>
-
+            <Row>
+                <Col></Col><div style={{marginTop: '10px'}}>
+                    <AuthorizeNewCommentForm post={post}/>
+                </div>
+            </Row>
             <Get url={`/api/posts/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
                 if(error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading, makeRequest)
@@ -77,3 +77,6 @@ const AuthorizeNewCommentForm = (post) => {
 }
 
 export default withAuthUser(FullPostPage)
+
+
+// div style={{marginTop: '10px'}}><AuthorizeNewCommentForm post={post}/></div>

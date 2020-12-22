@@ -29,6 +29,9 @@ class NewPostPage extends Component {
 
     getImageFile(f){
         this.setState({image_file:f})
+        console.log(f)
+        var content = atob(f[0].base64.split(',')[1])
+        console.log(content)
     }
 
     postNewPostForm(event) {
@@ -62,7 +65,7 @@ class NewPostPage extends Component {
                 <Form.Group as={Row} controlId="newPostImage">
                     <Form.Label column sm={2}>Image</Form.Label>
                     {/* <Col sm={10}><Form.File label="Custom file input" custom/></Col> */}
-                    <Col sm={10}><FileBase64 multiple={ false } onDone={ this.getImageFile.bind(this) } required/></Col>
+                    <Col sm={10}><FileBase64 multiple={ true } onDone={ this.getImageFile.bind(this) } required/></Col>
                 </Form.Group>
                 {<Image src={this.state.image_file.base64} fluid />}
 

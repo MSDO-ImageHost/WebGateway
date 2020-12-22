@@ -62,7 +62,8 @@ router.delete('/:cid', validJWT, function (req, res) {
         comment_id: req.params['cid'],
         user_id: req.claims.sub
     }
-    amqpClient.sendMessage(JSON.stringify(req.body), "DeleteComment", token).then(msg => {
+    console.log(payload)
+    amqpClient.sendMessage(JSON.stringify(payload), "DeleteComment", token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = JSON.parse(msg.content.toString()); // Maybe not parse
             //console.log("Received " + msg.content.toString());
