@@ -38,7 +38,6 @@ class ScriptsPage extends Component {
                   var data = result.data;
                   console.log(data)
                   let scripts = data.user_scripts.map(script => ({_id: script._id, main_file: script.main_file, language: script.language, owner: script.owner}));
-                  console.log(scripts);
                   this.setState({scripts})
                 } else {
                     this.setState({
@@ -136,27 +135,26 @@ class ScriptUploadForm extends Component {
               console.log("program_array");
               console.log(program_array);
               axios.post("/api/scripts/CreateUserScript", {"program": program_array, "main_file": this.state.filename, "language": this.state.language}).then((response) => {
-                  console.log(typeof reloadScripts);
                   reloadScripts()
               })
           };
 
+          let filename_array = [];
           var file_amount = this.state.file.length;
           for (let i = 0; i < this.state.file.length; i++) {
-            var filename_str = this.state.file[i].name;
+            filename_array.push(this.state.file[i].name);
             const reader = new FileReader();
             onFileLoad.bind(this);
             reader.onload = function(e) {
               program_array.push(
                 JSON.stringify(
-                  { filename: filename_str, content: e.target.result }
+                  { filename: filename_array.shift(), content: e.target.result }
                 )
               );
-              if (file_amount-1 == program_array.length) {
+              if (file_amount === program_array.length) {
                 onFileLoad();
               }
             };
-            console.log(filename_str);
             reader.readAsBinaryString(this.state.file[i])
           };
         };
