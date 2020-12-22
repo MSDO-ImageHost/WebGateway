@@ -40,8 +40,12 @@ router.get('/:id', function (req, res) {
     //RequestAccountData
     const payload = {user_id: req.params['id']}
     amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountData", {}).then(msg => {
-        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
-        res.json({result, username: result.username}); // User ID should instead be the users real name (need implementation in authentication service)
+        if(msg.properties.headers.status_code === 200){
+            var result = JSON.parse(msg.content.toString());
+            res.status(200).json({result, username: result.username});
+        } else {
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
     });
 });
 
@@ -49,8 +53,12 @@ router.get('/:id/name', function (req, res) {
     //RequestUsername
     const payload = {user_id: req.params['id']}
     amqpClient.sendMessage(JSON.stringify(payload), "RequestUsername", {}).then(msg => {
-        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
-        res.json({result}); 
+        if(msg.properties.headers.status_code === 200){
+            var result = JSON.parse(msg.content.toString());
+            res.status(200).json({result, username: result.username});
+        } else {
+            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        }
     });
 });
 
