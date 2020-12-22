@@ -13,7 +13,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import bsCustomFileInput from 'bs-custom-file-input';
-import FormControl from 'react-bootstrap/FormControl'
+import FormControl from 'react-bootstrap/FormControl';
+import FileBase64 from 'react-file-base64';
 
 class ScriptsPage extends Component {
 
@@ -110,37 +111,29 @@ class ScriptListingEntry extends Component {
 }
 
 class ScriptUploadForm extends Component {
+  constructor(props) {
+      super(props)
+      this.state = {files: []}
+  }
+
+  getFiles(files) {
+      this.setState({files:files})
+      console.log(files);
+      let program_array = []
+      for (let i = 0; i < files.length; i++) {
+        program_array.push(
+            { filename: files[i].name, content: atob(files[i].base64.split(',')[1]) }
+        );
+      }
+      const reloadScripts = this.props.reload;
+      console.log(program_array);
+      axios.post("/api/scripts/CreateUserScript", {"program": program_array, "main_file": this.state.filename, "language": this.state.language}).then((response) => {
+          reloadScripts()
+      })
+
+  }
+
     render() {
-        bsCustomFileInput.init();
-        const reloadScripts = this.props.reload;
-        let fileUploadHandler = () => {
-
-          let program_array = [];
-
-          let onFileLoad = event => {
-              axios.post("/api/scripts/CreateUserScript", {"program": program_array, "main_file": this.state.filename, "language": this.state.language}).then((response) => {
-                  reloadScripts()
-              })
-          };
-
-          let filename_array = [];
-          var file_amount = this.state.file.length;
-          for (let i = 0; i < this.state.file.length; i++) {
-            filename_array.push(this.state.file[i].name);
-            const reader = new FileReader();
-            onFileLoad.bind(this);
-            reader.onload = function(e) {
-              program_array.push(
-                  { filename: filename_array.shift(), content: e.target.result }
-              );
-              if (file_amount === program_array.length) {
-                onFileLoad();
-              }
-            };
-            reader.readAsBinaryString(this.state.file[i])
-          };
-        };
-
         return <Form>
             <Form.Row className="align-center">
                 <Col>
@@ -155,11 +148,8 @@ class ScriptUploadForm extends Component {
                 </Col>
                 <Col>
                     <Form.Group inline>
-                        <FormControl id="formControlsFile" type="file" multiple label="File" onChange={event => this.setState({file: event.target.files})}/>
+                        <FileBase64 multiple={ true } onDone={ this.getFiles.bind(this) } required/>
                     </Form.Group>
-                </Col>
-                <Col>
-                    <Button onClick={fileUploadHandler}>Submit</Button>
                 </Col>
             </Form.Row>
         </Form>

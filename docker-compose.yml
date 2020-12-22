@@ -28,7 +28,7 @@ services:
     image: mongo:latest
     volumes:
       #- mongo-data:/data/db
-      - ${PWD}/.compose-service-files/mongo-entrypoint.js:/docker-entrypoint-initdb.d/entrypoint.js
+      - .compose-service-files/mongo-entrypoint.js:/docker-entrypoint-initdb.d/entrypoint.js
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=rootpassword
@@ -43,7 +43,7 @@ services:
     command: --init-file /data/application/init.sql
     volumes:
       #- mysql-data:/var/lib/mysql
-      -  ${PWD}/.compose-service-files/mysql-init.sql:/data/application/init.sql
+      -  .compose-service-files/mysql-init.sql:/data/application/init.sql
     environment:
       - MYSQL_ROOT_USERNAME=root
       - MYSQL_ROOT_PASSWORD=1234
@@ -65,8 +65,7 @@ services:
 
   ## WORKING
   posts:
-    #image: imagehostmad/posts:latest
-    build: ../Posts
+    image: imagehostmad/posts:latest
     environment:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://root:rootpassword@mongo:27017/?readPreference=primary&ssl=false
