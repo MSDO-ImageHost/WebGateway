@@ -30,11 +30,12 @@ class ProfilePage extends Component {
 class UserPostsCard extends Component {
     render() {
 
-        let url = `/api/users${this.props.authState.user_id}/posts/`;
+        let url = `/api/users/${this.props.authState.user_id}/posts/`;
+        console.log(url)
         return <Card>
             <Get url={url}>
                 {(error, response, isLoading, makeRequest) => {
-                    if (error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading)
+                    if (error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading, makeRequest)
 
                     else if (response !== null) {
                         return (response.data.map(post => <PostListingEntry key={post.post_id} data={post}/>))

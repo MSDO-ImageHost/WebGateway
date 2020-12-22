@@ -132,8 +132,6 @@ router.put('/:pid', validJWT, function (req, res) {
 router.delete('/:pid', validJWT, function (req, res) {
     const headers = {jwt:req.jwt}
     payload = {post_id: req.params['pid']}
-
-    console.log(headers, payload)
     amqpClient.sendMessage(JSON.stringify(payload), "DeleteOnePost", headers).then(msg => {
         const result = JSON.parse(msg.content.toString())
         res.status(200).json(result);

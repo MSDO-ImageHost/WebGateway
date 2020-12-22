@@ -31,22 +31,25 @@ class SigninView extends Component {
         }
 
         // Post data
-        axios.post('/api/login', formData).then((res) => {
-            if(res.status !== 200) return alert("Oh noooo. \n status:", res.status)
+        axios.post('/api/login', formData)
+            .then((res) => {
+                if(res.status !== 200) return alert("Oh noooo. Something didn't go well")
+                const hasAuth = this.props.signIn({
+                    token: res.data.token,
+                    tokenType: "Bearer",
+                    expiresIn: 60,
+                    authState: res.data.user
+                })
 
-            const hasAuth = this.props.signIn({
-                token: res.data.token,
-                tokenType: "Bearer",
-                expiresIn: 60,
-                authState: res.data.user
+                if (hasAuth) {
+                    this.props.history.push("/");
+                } else {
+                    alert("Sorry, but I could not sign you in")
+                }
             })
-
-            if (hasAuth) {
-                this.props.history.push("/");
-            } else {
-                alert("Sorry, but I could not sign you in")
-            }
-        })
+            .catch((error) => {
+                alert("Something went wrong. Did you type correctly?\nMaybe you need to sign up first?")
+            });
     }
 
     render() {
