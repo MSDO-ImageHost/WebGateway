@@ -62,7 +62,7 @@ router.get('/:pid/history', function (req, res) {
 
 // Create a new comment for a post /api/posts/<post_id>/comments <- {"content": "kommentar!!"}
 router.post('/:pid/comments', validJWT, function (req, res) {
-    const token = {"jwt":req.cookies["_auth_t"]}
+    const token = {jwt: req.jwt ? req.jwt : ""}
     const payload = {
         user_id: req.claims.sub,
         post_id: req.params['pid'],
@@ -84,7 +84,7 @@ router.post('/:pid/comments', validJWT, function (req, res) {
 router.get('/:pid/comments', function (req, res, next) {
     //res.status(200).json(TEST_COMMENTS.filter(c => c.post_id === req.params['pid']))
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        jwt: req.jwt ? req.jwt : ""
     }
     const payload = {
         post_id: req.params['pid']
