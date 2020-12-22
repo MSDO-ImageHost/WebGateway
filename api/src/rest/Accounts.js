@@ -5,7 +5,7 @@ const amqpClient = require("../amqp/AmqpClient");
 
 const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
-amqpClient.bindQueue(["ConfirmAccountCreation", "ReturnAccountInfo", "ConfirmAccountUpdate", "ConfirmAccountDeletion", "ConfirmBanUser", "ConfirmFlagUser", "ReturnAllFlagged"])
+amqpClient.bindQueue(["ConfirmAccountCreation", "ReturnAccountInfo", "ConfirmAccountUpdate", "ConfirmAccountDeletion", "ConfirmBanUser", "ConfirmFlagUser", "ReturnAllFlagged", "ReturnUsername"])
 
 // Queue bindings
 amqpClient.bindQueue(["ConfirmAccountCreation"]);
@@ -43,6 +43,16 @@ router.get('/:id', function (req, res) {
         res.json({result, username: payload.user_id}); // User ID should instead be the users real name (need implementation in authentication service)
     });
 });
+
+router.get('/:id/name', function (req, res) {
+    //RequestUsername
+    const payload = {user_id: req.params['id']}
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestUsername", {}).then(msg => {
+        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
+        res.json({result, username: payload.user_id}); // User ID should instead be the users real name (need implementation in authentication service)
+    });
+});
+
 router.put('/:id', validJWT, function (req, res) {
     //UpdateAccount
     const headers = {jwt:req.jwt}
