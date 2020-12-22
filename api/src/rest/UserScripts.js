@@ -14,7 +14,6 @@ router.post('/CreateUserScript', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"CreateUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -33,7 +32,6 @@ router.get('/FindOwnUserScripts', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(body),"FindUsersUserScripts",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -49,7 +47,6 @@ router.post('/FindUsersUserScripts', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"FindUsersUserScripts",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -66,7 +63,6 @@ router.post('/FindUserScript', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"FindUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -83,7 +79,6 @@ router.post('/UpdateUserScript', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"UpdateUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -99,7 +94,6 @@ router.post('/DeleteUserScript', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"DeleteUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -115,7 +109,6 @@ router.post('/RunUserScript', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"RunUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
             const result = JSON.parse(msg.content.toString());
-            console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{

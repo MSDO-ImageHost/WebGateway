@@ -23,8 +23,7 @@ export default class PostTagsElement extends Component {
         })
     }
     render () {
-        const formatted = this.state.tags.map((tag, i) => { return <Link key={i} to={{pathname: `/tags/${tag}`}}>#{tag} </Link> })
+        const formatted = this.state.tags.map((tag, i) => { return <Link key={i} to={{pathname: `/tags/${tag.tag_id}`}}>#{tag.tag_name} </Link> })
         return <div className="text-muted" ><i>{formatted}</i></div>
     }
 }
-

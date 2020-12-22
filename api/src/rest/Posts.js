@@ -7,13 +7,15 @@ const amqpClient = require("../amqp/AmqpClient");
 // Queue bindings
 amqpClient.bindQueue([
     "ConfirmOnePostCreation",
+    "ConfirmManyPostCreations",
     "ReturnManyPosts",
     "ReturnOnePost",
     "ReturnPostHistory",
     "ReturnUserPosts",
-    "ConfirmUpdateOnePost",
-    "ConfirmDeleteOnePost",
-    "ConfirmDeleteManyPosts",
+    "ConfirmOnePostUpdate",
+    "ConfirmManyPostUpdates",
+    "ConfirmOnePostDeletion",
+    "ConfirmManyPostDeletions",
     "ConfirmCommentCreation",
     "ReturnCommentsForPost",
     "ReturnTagsForPost"
@@ -91,7 +93,7 @@ router.get('/:pid/comments', function (req, res, next) {
     }
     amqpClient.sendMessage(JSON.stringify(payload),"RequestCommentsForPost",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
-            const result = JSON.parse(msg.content.toString()).list_of_comments;
+            const result = JSON.parse(msg.content.toString()).list_of_comments.reverse();
             res.json(result);
         }
         else{
@@ -101,11 +103,9 @@ router.get('/:pid/comments', function (req, res, next) {
 });
 
 
-// TODO: Service fails if no JWT is present - should work now
 // Get all tags for a specific post
 router.get('/:pid/tags', function (req, res, next) {
 
-    const headers = {jwt:req.jwt}
     const payload = { post_id: req.params['pid']}
     amqpClient.sendMessage(JSON.stringify(payload), "RequestTagsForPost", {}).then(msg => {
         // Request could not be fulfilled
@@ -113,6 +113,7 @@ router.get('/:pid/tags', function (req, res, next) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.status_code);
         }
         const result = JSON.parse(msg.content.toString());
+        res.status(200).json(result)
     });
 });
 
@@ -130,10 +131,13 @@ router.put('/:pid', validJWT, function (req, res) {
 // Delete one post using it's id
 router.delete('/:pid', validJWT, function (req, res) {
     const headers = {jwt:req.jwt}
-    post_id = res.params['pid']
-    amqpClient.sendMessage(JSON.stringify({post_id}), "DeleteOnePost", headers).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(204).json(msgJson);
+    payload = {post_id: res.params['pid']}
+    return res.status(200).send()
+
+    console.log(headers, post_id)
+    amqpClient.sendMessage(JSON.stringify(payload), "DeleteOnePost", headers).then(msg => {
+        const result = JSON.parse(msg.content.toString())
+        res.status(204).json(result);
     });
 });
 

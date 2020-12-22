@@ -130,6 +130,7 @@ services:
   ## WORKING
   comments:
     image: imagehostmad/comments:main
+    #build: ../Comments
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -158,14 +159,15 @@ services:
 
 
   imagestorage:
-    image: imagehostmad/imagestorage:v0.9.1
+    image: imagehostmad/imagestorage:main
     environment:
-      - DB_USER=""
-      - DB_PASSWORD=""
+      - DB_USER="root"
+      - DB_PASSWORD="secret"
       - DB_URI=jdbc:sqlite:test.sqlite
       - DB_DRIVER=org.sqlite.JDBC
       - AMQP_USER=guest
       - AMQP_PASSWORD=guest
       - AMQP_HOST=rabbitmq
-      - AMQP_PORT=5672/
+      - AMQP_PORT=5672
+      - IMG_DIR=img
     restart: unless-stopped

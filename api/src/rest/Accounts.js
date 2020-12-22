@@ -40,25 +40,35 @@ router.get('/:id', function (req, res) {
     //RequestAccountData
     const payload = {user_id: req.params['id']}
     amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountData", {}).then(msg => {
+<<<<<<< HEAD
         if(msg.properties.headers.status_code === 200){
             var result = JSON.parse(msg.content.toString());
             res.status(200).json({result, username: result.username});
         } else {
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+=======
+        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
+        res.json({result, username: payload.user_id}); // User ID should instead be the users real name (need implementation in authentication service)
+>>>>>>> 5e03ad467f707378fb0233bb1fe33b6b1a0e66fd
     });
 });
 
 router.get('/:id/name', function (req, res) {
     //RequestUsername
-    const payload = {user_id: req.params['id']}
+    const payload = {user_id: req.params['id'].toString()}
     amqpClient.sendMessage(JSON.stringify(payload), "RequestUsername", {}).then(msg => {
+<<<<<<< HEAD
         if(msg.properties.headers.status_code === 200){
             var result = JSON.parse(msg.content.toString());
             res.status(200).json({result, username: result.username});
         } else {
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
+=======
+        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
+        res.json({result, username: payload.user_id});
+>>>>>>> 5e03ad467f707378fb0233bb1fe33b6b1a0e66fd
     });
 });
 

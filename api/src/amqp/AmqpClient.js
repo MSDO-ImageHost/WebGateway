@@ -20,19 +20,19 @@ var amqpPromise;
         return conn.createChannel()
     }).then(channel => {
         channel.assertQueue(QUEUE, { durable: true });
-        console.log("Asserted queue!")
+        // console.log("Asserted queue!")
         channel.assertExchange(EXCHANGE, 'direct', {durable: false});
-        console.log("Asserted exchange!")
+        // console.log("Asserted exchange!")
         channel.responseEmitter = new EventEmitter();
         channel.responseEmitter.setMaxListeners(0);
         channel.consume(QUEUE, function(msg) {
-            console.log("[x] Received: " + JSON.stringify(msg));
-            console.log("[x] Received: " + msg.content.toString());
+            // console.log("[x] Received: " + JSON.stringify(msg));
+            // console.log("[x] Received: " + msg.content.toString());
             channel.responseEmitter.emit(msg.properties.correlationId, msg);
         } , { noAck: true } );
         return channel;
     }).catch( () => {
-        console.log("Failed to connect to rabbitmq! Retrying in 5 seconds!")
+        // console.log("Failed to connect to rabbitmq! Retrying in 5 seconds!")
         setTimeout(createChannel, 5000, url) //Retry every 5s
     });
  }
@@ -44,7 +44,7 @@ const bindQueue = (events) => {
             console.log(" [x] Binding " + QUEUE + " to " + EXCHANGE + " with RK: " + event);
         })
     }).catch( () => {
-        console.log("Failed to bind events to queue! Retrying in 5 seconds!")
+        // console.log("Failed to bind events to queue! Retrying in 5 seconds!")
         setTimeout(bindQueue, 5000, events) //Retry every 5s
     });
 }
@@ -59,8 +59,8 @@ const bindQueue = (events) => {
  */
 const sendMessage = (message, event, headers) => new Promise(resolve => {
     amqpPromise.then( (channel) => {
-        console.log(" [x] Sending " + event);
-        console.log(" [x] JSON: \n" + message)
+        // console.log(" [x] Sending " + event);
+        // console.log(" [x] JSON: \n" + message)
         const cID = uuid();
         channel.responseEmitter.once(cID, resolve);
         var options = {
@@ -70,7 +70,7 @@ const sendMessage = (message, event, headers) => new Promise(resolve => {
         };
         channel.publish(EXCHANGE,event,Buffer.from(message), options);
     }).catch( () => {
-        console.log("Failed to send message! Retrying in 5 seconds!")
+        // console.log("Failed to send message! Retrying in 5 seconds!")
         setTimeout(sendMessage, 5000, message, event) //Retry every 5s
     });
 });

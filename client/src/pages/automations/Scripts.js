@@ -36,7 +36,6 @@ class ScriptsPage extends Component {
             (result) => {
                 if (result.status === 200 && result.data) {
                   var data = result.data;
-                  console.log(data)
                   let scripts = data.user_scripts.map(script => ({_id: script._id, main_file: script.main_file, language: script.language, owner: script.owner}));
                   this.setState({scripts})
                 } else {
@@ -116,13 +115,6 @@ class ScriptListingEntry extends Component {
     }
 }
 
-//TODO Change to take multiple files
-//{
-//            "program": [{"filename": "test.py", "content": file_content}, {"filename": "requirements.txt", "content": file_content}],
-//            "main_file": "test.py",
-//            "language": "python",
-//        }
-//{file: btoa(data), filename: this.state.filename}
 class ScriptUploadForm extends Component {
     render() {
         bsCustomFileInput.init();
@@ -132,8 +124,6 @@ class ScriptUploadForm extends Component {
           let program_array = [];
 
           let onFileLoad = event => {
-              console.log("program_array");
-              console.log(program_array);
               axios.post("/api/scripts/CreateUserScript", {"program": program_array, "main_file": this.state.filename, "language": this.state.language}).then((response) => {
                   reloadScripts()
               })
@@ -147,9 +137,7 @@ class ScriptUploadForm extends Component {
             onFileLoad.bind(this);
             reader.onload = function(e) {
               program_array.push(
-                JSON.stringify(
                   { filename: filename_array.shift(), content: e.target.result }
-                )
               );
               if (file_amount === program_array.length) {
                 onFileLoad();
