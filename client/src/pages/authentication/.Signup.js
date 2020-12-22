@@ -40,28 +40,32 @@ class SignupView extends Component {
         }
 
         // Post data
-        axios.post('/api/users', formData).then((res) => {
-            if(res.status !== 201) return alert("Oh noooo. \n status:", res.status)
+        axios.post('/api/users', formData)
+            .then((res) => {
+                if(res.status !== 201) return alert("Oh noooo. \n status:", res.status)
 
-            // User was created, now attempt login
-            axios.post('/api/login', formData).then((res) => {
-                if(res.status !== 200) return alert("Oh noooo. \n status:", res.status)
+                // User was created, now attempt login
+                axios.post('/api/login', formData).then((res) => {
+                    if(res.status !== 200) return alert("Oh noooo. \n status:", res.status)
 
-                // Store data in cookies
-                const hasAuth = this.props.signIn({
-                    token: res.data.token,
-                    tokenType: "Bearer",
-                    expiresIn: 60,
-                    authState: res.data.user
+                    // Store data in cookies
+                    const hasAuth = this.props.signIn({
+                        token: res.data.token,
+                        tokenType: "Bearer",
+                        expiresIn: 60,
+                        authState: res.data.user
+                    })
+
+                    if (hasAuth) {
+                        this.props.history.push("/account");
+                    } else {
+                        alert("Sorry, but I could not sign you in")
+                    }
                 })
-
-                if (hasAuth) {
-                    this.props.history.push("/account");
-                } else {
-                    alert("Sorry, but I could not sign you in")
-                }
             })
-        })
+            .catch((error) => {
+                alert("Something went wrong. The user probably already exists")
+            });
     }
 
     render() {

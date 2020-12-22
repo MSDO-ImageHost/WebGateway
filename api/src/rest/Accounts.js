@@ -141,6 +141,9 @@ router.get('/admin/flag', validJWT, function (req, res) {
     });
 });
 router.get('/:id/posts', maybeJWT, function (req, res) {
+
+    console.log()
+
     //RequestUserPosts
     amqpClient.sendMessage(JSON.stringify({"author_id": req.params.id}), "RequestUserPosts", null).then(msg => {
         msgJson = JSON.parse(msg.content.toString());

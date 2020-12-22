@@ -27,7 +27,7 @@ class NewPostPage extends Component {
         this.postNewPostForm = this.postNewPostForm.bind(this);
     }
 
-    getImageFile(f){
+    getImageFile(f) {
         this.setState({image_file:f})
     }
 

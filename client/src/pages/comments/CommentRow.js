@@ -34,7 +34,6 @@ class CommentRow extends Component {
     }
 
     deleteComment() {
-        console.log("deleting comment", this.props.data)
         axios.delete(`/api/comments/${this.props.data.comment_id}`, {}).then(res => {
             if(res.status !== 200) return alert("Oh noooo. An error occurred")
             //this.location.history.push("/")

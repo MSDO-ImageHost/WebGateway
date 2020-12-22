@@ -11,23 +11,20 @@ amqpClient.bindQueue(["ReturnAuthenticationToken","ConfirmSetPassword","ConfirmI
 const {validJWT, maybeJWT} = require("../jwtAuth");
 
 // Creates a JWT for an a existing user (login) // Request body contains this: `{username:<String>, password:<String>}`
-router.post('', function (req, res) {
-
+router.post('/', function (req, res) {
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestLoginToken",null).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            const json = JSON.parse(result);
-            const authUser = {
-                user_id: jwtSimple.decode(json.jwt, process.env.JWT_HMAC_SECRET).sub,
-                username: json.username,
-                user_email: json.user_email,
-                role: json.role
-            }
-            res.status(200).json({token:json.jwt, user: authUser});
+        if(msg.properties.headers.status_code !== 200){
+            return res.status(401).json(msg);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+        const result = msg.content.toString();
+        const json = JSON.parse(result);
+        const authUser = {
+            user_id: jwtSimple.decode(json.jwt, process.env.JWT_HMAC_SECRET).sub,
+            username: json.username,
+            user_email: json.user_email,
+            role: json.role
         }
+        res.status(200).json({token:json.jwt, user: authUser});
     });
 });
 

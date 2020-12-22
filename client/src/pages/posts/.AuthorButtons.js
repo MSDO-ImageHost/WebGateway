@@ -26,8 +26,13 @@ class AuthorButtons extends Component {
         })
     }
 
+    editPost () {
+        alert(":)))))))")
+    }
+
     render() {
-        return <Button onClick={this.deletePost} variant="danger">🗑️</Button>
+        return <Button style={{marginLeft: '10px'}} onClick={this.deletePost} variant="danger">🗑️</Button>
+            {/* <Button onClick={this.editPost} variant="secondary">🗑️</Button> */}
     }
 }
 

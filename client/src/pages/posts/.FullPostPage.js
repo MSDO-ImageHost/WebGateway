@@ -35,7 +35,12 @@ class FullPostPage extends Component {
         const dateObj = new Date(post.created_at)
         const clock = dateObj.toLocaleTimeString()
         const date = dateObj.toDateString()
-        const author_control = this.props.authState && this.props.authState.user_id === post.author_id ? <AuthorButtons data={post}/> : null
+
+        const is_authenticated = this.props.authState != null | undefined
+        const is_author = is_authenticated && this.props.authState.user_id === post.author_id
+
+        const author_control = is_author ? <AuthorButtons data={post}/> : null
+        const new_comment_form = is_authenticated ? <NewCommentForm data={post}/> : null
 
         return <Container>
             <Card border="primary" style={{ width: '100%', marginTop: '10px'}}>
@@ -52,7 +57,7 @@ class FullPostPage extends Component {
                     </Row>
                 </Card.Footer>
             </Card>
-            <div style={{marginTop: '10px'}}><AuthorizeNewCommentForm post={post}/></div>
+            <div style={{marginTop: '10px'}}>{new_comment_form}</div>
             <Get url={`/api/posts/${post.post_id}/comments`}>
             {(error, response, isLoading, makeRequest) => {
                 if(error || isLoading) return HttpStatusMessage.intermediateStatusRendering(error, isLoading, makeRequest)
@@ -66,13 +71,6 @@ class FullPostPage extends Component {
     }
 }
 
-//  <AuthorButtons data={post}/>
 
-const AuthorizeNewCommentForm = (post) => {
-    return !useIsAuthenticated()() ?  null : (<NewCommentForm data={post}/>)
-}
 
 export default withAuthUser(FullPostPage)
-
-
-// div style={{marginTop: '10px'}}><AuthorizeNewCommentForm post={post}/></div>

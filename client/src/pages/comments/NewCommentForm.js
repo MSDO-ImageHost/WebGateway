@@ -23,10 +23,13 @@ class NewCommentForm extends Component {
     }
 
     postCommentContent(event) {
+        console.log(this.props.data.post_id)
+
         event.preventDefault();
         const content = event.target.submitPostComment.value
-        if (this.props.data.post.post_id === undefined) return
-        const post_id = this.props.data.post.post_id
+        const post_id = this.props.data.post_id
+
+
 
         // Post post data :)
         axios.post(`/api/posts/${post_id}/comments`, {content}).then((res) => {
@@ -40,7 +43,7 @@ class NewCommentForm extends Component {
             <Form.Group controlId="submitPostComment">
                 <Row>
                     <Col ><Form.Control as="textarea" placeholder="Publish your opinion" required/></Col>
-                    <Col md={{span:1, offset:0}}><Button variant="primary" type="submit">Post</Button></Col>
+                    <Col md={{span:1, offset:0}}><Button style={{width:'100%'}} variant="primary" type="submit">Post</Button></Col>
                 </Row>
             </Form.Group>
         </Form>
