@@ -52,7 +52,7 @@ services:
 
   ## WORKING
   gateway:
-    build: .
+    image: imagehostmad/web-gateway:latest
     ports:
       - 5000:5000
     environment:
