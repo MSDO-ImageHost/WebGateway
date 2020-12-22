@@ -18,6 +18,7 @@ import Col from 'react-bootstrap/Col';
 import Alert from "react-bootstrap/esm/Alert";
 import Spinner from "react-bootstrap/esm/Spinner";
 import bsCustomFileInput from 'bs-custom-file-input';
+import FormControl from 'react-bootstrap/FormControl'
 
 class ScriptsPage extends Component {
 
@@ -34,9 +35,11 @@ class ScriptsPage extends Component {
         axios.get("/api/scripts/FindOwnUserScripts").then(
             (result) => {
                 if (result.status === 200 && result.data) {
-                    console.log(result.data);
-                    let scripts = result.data.map(script => ({id: script.id, name: script.name, owner: script.owner}));
-                    this.setState({scripts})
+                  var data = result.data;
+                  console.log(data)
+                  let scripts = data.user_scripts.map(script => ({_id: script._id, main_file: script.main_file, language: script.language, owner: script.owner}));
+                  console.log(scripts);
+                  this.setState({scripts})
                 } else {
                     this.setState({
                         scripts: [],
@@ -52,7 +55,7 @@ class ScriptsPage extends Component {
             return <Container>
                 <ScriptUploadForm reload={this.reload.bind(this)}/>
                 {
-                    this.state.scripts.map(script => <ScriptListingEntry id={script.id} name={script.name}
+                    this.state.scripts.map(script => <ScriptListingEntry _id={script._id} program={script.program} language={script.language} main_file={script.main_file}
                                                                          owner={script.owner}
                                                                          reload={this.reload.bind(this)}/>)
                 }
@@ -66,35 +69,48 @@ class ScriptsPage extends Component {
 
 class ScriptListingEntry extends Component {
     render() {
-        console.log(this.props);
-        const handleDownload = (script_name, script_id) => {
-            axios.get("/api/scripts/FindUserScript", {"user_script":script_id}, {responseType: "blob"}).then(
+        const handleDownload = (script_id) => {
+            axios.post("/api/scripts/FindUserScript", {"user_script":script_id}).then(
                 (response) => {
-                    fileDownload(response.data, script_name)
+                    fileDownload(response.data["user_script"]["logs"], "logs.txt")
                 }
             )
         };
         const reload = this.props.reload;
         const handleDelete = (script_id) => {
-            axios.delete("/api/scripts/DeleteUserScript", {"user_script":script_id}).then(() => {
+            axios.post("/api/scripts/DeleteUserScript", {"user_script":script_id}).then(() => {
                 reload()
             });
         };
+        const handleRun = (script_id) => {
+            axios.post("/api/scripts/RunUserScript", {"user_script":script_id}).then(() => {
+
+            });
+        };
         return <Row>
-            <Col xs={6}>{this.props.name}</Col>
+            <Col xs={1}>{this.props.main_file}</Col>
+            <Col>{this.props.language}</Col>
             <Col>{this.props.owner}</Col>
+
             <Col>
                 <Button variant="outline-primary" onClick={() => {
-                    handleDownload(this.props.name, this.props.id)
+                    handleDownload(this.props._id)
                 }}>
-                    Download
+                    Download Logs
                 </Button>
             </Col>
             <Col>
                 <Button variant="outline-danger" onClick={() => {
-                    handleDelete(this.props.id)
+                    handleDelete(this.props._id)
                 }}>
-                    Delete
+                    Delete Userscript
+                </Button>
+            </Col>
+            <Col>
+                <Button variant="outline-success" onClick={() => {
+                    handleRun(this.props._id)
+                }}>
+                    Run Userscript
                 </Button>
             </Col>
         </Row>
@@ -107,34 +123,59 @@ class ScriptListingEntry extends Component {
 //            "main_file": "test.py",
 //            "language": "python",
 //        }
+//{file: btoa(data), filename: this.state.filename}
 class ScriptUploadForm extends Component {
     render() {
         bsCustomFileInput.init();
         const reloadScripts = this.props.reload;
         let fileUploadHandler = () => {
+
+          let program_array = [];
+
+          let onFileLoad = event => {
+              console.log("program_array");
+              console.log(program_array);
+              axios.post("/api/scripts/CreateUserScript", {"program": program_array, "main_file": this.state.filename, "language": this.state.language}).then((response) => {
+                  console.log(typeof reloadScripts);
+                  reloadScripts()
+              })
+          };
+
+          var file_amount = this.state.file.length;
+          for (let i = 0; i < this.state.file.length; i++) {
+            var filename_str = this.state.file[i].name;
             const reader = new FileReader();
-            let onFileLoad = event => {
-                let data = event.target.result;
-                axios.post("/api/scripts/CreateUserScript", {file: btoa(data), filename: this.state.filename}).then((response) => {
-                    console.log(typeof reloadScripts);
-                    reloadScripts()
-                })
-            };
             onFileLoad.bind(this);
-            reader.onload = onFileLoad;
-            reader.readAsBinaryString(this.state.file)
+            reader.onload = function(e) {
+              program_array.push(
+                JSON.stringify(
+                  { filename: filename_str, content: e.target.result }
+                )
+              );
+              if (file_amount-1 == program_array.length) {
+                onFileLoad();
+              }
+            };
+            console.log(filename_str);
+            reader.readAsBinaryString(this.state.file[i])
+          };
         };
 
         return <Form>
             <Form.Row className="align-center">
                 <Col>
                     <Form.Group inline>
-                        <Form.Control id="filename" type="text" placeholder="Filename" onChange={event => this.setState({filename: event.target.value})}/>
+                        <Form.Control id="main_file" type="text" placeholder="Main file" onChange={event => this.setState({filename: event.target.value})}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group inline>
-                        <Form.File id="uploadScript" onChange={event => this.setState({file: event.target.files[0]})}/>
+                        <Form.Control id="language" type="text" placeholder="Language" onChange={event => this.setState({language: event.target.value})}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group inline>
+                        <FormControl id="formControlsFile" type="file" multiple label="File" onChange={event => this.setState({file: event.target.files})}/>
                     </Form.Group>
                 </Col>
                 <Col>
