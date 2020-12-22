@@ -4,6 +4,7 @@ volumes:
   rabbitmq-data:
   mongo-data:
   mysql-data:
+  img-data:
 
 services:
   vscode:

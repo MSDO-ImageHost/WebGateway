@@ -4,6 +4,7 @@ volumes:
   rabbitmq-data:
   mongo-data:
   mysql-data:
+  img-data:
 
 
 services:
@@ -157,7 +158,7 @@ services:
     restart: unless-stopped
 
 
-
+  # WORKING
   imagestorage:
     image: imagehostmad/imagestorage:main
     environment:
@@ -170,4 +171,6 @@ services:
       - AMQP_HOST=rabbitmq
       - AMQP_PORT=5672
       - IMG_DIR=img
+    volumes:
+      - img-data:/app/img
     restart: unless-stopped
