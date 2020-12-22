@@ -60,36 +60,43 @@ router.get('/:pid/history', function (req, res) {
     });
 });
 
-// TODO: Getting error '[-] Exception  <class 'sqlalchemy.exc.DatabaseError'>  occurred.'. Probably what you have fixed
 // Create a new comment for a post /api/posts/<post_id>/comments <- {"content": "kommentar!!"}
 router.post('/:pid/comments', validJWT, function (req, res) {
-    const headers = {jwt:req.jwt}
+    const token = {"jwt":req.cookies["_auth_t"]}
     const payload = {
         user_id: req.claims.sub,
         post_id: req.params['pid'],
         content: req.body.content
     }
-    amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",headers).then(msg => {
-        if(msg.properties.headers.http_response !== 200){
-            return res.status(msg.properties.headers.http_response).send("Failed to create comment.");
+    amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",token).then(msg => {
+        if(msg.properties.headers.http_response === 200){
+            const result = JSON.parse(msg.content.toString());
+            res.json(result);
         }
-        const result = JSON.parse(msg.content.toString());
-        res.json(result);
+        else{
+            res.status(msg.properties.headers.http_response).send("Failed to create comment.");
+        }
     });
 });
 
 
-// TODO: Comments service seems to be looking for a JWT key and thereof crashes
 // Get all comments for a specific post
 router.get('/:pid/comments', function (req, res, next) {
-    const payload = {post_id: req.params['pid']}
-    console.log("Comments", payload)
-    amqpClient.sendMessage(JSON.stringify(payload),"RequestCommentsForPost",{}).then(msg => {
-        if(msg.properties.headers.http_response !== 200){
-            return res.status(msg.properties.headers.http_response).send("Failed to fetch comments for post.");
+    //res.status(200).json(TEST_COMMENTS.filter(c => c.post_id === req.params['pid']))
+    var token = {
+        "jwt":req.cookies["_auth_t"]
+    }
+    const payload = {
+        post_id: req.params['pid']
+    }
+    amqpClient.sendMessage(JSON.stringify(payload),"RequestCommentsForPost",token).then(msg => {
+        if(msg.properties.headers.http_response === 200){
+            const result = JSON.parse(msg.content.toString()).list_of_comments;
+            res.json(result);
         }
-        const result = JSON.parse(msg.content.toString()).list_of_comments;
-        res.json(result);
+        else{
+            res.status(msg.properties.headers.http_response).send("Failed to fetch comments for post.");
+        }
     });
 });
 
