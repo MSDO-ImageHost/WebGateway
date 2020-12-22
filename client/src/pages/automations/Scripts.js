@@ -1,22 +1,17 @@
 import {Component} from 'react';
 import React from 'react';
-import {Link} from 'react-router-dom';
 
 // Server communication
-import {AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios} from 'react-axios'
 import axios from 'axios';
 
 import fileDownload from 'js-file-download';
 
 // Bootstrap
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/esm/Container";
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Alert from "react-bootstrap/esm/Alert";
-import Spinner from "react-bootstrap/esm/Spinner";
 import bsCustomFileInput from 'bs-custom-file-input';
 import FormControl from 'react-bootstrap/FormControl'
 

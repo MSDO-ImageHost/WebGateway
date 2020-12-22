@@ -32,16 +32,16 @@ router.post('/', validJWT, function (req, res) {
         tags: req.body.tags.replace(' ', '').split(',')
     };
     amqpClient.sendMessage(JSON.stringify(newPost), "CreateOnePost", headers).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(201).json(msgJson);
+        result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {}
+        res.status(201).json(result);
     });
 });
 
 // Get many posts
 router.get('/', function (req, res) {
     amqpClient.sendMessage(JSON.stringify({}), "RequestManyPosts", {}).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(200).json(msgJson);
+        result = msg.content.toString() ? JSON.parse(msg.content.toString()) : []
+        res.status(200).json(result);
     });
 });
 
@@ -49,16 +49,16 @@ router.get('/', function (req, res) {
 router.get('/:pid', function (req, res, next) {
     const post_id = req.params['pid']
     amqpClient.sendMessage(JSON.stringify({post_id}), "RequestOnePost", {}).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(200).json(msgJson);
+        result = JSON.parse(msg.content.toString())
+        res.status(200).json(result);
     });
 });
 
 // Get all edits/updates of a single post using it's id
 router.get('/:pid/history', function (req, res) {
     amqpClient.sendMessage(JSON.stringify({post_id}), "RequestPostHistory", {}).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(200).json(msgJson);
+        result = JSON.parse(msg.content.toString())
+        res.status(200).json(result);
     });
 });
 
@@ -123,8 +123,8 @@ router.put('/:pid', validJWT, function (req, res) {
 
     const updatedPost = { post_id: res.params['pid'], header: req.body.header, body: req.body.body};
     amqpClient.sendMessage(JSON.stringify(updatedPost), "UpdateOnePost", headers).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(200).json(msgJson);
+        result = JSON.parse(msg.content.toString())
+        res.status(200).json(result);
     });
 });
 
@@ -145,8 +145,8 @@ router.delete('/', validJWT, function (req, res) {
     const headers = {jwt:req.jwt}
     post_ids = req.body.post_ids
     amqpClient.sendMessage(JSON.stringify({post_ids}), "DeleteManyPosts", headers).then(msg => {
-        msgJson = JSON.parse(msg.content.toString())
-        res.status(204).json(msgJson);
+        result = JSON.parse(msg.content.toString())
+        res.status(204).json(result);
     });
 });
 

@@ -26,7 +26,7 @@ export default class PostImageElement extends Component {
     fetchImageData() {
         const post = this.props.data
         axios.get(`/api/images/${post.post_id}`).then(res => {
-            if(res.status !== 200) return //this.setState({image_data:'/images/thisisfine.gif'})
+            if(res.status !== 200) return console.log(`Failed to load image for post ${post.post_id}`)
             this.setState({image_data: res.data.image_data})
         })
     }
