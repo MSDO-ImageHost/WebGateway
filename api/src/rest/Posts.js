@@ -71,7 +71,7 @@ router.post('/:pid/comments', validJWT, function (req, res) {
     amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
             const result = JSON.parse(msg.content.toString());
-            res.json(result);
+            res.status(201).json(result);
         }
         else{
             res.status(msg.properties.headers.http_response).send("Failed to create comment.");
@@ -101,10 +101,9 @@ router.get('/:pid/comments', function (req, res, next) {
 });
 
 
-// TODO: Service fails if no JWT is present
+// TODO: Service fails if no JWT is present - should work now
 // Get all tags for a specific post
 router.get('/:pid/tags', function (req, res, next) {
-    return res.status(200).json(["Hello", "This", "is", "fine"]);
 
     const headers = {jwt:req.jwt}
     const payload = { post_id: req.params['pid']}
