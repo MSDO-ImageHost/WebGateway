@@ -29,9 +29,6 @@ class NewPostPage extends Component {
 
     getImageFile(f){
         this.setState({image_file:f})
-        console.log(f)
-        var content = atob(f[0].base64.split(',')[1])
-        console.log(content)
     }
 
     postNewPostForm(event) {
