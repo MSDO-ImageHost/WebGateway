@@ -60,7 +60,7 @@ router.put('', validJWT, function (req, res) {
 
 
 // Terminates a users login session
-// Look at later!
+// Look at later! Maybe not nessesary
 router.delete('', validJWT, function (req, res) {
     //invalidate token
     res.status(200).send("Token invalidated");
