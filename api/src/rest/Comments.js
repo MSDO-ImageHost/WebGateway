@@ -18,8 +18,8 @@ router.get('/:cid', function (req, res) {
     }
     amqpClient.sendMessage(JSON.stringify(payload),"RequestComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
+            const result = JSON.parse(msg.content.toString());
+            //console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
@@ -41,9 +41,9 @@ router.put('/:cid', validJWT, function (req, res) {
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "UpdateComment", token).then(msg => {
         if(msg.properties.headers.http_response === 200){
-            console.log("Received " + msg.content.toString());
-            const result = msg.content.toString(); // Maybe not parse
-            console.log("Received " + msg.content.toString());
+            //console.log("Received " + msg.content.toString());
+            const result = JSON.parse(msg.content.toString()); // Maybe not parse
+            //console.log("Received " + msg.content.toString());
             res.json(result); // status is per default 200
         }
         else{
@@ -64,8 +64,8 @@ router.delete('/:cid', validJWT, function (req, res) {
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "DeleteComment", token).then(msg => {
         if(msg.properties.headers.http_response === 200){
-            const result = msg.content.toString(); // Maybe not parse
-            console.log("Received " + msg.content.toString());
+            const result = JSON.parse(msg.content.toString()); // Maybe not parse
+            //console.log("Received " + msg.content.toString());
             res.json(result); // status is per default 200
         }
         else{

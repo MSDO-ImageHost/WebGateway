@@ -71,8 +71,7 @@ router.post('/:pid/comments', validJWT, function (req, res) {
     }
     amqpClient.sendMessage(JSON.stringify(payload),"CreateComment",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
+            const result = JSON.parse(msg.content.toString());
             res.json(result);
         }
         else{
@@ -93,8 +92,7 @@ router.get('/:pid/comments', function (req, res, next) {
     }
     amqpClient.sendMessage(JSON.stringify(payload),"RequestCommentsForPost",token).then(msg => {
         if(msg.properties.headers.http_response === 200){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
+            const result = JSON.parse(msg.content.toString()).list_of_comments;
             res.json(result);
         }
         else{
