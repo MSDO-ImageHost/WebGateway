@@ -18,7 +18,7 @@ const SignOutButton = () => {
 
         // Post data
         axios.delete('/api/login').then((res) => {
-            if(res.status !== 200) return alert("Oh noooo. \n status:", res.status)
+            if(res.status !== 200) return alert("Oh noooo. \n status:", res.data.status)
             console.log("Logout confirmed from backend")
             // signOut()
         })

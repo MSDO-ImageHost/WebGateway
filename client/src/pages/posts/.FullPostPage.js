@@ -69,7 +69,6 @@ const AuthorizeNewCommentForm = (post) => {
     return !useIsAuthenticated()() ?  null : (<NewCommentForm data={post}/>)
 }
 
-
 export {
     FullPostPage,
 }
