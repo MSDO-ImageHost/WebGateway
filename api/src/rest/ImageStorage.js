@@ -1,60 +1,64 @@
+const {BASE64_IMAGE, TEST_IMAGES} = require("../mocking_data");
 const express = require("express");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 const amqpClient = require("../amqp/AmqpClient");
 
 const router = express.Router();
 
-amqpClient.bindQueue(["ConfirmImageUpload", "ConfirmImageDelete", "ReturnImageReceive"]);
+amqpClient.bindQueue(["ImageLoadRequest", "ImageCreateRequest", "ImageDeleteRequest"]);
 
-router.post('/image', validJWT, function (req, res) {
-    //Creates an image
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"CreateImage",token).then(msg => {
-        if(msg.properties.headers.http_response === 200){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
+
+router.get('/:iid', function (req, res) {
+    return res.status(200).json({image_data: `data:image/jpeg;base64,${BASE64_IMAGE}`})
+
+
+    const headers = {jwt:req.jwt}
+    const post_id = {post_id: req.params['iid']}
+    amqpClient.sendMessage(JSON.stringify(post_id), "ImageLoadResponse", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200){
+            const result = JSON.parse(msg.content.toString());
             res.json(result);
         }
-        else{
-            // I am assuming you store a error message inside properties.headers.message, change if it is not true.
-            // Also has to change is it is status_code, http_response, or a third thing.
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        res.status(msg.properties.headers.status_code).send("[-] Failed to get image");
+
     });
 });
-router.get('/image/:iid', function (req, res) {
-    //Gets an image using its id
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestImage",token).then(msg => {
-        if(msg.properties.headers.http_response === 200){
-            const result = msg.content.toString();
-            console.log("Received " + msg.content.toString());
-            res.json(result);
-        }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
-    });
-});
-router.delete('/image/:iid', validJWT, function (req, res) {
+router.delete('/:iid', validJWT, function (req, res) {
     //Deletes an image using its id.
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"DeleteImage",token).then(msg => {
-        if(msg.properties.headers.http_response === 200){
+    const headers = {jwt:req.jwt}
+    amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",headers).then(msg => {
+        if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());
             res.json(result);
         }
         else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
+            res.status(msg.properties.headers.status_code).send("[-] Failed to delete image");
         }
     });
 });
 
-module.exports = router;
+
+
+//router.post('/', validJWT, function (req, res) {
+//    //Creates an image
+//    const token = {
+//        "jwt":req.jwt
+//    }
+//    amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
+//        if(msg.properties.headers.status_code != 400){
+//            const result = msg.content.toString();
+//            console.log("Received " + msg.content.toString());
+//            res.json(result);
+//        }
+//        else{
+//            // I am assuming you store a error message inside properties.headers.message, change if it is not true.
+//            // Also has to change is it is status_code, http_response, or a third thing.
+//            res.status(msg.properties.headers.status_code).send("[-] Failed to create image");
+//        }
+//    });
+//});
+
+
+
+module.exports = {api: router, images: express.Router()};

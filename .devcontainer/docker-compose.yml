@@ -2,8 +2,8 @@ version: "3.7"
 
 volumes:
   rabbitmq-data:
-  posts-db-data:
-  auth-db-data:
+  mongo-data:
+  mysql-data:
 
 services:
   vscode:
@@ -32,27 +32,53 @@ services:
       file: ../docker-compose.yml
       service: rabbitmq
 
-
-  posts:
+  mysql:
     extends:
       file: ../docker-compose.yml
-      service: posts
+      service: mysql
+
   mongo:
     extends:
       file: ../docker-compose.yml
       service: mongo
+
   mongo-express:
     image: mongo-express
     ports:
       - 8081:8081
     restart: always
 
+  posts:
+    extends:
+      file: ../docker-compose.yml
+      service: posts
 
   authentication:
     extends:
       file: ../docker-compose.yml
       service: authentication
-  mysql:
+
+  likes:
     extends:
       file: ../docker-compose.yml
-      service: mysql
+      service: likes
+
+  tags:
+    extends:
+      file: ../docker-compose.yml
+      service: tags
+
+  comments:
+    extends:
+      file: ../docker-compose.yml
+      service: comments
+
+  userscripts:
+    extends:
+      file: ../docker-compose.yml
+      service: userscripts
+
+  imagestorage:
+    extends:
+      file: ../docker-compose.yml
+      service: imagestorage

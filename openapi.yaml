@@ -76,6 +76,15 @@ paths:
       responses:
         default:
           description: Default response
+  /users/{id}/name:
+    get:
+      summary: Gets the username for a user using its id.
+      description: ''
+      parameters: []
+      operationId: getUsername
+      responses:
+        default:
+          description: Default response
   /users:
     post:
       summary: Create a user which can be used to login
@@ -280,7 +289,7 @@ paths:
       responses:
         default:
           description: Default response
-  /users/admin/flag:
+  /users/admin/flag/{id}:
     put:
       summary: Flag a user
       description: |-
@@ -303,7 +312,7 @@ paths:
       responses:
         default:
           description: Default response
-  /users/admin/ban:
+  /users/admin/ban/{id}:
     put:
       summary: Ban a user
       description: |-
@@ -315,7 +324,7 @@ paths:
       responses:
         default:
           description: Default response
-  /users/admin:
+  /users/admin/{id}:
     put:
       summary: Update role of a user
       description: |-

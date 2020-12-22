@@ -5,7 +5,7 @@ const amqpClient = require("../amqp/AmqpClient");
 
 const {JWT_ENCODE, JWT_DECODE, TEST_USERS} = require("../mocking_data");
 
-amqpClient.bindQueue(["ConfirmAccountCreation", "ReturnAccountInfo","ConfirmAccountUpdate", "ConfirmAccountDeletion", "ConfirmBanUser", "ConfirmFlagUser", "ReturnAllFlagged"])
+amqpClient.bindQueue(["ConfirmAccountCreation", "ReturnAccountInfo", "ConfirmAccountUpdate", "ConfirmAccountDeletion", "ConfirmBanUser", "ConfirmFlagUser", "ReturnAllFlagged"])
 
 // Queue bindings
 amqpClient.bindQueue(["ConfirmAccountCreation"]);
@@ -17,152 +17,119 @@ router.get('/', maybeJWT, function (req, res) {
 // RequestAccountCreate // Request body contains this: `{username:<String>, email:<String>, password:<String>}`
 router.post('/', function (req, res) {
     const newUser = {
-        username:   req.body.username,
+        username: req.body.username,
         user_email: req.body.email,
-        password:   req.body.password,
-        role:       0
+        password: req.body.password,
+        role: 0
     };
 
-    amqpClient.sendMessage(JSON.stringify(newUser),"RequestAccountCreate",null).then(msg => {
-        if(msg.properties.headers.status_code === 200){
+    amqpClient.sendMessage(JSON.stringify(newUser), "RequestAccountCreate", null).then(msg => {
+        if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
-            console.log("Received " + result);
             var json = JSON.parse(result);
             //{"status_code":200,"data":{"user_email":"hej@hej.dk","role":"0","updated_at":"2020-12-21 03:26:16","last_login":"2020-12-21 03:26:16","jwt":"merp","created_at":"2020-12-21 03:23:46","username":"hej"},"message":"token created"}
-            const newUser ={
-                username:   json.username,
-                user_email: json.user_email,
-                role:       json.role
-            };
-            var re = {
-                user: newUser
-            }
-            console.log("Received " + re);
-            res.status(201).json(re); 
-        }
-        else{
+            res.status(201).json({user: json});
+        } else {
             res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
     });
 });
 
-router.get('/:id', maybeJWT, function (req, res) {
+router.get('/:id', function (req, res) {
     //RequestAccountData
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountData",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
-        }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+    const payload = {user_id: req.params['id']}
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountData", {}).then(msg => {
+        const result = msg.content.toString() ? JSON.parse(msg.content.toString()) : {};
+        res.json({result, username: payload.user_id}); // User ID should instead be the users real name (need implementation in authentication service)
     });
 });
 router.put('/:id', validJWT, function (req, res) {
     //UpdateAccount
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"UpdateAccount",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+    const headers = {jwt:req.jwt}
+    amqpClient.sendMessage(JSON.stringify(req.body), "UpdateAccount", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.delete('/:id', validJWT, function (req, res) {
     //RequestAccountDelete
-    var token = {
-        "jwt":req.cookies["_auth_t"]
+    const headers = {jwt:req.jwt}
+    const payload = {
+        user_id: req.params['id']
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountDelete",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountDelete", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 
 router.put('/admin/:id', validJWT, function (req, res) {
     //UpdateAccountPrivileges
-    var token = {
-        "jwt":req.cookies["_auth_t"]
+    const headers = {jwt:req.jwt}
+    const payload = {
+        user_id: req.params['id'],
+        new_role: req.body.new_role
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"UpdateAccountPrivileges",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+    amqpClient.sendMessage(JSON.stringify(payload), "UpdateAccountPrivileges", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 
-router.put('/admin/ban', validJWT, function (req, res) {
+router.put('/admin/ban/:id', validJWT, function (req, res) {
     //RequestBanUser
-    var token = {
-        "jwt":req.cookies["_auth_t"]
+    const headers = {jwt:req.jwt}
+    const payload = {
+        user_id: req.params['id'],
+        permanent: req.body.permanent
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestBanUser",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestBanUser", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
-router.put('/admin/flag', validJWT, function (req, res) {
+router.put('/admin/flag/:id', validJWT, function (req, res) {
     //RequestFlagUser
-    var token = {
-        "jwt":req.cookies["_auth_t"]
+    const headers = {jwt:req.jwt}
+    const payload = {
+        user_id: req.params['id']
     }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestFlagUser",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestFlagUser", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.get('/admin/flag', validJWT, function (req, res) {
     //RequestAllFlagged
-    var token = {
-        "jwt":req.cookies["_auth_t"]
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestAllFlagged",token).then(msg => {
-        if(msg.properties.headers.status_code === 200){
-            const result = msg.content.toString();
-            console.log("Received " + result);
-            res.json(result); 
+    const headers = {jwt:req.jwt}
+    amqpClient.sendMessage(JSON.stringify(req.body), "RequestAllFlagged", headers).then(msg => {
+        if(msg.properties.headers.status_code !== 200) {
+            return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
-        }
+        const result = JSON.parse(msg.content.toString());
+        res.json(result);
     });
 });
 router.get('/:id/posts', maybeJWT, function (req, res) {
-    //Get the posts a user have created
-    res.status(200).send();
+    amqpClient.sendMessage(JSON.stringify({"author_id": req.params.id}), "RequestUserPosts", null).then(msg => {
+        msgJson = JSON.parse(msg.content.toString());
+        res.status(200).json(msgJson);
+    });
 });
 
 module.exports = router;

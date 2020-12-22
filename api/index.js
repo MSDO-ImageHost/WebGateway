@@ -18,15 +18,14 @@ const Comments = require("./src/rest/Comments.js");
 
 const app = express();
 
-
 // Middleware parsers
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
+//app.use('/api/posts', express.json({ limit: '10mb' }));
 
 // Custom middleware
 app.use(function timeLog(req, res, next) {
-    console.log('Time: ', Date.now());
-    console.log(`${req.method} ${req.baseUrl}${req.path}`);
+    console.log(`${Date.now()}: ${req.method} ${req.baseUrl}${req.path}`);
     next();
 });
 
@@ -36,7 +35,8 @@ app.use('/api/login', Authentication);
 app.use('/api/users', Accounts);
 app.use('/api/posts', Posts);
 app.use('/api/scripts', Scripts);
-app.use('/api/images', ImageStorage);
+app.use('/api/images', ImageStorage.api);
+app.use('/i', ImageStorage.images);
 app.use('/api/tags', Tags);
 app.use('/api/likes', Likes);
 app.use('/api/comments',Comments);
@@ -58,7 +58,7 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
-app.listen(port);
+app.listen(port).setTimeout(10 * 1000);
 console.log('App is listening on port ' + port);
 
 // Capture interruption signal and terminate gracefully
