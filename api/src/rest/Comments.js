@@ -11,7 +11,7 @@ amqpClient.bindQueue(["ReturnComment", "ConfirmCommentUpdate", "ConfirmCommentDe
 // Fetch a specific comment
 router.get('/:cid', function (req, res) {
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        jwt: req.jwt ? req.jwt : ""
     }
     const payload = {
         comment_id: req.params['cid'],
@@ -32,7 +32,7 @@ router.get('/:cid', function (req, res) {
 router.put('/:cid', validJWT, function (req, res) {
     //UpdateComment
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        jwt: req.jwt ? req.jwt : ""
     }
     const payload = {
         comment_id: req.params['cid'],
@@ -56,7 +56,7 @@ router.put('/:cid', validJWT, function (req, res) {
 router.delete('/:cid', validJWT, function (req, res) {
     //DeleteComment
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        jwt: req.jwt ? req.jwt : ""
     }
     const payload = {
         comment_id: req.params['cid'],
