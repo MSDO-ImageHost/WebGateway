@@ -17,7 +17,7 @@ amqpClient.bindQueue([
 router.post('/tag', validJWT, function (req, res) {
     //CreateTag
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "CreateTag", token).then(msg => {
         if (msg.properties.headers.status_code === 200) {
@@ -34,7 +34,7 @@ router.post('/tag', validJWT, function (req, res) {
 router.get('/:tid', function (req, res) {
     //RequestTag
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         tag_id: req.params['tid']
@@ -54,7 +54,7 @@ router.get('/:tid', function (req, res) {
 router.put('/:tid', function (req, res) {
     //UpdateTag
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         tag_id: req.params['tid'],
@@ -76,7 +76,7 @@ router.put('/:tid', function (req, res) {
 router.delete('/:tid', validJWT, function (req, res) {
     //DeleteTag
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         tag_id: req.params['tid']
@@ -96,7 +96,7 @@ router.delete('/:tid', validJWT, function (req, res) {
 router.get('/:tid/posts', validJWT, function (req, res) {
     //RequestPostsForTag
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         tag_id: req.params['tid']
@@ -116,7 +116,7 @@ router.get('/:tid/posts', validJWT, function (req, res) {
 router.post('/post/:pid/tags', validJWT, function (req, res) {
     //AddTagToPost
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         post_id: req.params['pid'],
@@ -138,7 +138,7 @@ router.post('/post/:pid/tags', validJWT, function (req, res) {
 router.delete('/post/:pid/tags', validJWT, function (req, res) {
     //RemoveTagFromPost
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     const payload = {
         post_id: req.params['pid'],

@@ -6,9 +6,12 @@ const router = express.Router();
 amqpClient.bindQueue(["ConfirmLikeUpdate", "ReturnLikesForPost", "ReturnLikeStatus"]);
 
 
-router.get('/post/:pid/likes/:userid', validJWT, function (req, res) {
-    const headers = {"jwt":req.jwt}
-    amqpClient.sendMessage(JSON.stringify(req.body),"RequestLikeStatus",headers).then(msg => {
+router.get('/post/:pid/likes', validJWT, function (req, res) {
+
+    const headers = {jwt:req.jwt}
+    const payload = {post_id: req.params['pid']}
+
+    amqpClient.sendMessage(JSON.stringify(payload),"RequestLikeStatus",headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
@@ -22,9 +25,7 @@ router.get('/post/:pid/likes/:userid', validJWT, function (req, res) {
 router.put('/', validJWT, function (req, res) {
 
     const payload = { post_id: req.body.post_id }
-    const headers = {"jwt":req.jwt}
-    //return res.status(200).json({like_status:true})
-
+    const headers = {jwt:req.jwt}
     amqpClient.sendMessage(JSON.stringify(payload), "UpdateLike", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
@@ -35,18 +36,18 @@ router.put('/', validJWT, function (req, res) {
 });
 
 
+// TODO: Fails to return anything
 // Gets amount of likes for a post
 router.get('/:pid', function (req, res) {
 
     const post_id = {post_id: req.params['pid']}
 
-    amqpClient.sendMessage(JSON.stringify(post_id),"RequestLikesForPost",null).then(msg => {
-        console.log(msg)
+    amqpClient.sendMessage(JSON.stringify(post_id),"RequestLikesForPost", {}).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
         const result = JSON.parse(msg.content.toString());
-        res.json({likes: 0});
+        res.json(result);
     });
 });
 

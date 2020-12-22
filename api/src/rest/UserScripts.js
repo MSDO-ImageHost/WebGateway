@@ -8,7 +8,7 @@ amqpClient.bindQueue(["ConfirmUserScriptCreation", "ConfirmUserScriptUpdate", "C
 router.post('/CreateUserScript', validJWT, function (req, res) {
     //Creates a script
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     console.log(req.body)
     amqpClient.sendMessage(JSON.stringify(req.body),"CreateUserScript",token).then(msg => {
@@ -25,7 +25,7 @@ router.post('/CreateUserScript', validJWT, function (req, res) {
 router.get('/FindOwnUserScripts', validJWT, function (req, res) {
     //Gets a list of all scripts this user is allowed to see.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     var body = {
       "user_id":req.claims.sub
@@ -44,7 +44,7 @@ router.get('/FindOwnUserScripts', validJWT, function (req, res) {
 router.post('/FindUsersUserScripts', validJWT, function (req, res) {
     //Gets a list of all scripts this user is allowed to see.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"FindUsersUserScripts",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
@@ -60,7 +60,7 @@ router.post('/FindUsersUserScripts', validJWT, function (req, res) {
 router.post('/FindUserScript', validJWT, function (req, res) {
     //Gets a list of all scripts this user is allowed to see.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     console.log(req.body)
     amqpClient.sendMessage(JSON.stringify(req.body),"FindUserScript",token).then(msg => {
@@ -77,7 +77,7 @@ router.post('/FindUserScript', validJWT, function (req, res) {
 router.post('/UpdateUserScript', validJWT, function (req, res) {
     //Updates a script using its id.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     console.log(req.body)
     amqpClient.sendMessage(JSON.stringify(req.body),"UpdateUserScript",token).then(msg => {
@@ -94,7 +94,7 @@ router.post('/UpdateUserScript', validJWT, function (req, res) {
 router.post('/DeleteUserScript', validJWT, function (req, res) {
     //Deletes a script using its id.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"DeleteUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){
@@ -110,7 +110,7 @@ router.post('/DeleteUserScript', validJWT, function (req, res) {
 router.post('/RunUserScript', validJWT, function (req, res) {
     //Gets a script to run using its id.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"RunUserScript",token).then(msg => {
         if(msg.properties.headers.status_code === 200){

@@ -44,7 +44,7 @@ router.post('', function (req, res) {
 router.put('', validJWT, function (req, res) {
     //RequestAccountPasswordUpdate
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"RequestAccountPasswordUpdate",token).then(msg => {
         if(msg.properties.headers.status_code === 200){

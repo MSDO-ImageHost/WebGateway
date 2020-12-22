@@ -8,6 +8,9 @@ import { useAuthUser, useIsAuthenticated } from 'react-auth-kit';
 import '../../App.css';
 import { CommentRow, NewCommentForm } from '../comments/Comments';
 import { HttpStatusMessage } from '../../ui_components/HttpStatusMessage';
+import PostLikesElement from './.PostLikesElement';
+import PostImageElement from './.PostImageElement';
+import PostUserElement from './.PostUserElement';
 
 // Server communication
 import { Get } from 'react-axios';
@@ -17,21 +20,31 @@ import axios from 'axios';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/esm/Row";
+import Col from "react-bootstrap/esm/Col";
 
 class FullPostPage extends Component {
+
     render() {
         const post = this.props.location.state
+        const dateObj = new Date(post.created_at)
+        const clock = dateObj.toLocaleTimeString()
+        const date = dateObj.toDateString()
         return <Container>
-            <Card border="primary" style={{ width: '100%', marginTop: '10px' }}>
+            <Card border="primary" style={{ width: '100%', marginTop: '10px'}}>
+                <PostImageElement data={post}/>
                 <Card.Body>
                     <Card.Title>{post.header.data}</Card.Title>
-                    <Card.Subtitle>{post.header.author_id}</Card.Subtitle>
-                    <Card.Img variant="top" src={post.image_url} />
                     <Card.Text>{post.body.data}</Card.Text>
-                    <Card.Footer>{post.tags}</Card.Footer>
                 </Card.Body>
+                <Card.Footer className="text-muted">
+                    <Row>
+                        <Col md={3}><PostUserElement data={post}/>{date} @ {clock}</Col>
+                        <Col md={8}></Col>
+                        <Col md={1}><PostLikesElement data={post}/></Col>
+                    </Row>
+                </Card.Footer>
             </Card>
-
             <div style={{marginTop: '10px'}}>
                 <AuthorizeNewCommentForm post={post}/>
             </div>

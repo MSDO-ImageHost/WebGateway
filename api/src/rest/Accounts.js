@@ -46,7 +46,7 @@ router.get('/:id', function (req, res) {
 router.put('/:id', validJWT, function (req, res) {
     //UpdateAccount
     var token = {
-        "jwt": req.cookies["_auth_t"]
+        "jwt": req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "UpdateAccount", token).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
@@ -59,7 +59,7 @@ router.put('/:id', validJWT, function (req, res) {
 router.delete('/:id', validJWT, function (req, res) {
     //RequestAccountDelete
     var token = {
-        "jwt": req.cookies["_auth_t"]
+        "jwt": req.jwt
     }
     const payload = {
         user_id: req.params['id']
@@ -76,7 +76,7 @@ router.delete('/:id', validJWT, function (req, res) {
 router.put('/admin/:id', validJWT, function (req, res) {
     //UpdateAccountPrivileges
     var token = {
-        "jwt": req.cookies["_auth_t"]
+        "jwt": req.jwt
     }
     const payload = {
         user_id: req.params['id'],
@@ -94,7 +94,7 @@ router.put('/admin/:id', validJWT, function (req, res) {
 router.put('/admin/ban/:id', validJWT, function (req, res) {
     //RequestBanUser
     var token = {
-        "jwt": req.cookies["_auth_t"]
+        "jwt": req.jwt
     }
     const payload = {
         user_id: req.params['id'],
@@ -111,7 +111,7 @@ router.put('/admin/ban/:id', validJWT, function (req, res) {
 router.put('/admin/flag/:id', validJWT, function (req, res) {
     //RequestFlagUser
     var token = {
-        "jwt": req.cookies["_auth_t"]
+        "jwt": req.jwt
     }
     const payload = {
         user_id: req.params['id']
@@ -127,7 +127,7 @@ router.put('/admin/flag/:id', validJWT, function (req, res) {
 router.get('/admin/flag', validJWT, function (req, res) {
     //RequestAllFlagged
     var token = {
-        "jwt": req.cookies["_auth_t"]
+        "jwt": req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body), "RequestAllFlagged", token).then(msg => {
         if(msg.properties.headers.status_code !== 200) {

@@ -1,5 +1,4 @@
-const {TEST_IMAGES} = require("../mocking_data");
-
+const {BASE64_IMAGE, TEST_IMAGES} = require("../mocking_data");
 const express = require("express");
 const {validJWT, maybeJWT} = require("../jwtAuth");
 const amqpClient = require("../amqp/AmqpClient");
@@ -10,26 +9,24 @@ amqpClient.bindQueue(["ImageLoadRequest", "ImageCreateRequest", "ImageDeleteRequ
 
 
 router.get('/:iid', function (req, res) {
-    const token = {"jwt":req.cookies["_auth_t"]}
+    return res.status(200).json({image_data: `data:image/jpeg;base64,${BASE64_IMAGE}`})
+
+
+    const token = {"jwt":req.jwt}
     const post_id = {post_id: req.params['iid']}
-
-    console.log(post_id)
-
     amqpClient.sendMessage(JSON.stringify(post_id), "ImageLoadResponse", token).then(msg => {
-        if(msg.properties.headers.status_code != 400){
+        if(msg.properties.headers.status_code !== 200){
             const result = JSON.parse(msg.content.toString());
-            console.log(result)
             res.json(result);
         }
-        else{
-            res.status(msg.properties.headers.status_code).send("[-] Failed to get image");
-        }
+        res.status(msg.properties.headers.status_code).send("[-] Failed to get image");
+
     });
 });
 router.delete('/:iid', validJWT, function (req, res) {
     //Deletes an image using its id.
     var token = {
-        "jwt":req.cookies["_auth_t"]
+        "jwt":req.jwt
     }
     amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",token).then(msg => {
         if(msg.properties.headers.status_code != 400){
@@ -48,7 +45,7 @@ router.delete('/:iid', validJWT, function (req, res) {
 //router.post('/', validJWT, function (req, res) {
 //    //Creates an image
 //    const token = {
-//        "jwt":req.cookies["_auth_t"]
+//        "jwt":req.jwt
 //    }
 //    amqpClient.sendMessage(JSON.stringify(req.body),"ImageCreateResponse",token).then(msg => {
 //        if(msg.properties.headers.status_code != 400){
