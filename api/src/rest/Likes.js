@@ -20,7 +20,6 @@ router.get('/post/:pid/likes', validJWT, function (req, res) {
     });
 });
 
-// TODO: service does not seem to respond with anything
 // Updates likes for a post (adding and removing likes)
 router.put('/', validJWT, function (req, res) {
 
@@ -36,7 +35,6 @@ router.put('/', validJWT, function (req, res) {
 });
 
 
-// TODO: Fails to return anything
 // Gets amount of likes for a post
 router.get('/:pid', function (req, res) {
 

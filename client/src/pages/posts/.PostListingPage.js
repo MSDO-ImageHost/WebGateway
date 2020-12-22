@@ -6,6 +6,7 @@ import '../../App.css';
 import PostLikesElement from './.PostLikesElement';
 import PostImageElement from './.PostImageElement';
 import PostUserElement from './.PostUserElement';
+import PostTagsElement from './.PostTagsElement';
 
 // Server communication
 import axios from 'axios';
@@ -52,7 +53,9 @@ class PostListingEntry extends Component {
             <Card.Footer className="text-muted">
                 <Row>
                     <Col md={3}><PostUserElement data={post}/>{date} @ {clock}</Col>
-                    <Col md={7}></Col>
+                    <Col md={1}></Col>
+                    <Col md={4}><PostTagsElement data={post}/></Col>
+                    <Col md={2}></Col>
                     <Col md={1}><PostLikesElement data={post}/></Col>
                     <Col md={1}><Link style={{float: 'right'}} to={{pathname: `/posts/${post.post_id}`, state: post}}><Button variant="primary">Read post</Button></Link></Col>
                 </Row>

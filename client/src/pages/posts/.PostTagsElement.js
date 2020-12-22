@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 // App components
 import '../../App.css';
@@ -18,12 +19,12 @@ export default class PostTagsElement extends Component {
         const post = this.props.data
         axios.get(`/api/posts/${post.post_id}/tags/`).then(res => {
             if(res.status !== 200) return
-            this.setState({ tags: res.data.tags })
+            this.setState({ tags: res.data })
         })
     }
     render () {
-        return <p>{this.state.tags}</p>
+        const formatted = this.state.tags.map((tag, i) => { return <Link key={i} to={{pathname: `/tags/${tag}`}}>#{tag} </Link> })
+        return <div className="text-muted" ><i>{formatted}</i></div>
     }
 }
-
 

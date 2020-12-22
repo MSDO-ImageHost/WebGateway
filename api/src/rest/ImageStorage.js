@@ -12,9 +12,9 @@ router.get('/:iid', function (req, res) {
     return res.status(200).json({image_data: `data:image/jpeg;base64,${BASE64_IMAGE}`})
 
 
-    const token = {"jwt":req.jwt}
+    const headers = {jwt:req.jwt}
     const post_id = {post_id: req.params['iid']}
-    amqpClient.sendMessage(JSON.stringify(post_id), "ImageLoadResponse", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(post_id), "ImageLoadResponse", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200){
             const result = JSON.parse(msg.content.toString());
             res.json(result);
@@ -25,10 +25,8 @@ router.get('/:iid', function (req, res) {
 });
 router.delete('/:iid', validJWT, function (req, res) {
     //Deletes an image using its id.
-    var token = {
-        "jwt":req.jwt
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",token).then(msg => {
+    const headers = {jwt:req.jwt}
+    amqpClient.sendMessage(JSON.stringify(req.body),"ImageDeleteResponse",headers).then(msg => {
         if(msg.properties.headers.status_code != 400){
             const result = msg.content.toString();
             console.log("Received " + msg.content.toString());

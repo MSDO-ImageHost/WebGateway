@@ -45,10 +45,8 @@ router.get('/:id', function (req, res) {
 });
 router.put('/:id', validJWT, function (req, res) {
     //UpdateAccount
-    var token = {
-        "jwt": req.jwt
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body), "UpdateAccount", token).then(msg => {
+    const headers = {jwt:req.jwt}
+    amqpClient.sendMessage(JSON.stringify(req.body), "UpdateAccount", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
@@ -58,13 +56,11 @@ router.put('/:id', validJWT, function (req, res) {
 });
 router.delete('/:id', validJWT, function (req, res) {
     //RequestAccountDelete
-    var token = {
-        "jwt": req.jwt
-    }
+    const headers = {jwt:req.jwt}
     const payload = {
         user_id: req.params['id']
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountDelete", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestAccountDelete", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
@@ -75,14 +71,12 @@ router.delete('/:id', validJWT, function (req, res) {
 
 router.put('/admin/:id', validJWT, function (req, res) {
     //UpdateAccountPrivileges
-    var token = {
-        "jwt": req.jwt
-    }
+    const headers = {jwt:req.jwt}
     const payload = {
         user_id: req.params['id'],
         new_role: req.body.new_role
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "UpdateAccountPrivileges", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "UpdateAccountPrivileges", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
@@ -93,14 +87,12 @@ router.put('/admin/:id', validJWT, function (req, res) {
 
 router.put('/admin/ban/:id', validJWT, function (req, res) {
     //RequestBanUser
-    var token = {
-        "jwt": req.jwt
-    }
+    const headers = {jwt:req.jwt}
     const payload = {
         user_id: req.params['id'],
         permanent: req.body.permanent
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestBanUser", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestBanUser", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
@@ -110,13 +102,11 @@ router.put('/admin/ban/:id', validJWT, function (req, res) {
 });
 router.put('/admin/flag/:id', validJWT, function (req, res) {
     //RequestFlagUser
-    var token = {
-        "jwt": req.jwt
-    }
+    const headers = {jwt:req.jwt}
     const payload = {
         user_id: req.params['id']
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestFlagUser", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestFlagUser", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }
@@ -126,10 +116,8 @@ router.put('/admin/flag/:id', validJWT, function (req, res) {
 });
 router.get('/admin/flag', validJWT, function (req, res) {
     //RequestAllFlagged
-    var token = {
-        "jwt": req.jwt
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body), "RequestAllFlagged", token).then(msg => {
+    const headers = {jwt:req.jwt}
+    amqpClient.sendMessage(JSON.stringify(req.body), "RequestAllFlagged", headers).then(msg => {
         if(msg.properties.headers.status_code !== 200) {
             return res.status(msg.properties.headers.status_code).send(msg.properties.headers.message);
         }

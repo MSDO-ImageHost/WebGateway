@@ -16,10 +16,9 @@ amqpClient.bindQueue([
 
 router.post('/tag', validJWT, function (req, res) {
     //CreateTag
-    var token = {
-        "jwt":req.jwt
-    }
-    amqpClient.sendMessage(JSON.stringify(req.body), "CreateTag", token).then(msg => {
+    const headers = {jwt:req.jwt}
+
+    amqpClient.sendMessage(JSON.stringify(req.body), "CreateTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -32,14 +31,12 @@ router.post('/tag', validJWT, function (req, res) {
 });
 
 router.get('/:tid', function (req, res) {
-    //RequestTag
-    var token = {
-        "jwt":req.jwt
-    }
+    const headers = {jwt:req.jwt}
+
     const payload = {
         tag_id: req.params['tid']
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestTag", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -53,15 +50,14 @@ router.get('/:tid', function (req, res) {
 
 router.put('/:tid', function (req, res) {
     //UpdateTag
-    var token = {
-        "jwt":req.jwt
-    }
+    const headers = {jwt:req.jwt}
+
     const payload = {
         tag_id: req.params['tid'],
         new_name: req.body.new_name,
         new_desc: req.body.new_desc
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "UpdateTag", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "UpdateTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -75,13 +71,12 @@ router.put('/:tid', function (req, res) {
 
 router.delete('/:tid', validJWT, function (req, res) {
     //DeleteTag
-    var token = {
-        "jwt":req.jwt
-    }
+    const headers = {jwt:req.jwt}
+
     const payload = {
         tag_id: req.params['tid']
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "DeleteTag", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "DeleteTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -95,13 +90,12 @@ router.delete('/:tid', validJWT, function (req, res) {
 
 router.get('/:tid/posts', validJWT, function (req, res) {
     //RequestPostsForTag
-    var token = {
-        "jwt":req.jwt
-    }
+    const headers = {jwt:req.jwt}
+
     const payload = {
         tag_id: req.params['tid']
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "RequestPostsForTag", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "RequestPostsForTag", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -115,15 +109,14 @@ router.get('/:tid/posts', validJWT, function (req, res) {
 
 router.post('/post/:pid/tags', validJWT, function (req, res) {
     //AddTagToPost
-    var token = {
-        "jwt":req.jwt
-    }
+    const headers = {jwt:req.jwt}
+
     const payload = {
         post_id: req.params['pid'],
         tag_id: req.body.tag_id,
         post_author: req.body.post_author
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "AddTagToPost", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "AddTagToPost", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);
@@ -137,15 +130,14 @@ router.post('/post/:pid/tags', validJWT, function (req, res) {
 
 router.delete('/post/:pid/tags', validJWT, function (req, res) {
     //RemoveTagFromPost
-    var token = {
-        "jwt":req.jwt
-    }
+    const headers = {jwt:req.jwt}
+
     const payload = {
         post_id: req.params['pid'],
         tag_id: req.body.tag_id,
         post_author: req.body.post_author
     }
-    amqpClient.sendMessage(JSON.stringify(payload), "RemoveTagFromPost", token).then(msg => {
+    amqpClient.sendMessage(JSON.stringify(payload), "RemoveTagFromPost", headers).then(msg => {
         if (msg.properties.headers.status_code === 200) {
             const result = msg.content.toString();
             console.log("Received " + msg.content);

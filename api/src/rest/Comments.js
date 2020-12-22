@@ -10,7 +10,7 @@ amqpClient.bindQueue(["ReturnComment", "ConfirmCommentUpdate", "ConfirmCommentDe
 
 // Fetch a specific comment
 router.get('/:cid', function (req, res) {
-    const headers = {"jwt":req.jwt}
+    const headers = {jwt:req.jwt}
     const payload = {comment_id: req.params['cid'] }
     amqpClient.sendMessage(JSON.stringify(payload),"RequestComment",headers).then(msg => {
         if(msg.properties.headers.http_response !== 200) {
@@ -24,7 +24,7 @@ router.get('/:cid', function (req, res) {
 // Update a specific comment
 router.put('/:cid', validJWT, function (req, res) {
     //UpdateComment
-    const headers = {"jwt":req.jwt}
+    const headers = {jwt:req.jwt}
 
     const payload = {
         comment_id: req.params['cid'],
@@ -45,7 +45,7 @@ router.put('/:cid', validJWT, function (req, res) {
 // Delete a specific comment
 router.delete('/:cid', validJWT, function (req, res) {
     //DeleteComment
-    const headers = {"jwt":req.jwt}
+    const headers = {jwt:req.jwt}
     const payload = {
         comment_id: req.params['cid'],
         user_id: req.claims.sub
